@@ -34,6 +34,9 @@ server.listen(port, () => {
 });
 
 io.on('connection', socket => {
+  socket.on('add node', data => {
+    socket.emit('node added', data)
+  })
   console.log('socket connected server side');
   // // ALL SOCKET LISTENERS AND EMITTERS
 

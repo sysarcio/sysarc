@@ -3,6 +3,7 @@ import { Route, withRouter } from 'react-router-dom';
 import Canvas from './Canvas.jsx';
 import Login from './Login.jsx';
 
+
 class App extends Component {
   constructor(props) {
     super(props);
