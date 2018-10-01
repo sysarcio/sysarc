@@ -19,32 +19,43 @@ class Canvas extends Component {
       showForm: false,
       nodes: [],
       method: {type: '', url: ''},
-      
     };
 
     this.socket = io.connect();
     this.socket.on('connect', () => {
       console.log('socket connected client side');
-      // this.socket.emit('join room', this.props.match.params.name);
+      this.socket.emit('join room', this.props.match.params.name);
     });
+    
+    this.socket.on('room data', data => {
+      this.setNodes(data);
+    });
+
     this.socket.on('node added', data => {
-      this.setState({
-        nodes: [...this.state.nodes, data]
-      })
-    })
-    this.handleNewNode = this.handleNewNode.bind(this)
+      this.setNodes(data);
+    });
+    
+    this.handleNewNode = this.handleNewNode.bind(this);
   }
 
   //data = {x: val, y: val, type: ''};
   handleNewNode(data) {
-    this.socket.emit('add node', data)
+    data.room = this.props.match.params.name;
+    this.socket.emit('add node', data);
+  }
+
+  setNodes(data) {
+    this.setState({
+      nodes: data
+    });
   }
 
   render() {
     return (
       <div>
-        <button onClick={this.handleNewNode({ x: 20, y: 20, type: 'client' })}> Client +</button>
-        
+        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 40, y: 20 }, type: 'server' })}> Server +</button>
+        {this.state.nodes.map((node, i) => <p key={i}>{node.type} at x:{node.position.x} y:{node.position.y}</p>)}
       </div>
     );
   }

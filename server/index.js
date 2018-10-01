@@ -34,17 +34,30 @@ server.listen(port, () => {
 });
 
 io.on('connection', socket => {
-  socket.on('add node', data => {
-    socket.emit('node added', data)
-  })
   console.log('socket connected server side');
-  // // ALL SOCKET LISTENERS AND EMITTERS
-
-  // socket.on('join room', async data => {
-  //   socket.join(data.room);
-  //   const roomData = await redis.get(`"${data.room}"`);
-  //   io.to(socket.id).emit('room data', roomData);
-  // });
+  // ALL SOCKET LISTENERS AND EMITTERS
+  socket.on('join room', async room => {
+    socket.join(room);
+    try {
+      let nodes = await redis.lrange(`"${room}"`, 0, -1);
+      nodes = nodes.map(node => JSON.parse(node));
+      io.to(socket.id).emit('room data', nodes);
+    } catch(err) {
+      console.log(err);
+    }
+  });
+  
+  socket.on('add node', async data => {
+    const {position, type} = data;
+    try {
+      await redis.lpush([`"${data.room}"`, JSON.stringify({position, type})]);
+      let nodes = await redis.lrange(`"${data.room}"`, 0, -1);
+      nodes = nodes.map(node => JSON.parse(node));
+      io.to(data.room).emit('node added', nodes);
+    } catch(err) {
+      console.log('error from redis:', err);
+    }
+  });
 });
 
 app.get('/*', (_, res) => {
