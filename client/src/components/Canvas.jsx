@@ -52,17 +52,20 @@ class Canvas extends Component {
   }
 
   render() {
-    const showClients = nodes.filter((node, i) => {
-      return node.type === 'client' ? <Client x={node.x} y={node.y}/> : null
+    console.log(this.state.nodes);
+    const showClients = this.state.nodes.map((node, i) => {
+      return node.type === 'client' ? <Client key={i} x={node.position.x} y={node.position.y}/> : null
     })
+    console.log(showClients);
     return (
       <div>
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'server' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'database' })}> Database +</button>
-        {/* {this.state.nodes.map((node, i) => <p key={i}>{node.type} at x:{node.position.x} y:{node.position.y}</p>)} */}
         <Svg>
-         {showClients}
+          {showClients.map((node) => {
+            return node;
+          })}
         </Svg>
       </div>
     );
