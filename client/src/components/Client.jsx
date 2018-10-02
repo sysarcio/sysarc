@@ -23,6 +23,16 @@ class Client extends React.Component {
   handleMouseUp() {
     document.removeEventListener('mousemove', this.handleMouseMove);
     this.coords = {};
+
+    const data = {
+      id: this.props.id,
+      position: {
+        x: this.state.x,
+        y: this.state.y
+      }
+    };
+
+    this.props.onMove(data);
   }
 
   handleMouseMove(e) {
@@ -32,6 +42,7 @@ class Client extends React.Component {
     this.coords.x = e.pageX;
     this.coords.y = e.pageY;
 
+    // console.log(this.props.id);
     this.setState({
       x: this.state.x - xDiff,
       y: this.state.y - yDiff
@@ -42,7 +53,7 @@ class Client extends React.Component {
 
   render() {
 
-    console.log('x and y coordinates-->', this.state.x, this.state.y)
+    // console.log('x and y coordinates-->', this.state.x, this.state.y)
     const { x, y } = this.state;
     return (
 
