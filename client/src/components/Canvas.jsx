@@ -35,13 +35,17 @@ class Canvas extends Component {
     this.socket.on('node added', data => {
       this.setNodes(data);
     });
+
+    this.socket.on('node moved', data => {
+      this.setNodes(data);
+    })
     
     this.socket.on('move node', data => {
       this.setNodes(data);
     });
 
     this.handleNewNode = this.handleNewNode.bind(this);
-    this.handleNodeMovement = this.handleNodeMovement.bind(this);
+    this.handleNodeMove = this.handleNodeMove.bind(this);
   }
 
   //data = {x: val, y: val, type: '', routes: [{method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
@@ -50,13 +54,18 @@ class Canvas extends Component {
     this.socket.emit('add node', data);
   }
 
+  handleNodeMove(data) {
+    data.room = this.props.match.params.name;
+    this.socket.emit('move node', data);
+  }
+
   setNodes(data) {
     this.setState({
       nodes: data
     });
   }
 
-  handleNodeMovement(data) {
+  handleNodeMove(data) {
     data.room = this.props.match.params.name;
     console.log(`dummy output:`);
     console.log(data);
@@ -64,11 +73,9 @@ class Canvas extends Component {
   }
 
   render() {
-    console.log(this.state.nodes);
     const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client key={i} x={node.position.x} y={node.position.y} handleMovement={this.handleNodeMovement} /> : null
+      return node.type === 'client' ? <Client key={i} x={node.position.x} y={node.position.y} handleMovement={this.handleNodeMove} /> : null
     })
-    console.log(showClients);
     return (
       <div>
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
