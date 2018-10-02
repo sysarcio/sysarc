@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const uuidv4 = require('uuid/v4');
 
 const routes = require('./routes');
 const app = express();
@@ -48,12 +49,21 @@ io.on('connection', socket => {
       console.log(err);
     }
   });
+
+  socket.on('move node', async data => {
+    // const {id, position};
+    
+  });
   
   socket.on('add node', async data => {
     const {position, type} = data;
+    let id = uuidv4();
     try {
-      await db.addNode({position, type});
-      // const nodes = await
+      await redis.lpush([`"${data.room}"`, JSON.stringify({id, position, type})]);
+      let nodes = await redis.lrange(`"${data.room}"`, 0, -1);
+      nodes = nodes.map(node => JSON.parse(node));
+      console.log(nodes);
+      io.to(data.room).emit('node added', nodes);
     } catch(err) {
       console.log(err);
     }
