@@ -7,7 +7,7 @@ class Client extends React.Component {
     this.state = {
       x: this.props.x,
       y: this.props.y,
-      
+      id: this.props.id
     }
     this.handleMouseMove = this.handleMouseMove.bind(this);
   }
@@ -67,6 +67,7 @@ class Client extends React.Component {
           fill="yellow"
           onMouseDown={this.handleMouseDown.bind(this)}
           onMouseUp={this.handleMouseUp.bind(this)}
+          onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
         />
         <text x={x + 45} y={y + 55}>Client</text>
 

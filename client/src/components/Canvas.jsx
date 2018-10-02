@@ -40,8 +40,13 @@ class Canvas extends Component {
       this.setNodes(data);
     });
 
+    this.socket.on('node deleted', data => {
+      this.setNodes(data);
+    })
+
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
+    this.handleNodeDelete = this.handleNodeDelete.bind(this);
   }
 
   //data = {x: val, y: val, type: '', routes: [{method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
@@ -63,10 +68,22 @@ class Canvas extends Component {
     this.socket.emit('move node', data);
   }
 
+  handleNodeDelete(data) {
+    data.room = this.props.match.params.name;
+    console.log('deleted');
+    this.socket.emit('delete node', data);
+  }
+
   render() {
     console.log(this.state.nodes[0]);
     const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client id={node.id} key={i} x={node.position.x} y={node.position.y} handleMovement={this.handleNodeMove} /> : null
+      return node.type === 'client' ? <Client 
+                                        id={node.id} 
+                                        key={i} 
+                                        x={node.position.x} 
+                                        y={node.position.y} 
+                                        handleMovement={this.handleNodeMove} 
+                                        handleDelete={this.handleNodeDelete} /> : null
     })
     return (
       <div>
