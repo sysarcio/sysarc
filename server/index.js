@@ -4,12 +4,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const routes = require('./routes.js');
+const routes = require('./routes');
 const app = express();
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const port = process.env.PORT || 3000;
+
+const db = require('../database/index');
 
 const Redis = require('ioredis');
 const redis = new Redis({
@@ -50,13 +52,19 @@ io.on('connection', socket => {
   socket.on('add node', async data => {
     const {position, type} = data;
     try {
-      await redis.lpush([`"${data.room}"`, JSON.stringify({position, type})]);
-      let nodes = await redis.lrange(`"${data.room}"`, 0, -1);
-      nodes = nodes.map(node => JSON.parse(node));
-      io.to(data.room).emit('node added', nodes);
+      await db.addNode({position, type});
+      // const nodes = await
     } catch(err) {
-      console.log('error from redis:', err);
+      console.log(err);
     }
+    // try {
+    //   await redis.lpush([`"${data.room}"`, JSON.stringify({position, type})]);
+    //   let nodes = await redis.lrange(`"${data.room}"`, 0, -1);
+    //   nodes = nodes.map(node => JSON.parse(node));
+    //   io.to(data.room).emit('node added', nodes);
+    // } catch(err) {
+    //   console.log('error from redis:', err);
+    // }
   });
 });
 
