@@ -9,6 +9,7 @@ module.exports = {
     const {position, type} = data;
     try {
       const result = await session.run(`CREATE (n:Node {x: ${position.x}, y: ${position.y}, type: '${type}'}) RETURN n`);
+      console.log(result);
       session.close();
     } catch(err) {
       console.log(err);
