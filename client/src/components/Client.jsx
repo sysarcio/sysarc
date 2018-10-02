@@ -23,6 +23,7 @@ class Client extends React.Component {
   handleMouseUp() {
     document.removeEventListener('mousemove', this.handleMouseMove);
     this.coords = {};
+    this.props.handleMovement({ position: { x: this.state.x, y: this.state.y }, type: 'client' });
   }
 
   handleMouseMove(e) {
