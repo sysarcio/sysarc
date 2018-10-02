@@ -35,11 +35,7 @@ class Canvas extends Component {
     this.socket.on('node added', data => {
       this.setNodes(data);
     });
-
-    this.socket.on('node moved', data => {
-      this.setNodes(data);
-    })
-    
+    // TODO: change the name of 'move node' emitter or listener later 
     this.socket.on('move node', data => {
       this.setNodes(data);
     });
@@ -52,11 +48,6 @@ class Canvas extends Component {
   handleNewNode(data) {
     data.room = this.props.match.params.name;
     this.socket.emit('add node', data);
-  }
-
-  handleNodeMove(data) {
-    data.room = this.props.match.params.name;
-    this.socket.emit('move node', data);
   }
 
   setNodes(data) {
@@ -73,8 +64,9 @@ class Canvas extends Component {
   }
 
   render() {
+    console.log(this.state.nodes[0]);
     const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client key={i} x={node.position.x} y={node.position.y} handleMovement={this.handleNodeMove} /> : null
+      return node.type === 'client' ? <Client id={node.id} key={i} x={node.position.x} y={node.position.y} handleMovement={this.handleNodeMove} /> : null
     })
     return (
       <div>

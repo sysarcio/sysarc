@@ -49,7 +49,7 @@ io.on('connection', socket => {
   });
 
   socket.on('move node', async data => {
-    const {id, position};
+    // const {id, position};
     
   });
   
