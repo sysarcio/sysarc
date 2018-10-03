@@ -43,7 +43,7 @@ module.exports = {
     try {
       const result = await session.run(`
         MATCH (n:CANVAS {id: $canvasID})
-        CREATE (n)-[r:CONTAINS]->(c:${data.type} {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
+        CREATE (n)-[r:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
         WITH n
         MATCH (n)-[r:CONTAINS]->(m)
         RETURN m.id, m.x, m.y, m.type, m.created_at;`,
@@ -69,7 +69,7 @@ module.exports = {
     const {x, y} = data.position;
     try {
       const result = await session.run(`
-        MATCH (n:CLIENT {id: $nodeID})
+        MATCH (n:NODE {id: $nodeID})
         SET n.x = $x, n.y = $y
         WITH n  
         MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
@@ -94,7 +94,7 @@ module.exports = {
   async deleteNode(data) {
     try {
       const result = await session.run(`
-        MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c {id: $nodeID})
+        MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c:NODE {id: $nodeID})
         DETACH DELETE c, r
         WITH n  
         MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
