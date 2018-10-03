@@ -37,7 +37,7 @@ class Canvas extends Component {
       this.setNodes(data);
     });
     // TODO: change the name of 'move node' emitter or listener later 
-    this.socket.on('move node', data => {
+    this.socket.on('node moved', data => {
       this.setNodes(data);
     });
 
@@ -69,14 +69,14 @@ class Canvas extends Component {
 
   handleNodeMove(data) {
     data.room = this.props.match.params.name;
-    console.log(`dummy output:`);
-    console.log(data);
+    // console.log(`dummy output:`);
+    // console.log(data);
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
-    console.log('deleted');
+    // console.log('deleted');
     this.socket.emit('delete node', data);
   }
 
@@ -88,29 +88,29 @@ class Canvas extends Component {
   }
 
   render() {
- 
-    const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client
-                                        routes={node.routes}
+    const svgStyle = {
+      'border': '1px solid #ddd',
+      'width': '100%',
+      'height': '400px'
+    }
+    const showClients = this.state.nodes.map(node => {
+      return node.type === 'CLIENT' ? <Client
                                         id={node.id} 
-                                        key={i} 
+                                        key={node.id} 
                                         x={node.position.x} 
                                         y={node.position.y} 
                                         handleMovement={this.handleNodeMove} 
                                         handleNewRoute={this.handleNewNodeRoute}
                                         handleDelete={this.handleNodeDelete} /> : null
-    })
+    });
     return (
       <div>
-        <h2>Shark.io</h2>
-        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'server' })}> Server +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'database' })}> Database +</button>
-        <Svg  >
-          {showClients.map((node) => {
-            return node;
-          })}
-        </Svg>
+        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
+        <svg style={svgStyle}>
+          {showClients}
+        </svg>
       </div>
     );
   }
