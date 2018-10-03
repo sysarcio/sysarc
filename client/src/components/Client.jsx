@@ -9,7 +9,10 @@ class Client extends React.Component {
       y: this.props.y,
       id: this.props.id
     }
+
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
   handleMouseDown(e) {
@@ -52,7 +55,6 @@ class Client extends React.Component {
 
 
   render() {
-
     // console.log('x and y coordinates-->', this.state.x, this.state.y);
     const { x, y } = this.state;
     return (
@@ -65,8 +67,8 @@ class Client extends React.Component {
           width="100"
           height="100"
           fill="yellow"
-          onMouseDown={this.handleMouseDown.bind(this)}
-          onMouseUp={this.handleMouseUp.bind(this)}
+          onMouseDown={this.handleMouseDown}
+          onMouseUp={this.handleMouseUp}
           onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
         />
         <text x={x + 45} y={y + 55}>Client</text>

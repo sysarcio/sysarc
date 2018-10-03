@@ -55,5 +55,44 @@ module.exports = {
     } catch(err) {
       console.log(err);
     }
+  },
+
+  async moveNode(data) {
+    const {x, y} = data.position;
+    try {
+      const result = await session.run(`
+        MATCH (n:CLIENT {id:'${data.id}'})
+        SET n.x = ${x}, n.y = ${y}
+        WITH n  
+        MATCH (c:CANVAS {id:'${data.room}' })-[r:CONTAINS]->(m)
+        RETURN m.id, m.x, m.y, m.type, m.created_at;`
+      );
+
+      const nodes = formatNodes(result);
+
+      session.close();
+      return nodes;
+    } catch(err) {
+      console.log(err);
+    }
+  },
+
+  async deleteNode(data) {
+    try {
+      const result = await session.run(`
+        MATCH (n:CANVAS {id:'${data.room}'})-[r:CONTAINS]->(c {id: '${data.id}'})
+        DETACH DELETE c, r
+        WITH n  
+        MATCH (c:CANVAS {id:'${data.room}' })-[:CONTAINS]->(m)
+        RETURN m.id, m.x, m.y, m.type, m.created_at;`
+      );
+
+      const nodes = formatNodes(result);
+
+      session.close();
+      return nodes;
+    } catch(err) {
+      console.log(err);
+    }
   }
 }

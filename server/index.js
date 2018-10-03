@@ -51,17 +51,30 @@ io.on('connection', socket => {
   });
 
   socket.on('move node', async data => {
-    // const {id, position};
-    
+    try {
+      const nodes = await db.moveNode(data);
+      io.to(data.room).emit('node moved', nodes);
+    } catch(err) {
+      console.log(err);
+    }
+
   });
   
   socket.on('add node', async data => {
-    const {position, type} = data;
     data.nodeID = uuidv4();
 
     try {
       const nodes = await db.addNode(data);
       io.to(data.room).emit('node added', nodes);
+    } catch(err) {
+      console.log(err);
+    }
+  });
+
+  socket.on('delete node', async data => {
+    try {
+      const nodes = await db.deleteNode(data);
+      io.to(data.room).emit('node deleted', nodes);
     } catch(err) {
       console.log(err);
     }
