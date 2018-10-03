@@ -56,7 +56,7 @@ class Client extends React.Component {
 
   render() {
     // console.log('x and y coordinates-->', this.state.x, this.state.y);
-    const { x, y } = this.state;
+    const {x, y} = this.state;
     return (
 
       <g>
