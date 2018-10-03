@@ -79,6 +79,17 @@ io.on('connection', socket => {
       console.log(err);
     }
   });
+
+  socket.on('add route', async data => {
+    data.routeID = uuidv4();
+
+    try {
+      const nodes = await db.addRoute(data);
+      io.to(data.room).emit('route added', nodes);
+    } catch(err) {
+      console.log(err);
+    }
+  });
 });
 
 app.get('/*', (_, res) => {

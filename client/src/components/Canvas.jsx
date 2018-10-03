@@ -43,11 +43,11 @@ class Canvas extends Component {
 
     this.socket.on('node deleted', data => {
       this.setNodes(data);
-    })
+    });
 
-    this.socket.on('node route added', data => {
+    this.socket.on('route added', data => {
       this.setNodes(data);
-    })
+    });
 
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
@@ -94,6 +94,7 @@ class Canvas extends Component {
       'height': '400px'
     }
     const showClients = this.state.nodes.map(node => {
+      console.log(node.routes);
       return node.type === 'CLIENT' ? <Client
                                         id={node.id} 
                                         key={node.id} 
@@ -108,15 +109,9 @@ class Canvas extends Component {
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
-<<<<<<< HEAD
-        <Svg>
-          {showClients}
-        </Svg>
-=======
         <svg style={svgStyle}>
           {showClients}
         </svg>
->>>>>>> 915c0180989920184ef88092510656d79e4e3555
       </div>
     );
   }
