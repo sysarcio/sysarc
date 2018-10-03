@@ -93,8 +93,7 @@ class Canvas extends Component {
       'height': '400px'
     }
     const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client 
-
+      return node.type === 'client' ? <Client
                                         id={node.id} 
                                         key={i} 
                                         x={node.position.x} 
