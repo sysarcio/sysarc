@@ -108,9 +108,15 @@ class Canvas extends Component {
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
+<<<<<<< HEAD
+        <Svg>
+          {showClients}
+        </Svg>
+=======
         <svg style={svgStyle}>
           {showClients}
         </svg>
+>>>>>>> 915c0180989920184ef88092510656d79e4e3555
       </div>
     );
   }
