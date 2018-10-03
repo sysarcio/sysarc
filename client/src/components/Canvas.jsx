@@ -5,12 +5,13 @@ import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
 
-// import styled from 'styled-components';
-// const Svg = styled.svg`
-//   border: 1px solid #ddd;
-//   width: 100%;
-//   height: 400px;
-// `;
+import styled from 'styled-components';
+
+const Svg = styled.svg`
+  border: 1px solid #ddd;
+  width: 100%;
+  height: 400px;
+`;
 
 
 class Canvas extends Component {
@@ -44,17 +45,17 @@ class Canvas extends Component {
       this.setNodes(data);
     })
 
-    this.socket.on('node route updated', data => {
+    this.socket.on('node route added', data => {
       this.setNodes(data);
     })
 
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
-    this.handleNodeRoute = this.handleNodeRoute.bind(this);
+    this.handleNewNodeRoute = this.handleNewNodeRoute.bind(this);
   }
 
-  //data = {x: val, y: val, type: '', routes: [{method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
+  //data = {x: val, y: val, type: '', routes: [{routeId: '5tgdr', method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
   handleNewNode(data) {
     data.room = this.props.match.params.name;
     this.socket.emit('add node', data);
@@ -80,10 +81,10 @@ class Canvas extends Component {
   }
 
   //{id:'', route: '', text: ''}
-  handleNodeRoute(data) {
+  handleNewNodeRoute(data) {
+    console.log('new route data-->', data);
     data.room = this.props.match.params.name;
-    console.log('updating route text');
-    this.socket.emit('update route text', data);
+    this.socket.emit('add route', data);
   }
 
   render() {
@@ -92,14 +93,14 @@ class Canvas extends Component {
       'width': '100%',
       'height': '400px'
     }
-    const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client
+    const showClients = this.state.nodes.map(node => {
+      return node.type === 'CLIENT' ? <Client
                                         id={node.id} 
                                         key={node.id} 
                                         x={node.position.x} 
                                         y={node.position.y} 
                                         handleMovement={this.handleNodeMove} 
-                                        handleRouteText={this.handleNodeRoute}
+                                        handleNewRoute={this.handleNewNodeRoute}
                                         handleDelete={this.handleNodeDelete} /> : null
     });
     return (
@@ -107,9 +108,15 @@ class Canvas extends Component {
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
+<<<<<<< HEAD
         <Svg>
           {showClients}
         </Svg>
+=======
+        <svg style={svgStyle}>
+          {showClients}
+        </svg>
+>>>>>>> 915c0180989920184ef88092510656d79e4e3555
       </div>
     );
   }
