@@ -7,9 +7,13 @@ class Client extends React.Component {
     this.state = {
       x: this.props.x,
       y: this.props.y,
-      id: this.props.id
+      id: this.props.id,
+      endpoints: ['/api/goals'],
+      isHidden: true,
+      getText: ''
     }
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.toggleHidden = this.toggleHidden.bind(this);
   }
 
   handleMouseDown(e) {
@@ -49,9 +53,20 @@ class Client extends React.Component {
     });
   }
 
+  toggleHidden() {
+    this.setState({
+      isHidden: !this.state.isHidden
+    })
+  }
 
+  handleGetText(e) {
+    this.setState({
+      getText: e.target.value
+    })
+  }
 
   render() {
+    console.log('text', this.state.getText)
 
     // console.log('x and y coordinates-->', this.state.x, this.state.y);
     const { x, y } = this.state;
@@ -70,7 +85,24 @@ class Client extends React.Component {
           onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
         />
         <text x={x + 45} y={y + 55}>Client</text>
+        <foreignObject x={x + 10} y={y + 70} width="250" height="250">
 
+          {!this.state.isHidden && 
+            <div> 
+              Get: <input 
+                      placeholder='Enter endpoint details' 
+                      value={this.state.getText} 
+                      onChange={this.handleGetText.bind(this)}>
+                    </input>    
+            <button 
+              onClick={() => this.props.handleRouteText({ id: this.state.id, route: 'GET', text: this.state.getText})}>Update</button>
+            </div>
+          }
+        </foreignObject>
+        <foreignObject x={x} y={y} width="15" height="15">
+          <button onClick={this.toggleHidden}>+</button>
+        </foreignObject>
+        
       </g>
     )
   }

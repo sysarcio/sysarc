@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import styled from 'styled-components';
 import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
 
-const Svg = styled.svg`
-  border: 1px solid #ddd;
-  width: 100%;
-  height: 400px;
-`;
+// import styled from 'styled-components';
+// const Svg = styled.svg`
+//   border: 1px solid #ddd;
+//   width: 100%;
+//   height: 400px;
+// `;
 
 
 class Canvas extends Component {
@@ -44,9 +44,14 @@ class Canvas extends Component {
       this.setNodes(data);
     })
 
+    this.socket.on('node route updated', data => {
+      this.setNodes(data);
+    })
+
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
+    this.handleNodeRoute = this.handleNodeRoute.bind(this);
   }
 
   //data = {x: val, y: val, type: '', routes: [{method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
@@ -74,27 +79,40 @@ class Canvas extends Component {
     this.socket.emit('delete node', data);
   }
 
+  //{id:'', route: '', text: ''}
+  handleNodeRoute(data) {
+    data.room = this.props.match.params.name;
+    console.log('updating route text');
+    this.socket.emit('update route text', data);
+  }
+
   render() {
-    console.log(this.state.nodes[0]);
+    const svgStyle = {
+      'border': '1px solid #ddd',
+      'width': '100%',
+      'height': '400px'
+    }
     const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client 
+      return node.type === 'client' ? <Client
                                         id={node.id} 
                                         key={i} 
                                         x={node.position.x} 
                                         y={node.position.y} 
                                         handleMovement={this.handleNodeMove} 
+                                        handleRouteText={this.handleNodeRoute}
                                         handleDelete={this.handleNodeDelete} /> : null
     })
     return (
       <div>
+        <h2>Shark.io</h2>
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'server' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'database' })}> Database +</button>
-        <Svg>
+        <svg  style={svgStyle}>
           {showClients.map((node) => {
             return node;
           })}
-        </Svg>
+        </svg>
       </div>
     );
   }
