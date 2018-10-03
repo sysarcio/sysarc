@@ -12,8 +12,11 @@ class Client extends React.Component {
       isHidden: true,
       getText: ''
     }
+
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.toggleHidden = this.toggleHidden.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
   handleMouseDown(e) {
@@ -33,7 +36,7 @@ class Client extends React.Component {
         x: this.state.x,
         y: this.state.y
       },
-      type: 'client'
+      type: 'CLIENT'
     };
 
     this.props.handleMovement(data);
@@ -69,7 +72,7 @@ class Client extends React.Component {
     console.log('text', this.state.getText)
 
     // console.log('x and y coordinates-->', this.state.x, this.state.y);
-    const { x, y } = this.state;
+    const {x, y} = this.state;
     return (
 
       <g>
@@ -80,8 +83,8 @@ class Client extends React.Component {
           width="100"
           height="100"
           fill="yellow"
-          onMouseDown={this.handleMouseDown.bind(this)}
-          onMouseUp={this.handleMouseUp.bind(this)}
+          onMouseDown={this.handleMouseDown}
+          onMouseUp={this.handleMouseUp}
           onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
         />
         <text x={x + 45} y={y + 55}>Client</text>
