@@ -14,7 +14,7 @@ class Client extends React.Component {
       routeType: '',
 
     }
-
+    this.setRouteType = this.setRouteType.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.toggleHidden = this.toggleHidden.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
