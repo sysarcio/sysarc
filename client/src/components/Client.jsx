@@ -8,9 +8,11 @@ class Client extends React.Component {
       x: this.props.x,
       y: this.props.y,
       id: this.props.id,
-      endpoints: ['/api/goals'],
+      routes: this.props.routes, 
       isHidden: true,
-      getText: ''
+      text: '',
+      routeType: '',
+
     }
 
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -62,15 +64,20 @@ class Client extends React.Component {
     })
   }
 
-  handleGetText(e) {
+  handleText(e) {
     this.setState({
-      getText: e.target.value
+      text: e.target.value
+    })
+  }
+
+  setRouteType(e) {
+    this.setState({
+      routeType: e.target.value
     })
   }
 
   render() {
-    console.log('text', this.state.getText)
-
+   
     // console.log('x and y coordinates-->', this.state.x, this.state.y);
     const {x, y} = this.state;
     return (
@@ -87,23 +94,42 @@ class Client extends React.Component {
           onMouseUp={this.handleMouseUp}
           onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
         />
-        <text x={x + 45} y={y + 55}>Client</text>
-        <foreignObject x={x + 10} y={y + 70} width="250" height="250">
-
+        <text x={x + 35} y={y + 20}>Client</text>
+      
+        <foreignObject x={x + 5} y={y + 70} width="375" height="250">
+          
           {!this.state.isHidden && 
-            <div> 
-              Get: <input 
-                      placeholder='Enter endpoint details' 
-                      value={this.state.getText} 
-                      onChange={this.handleGetText.bind(this)}>
-                    </input>    
-            <button 
-              onClick={() => this.props.handleRouteText({ id: this.state.id, route: 'GET', text: this.state.getText})}>Update</button>
+            <div>  
+              <form>
+                <div>
+                <select value={this.state.routeType} onChange={this.setRouteType}>
+                    <option> Select your route</option>
+                    <option value="GET">Get</option>
+                    <option value="POST"> Post</option>
+                    <option value="DELETE">Delete</option>
+                    <option value="PUT">Put</option>
+                    <option value="OPTIONS">Options</option>
+                  </select>
+              
+                  <input
+                    placeholder='Enter endpoint details'
+                    value={this.state.text}
+                    onChange={this.handleText.bind(this)}>
+                  </input>
+
+                  <button
+                    onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
+                  </button>
+                  </div>
+              </form>
+              {/* {this.state.routes.map((endpoint, i) => {
+                return <div> {endpoint.method}: {endpoint.url}</div>
+              })} */}
             </div>
           }
         </foreignObject>
-        <foreignObject x={x} y={y} width="15" height="15">
-          <button onClick={this.toggleHidden}>+</button>
+        <foreignObject x={x + 80} y={y - 10} width="15" height="15">
+          <p onClick={this.toggleHidden}>+</p>
         </foreignObject>
         
       </g>
