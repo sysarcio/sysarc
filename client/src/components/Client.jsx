@@ -29,7 +29,7 @@ class Client extends React.Component {
         x: this.state.x,
         y: this.state.y
       },
-      type: 'client'
+      type: 'CLIENT'
     };
 
     this.props.handleMovement(data);

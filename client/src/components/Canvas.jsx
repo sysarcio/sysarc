@@ -77,7 +77,7 @@ class Canvas extends Component {
   render() {
     console.log(this.state.nodes[0]);
     const showClients = this.state.nodes.map((node, i) => {
-      return node.type === 'client' ? <Client 
+      return node.type === 'CLIENT' ? <Client 
                                         id={node.id} 
                                         key={i} 
                                         x={node.position.x} 
@@ -87,9 +87,9 @@ class Canvas extends Component {
     })
     return (
       <div>
-        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'server' })}> Server +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'database' })}> Database +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
         <Svg>
           {showClients.map((node) => {
             return node;
