@@ -8,9 +8,9 @@ class Client extends React.Component {
       x: this.props.x,
       y: this.props.y,
       id: this.props.id,
-      text: 'Client',
       endpoints: ['/api/goals'],
-      isHidden: true
+      isHidden: true,
+      getText: ''
     }
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.toggleHidden = this.toggleHidden.bind(this);
@@ -54,17 +54,20 @@ class Client extends React.Component {
   }
 
   toggleHidden() {
-    console.log('im hiding')
     this.setState({
       isHidden: !this.state.isHidden
     })
   }
 
+  handleGetText(e) {
+    this.setState({
+      getText: e.target.value
+    })
+  }
 
   render() {
-    const endpointStyle = {
-      // 'display': 
-    }
+    console.log('text', this.state.getText)
+
     // console.log('x and y coordinates-->', this.state.x, this.state.y);
     const { x, y } = this.state;
     return (
@@ -81,9 +84,20 @@ class Client extends React.Component {
           onMouseUp={this.handleMouseUp.bind(this)}
           onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
         />
-        <text x={x + 45} y={y + 55}>{this.state.text}</text>
-        <foreignObject x={x + 25} y={y + 70} width="100" height="100">
-          {!this.state.isHidden && <input className='endpointInput'></input>}    
+        <text x={x + 45} y={y + 55}>Client</text>
+        <foreignObject x={x + 10} y={y + 70} width="250" height="250">
+
+          {!this.state.isHidden && 
+            <div> 
+              Get: <input 
+                      placeholder='Enter endpoint details' 
+                      value={this.state.getText} 
+                      onChange={this.handleGetText.bind(this)}>
+                    </input>    
+            <button 
+              onClick={() => this.props.handleRouteText({ id: this.state.id, route: 'GET', text: this.state.getText})}>Update</button>
+            </div>
+          }
         </foreignObject>
         <foreignObject x={x} y={y} width="15" height="15">
           <button onClick={this.toggleHidden}>+</button>
