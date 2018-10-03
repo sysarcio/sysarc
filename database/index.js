@@ -18,14 +18,15 @@ function formatNodes(data) {
 }
 
 module.exports = {
-  async addCanvas(data) {
+  async addCanvas(canvasID) {
     try {
       const result = await session.run(`
-        MERGE (n:CANVAS {id: '${data}'})
+        MERGE (n:CANVAS {id: $canvasID})
           ON CREATE SET n.created_at = timestamp()
         WITH n
         MATCH (n)-[r:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`
+        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        {canvasID: canvasID}
       );
 
       const nodes = formatNodes(result);
@@ -41,11 +42,18 @@ module.exports = {
     const {x, y} = data.position;
     try {
       const result = await session.run(`
-        MATCH (n:CANVAS {id: '${data.room}'})
-        CREATE (n)-[r:CONTAINS]->(c:${data.type} {id: '${data.nodeID}', x: ${x}, y: ${y}, created_at: timestamp(), type: '${data.type}'})
+        MATCH (n:CANVAS {id: $canvasID})
+        CREATE (n)-[r:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
         WITH n
         MATCH (n)-[r:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`
+        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        {
+          canvasID: data.room,
+          nodeID: data.nodeID,
+          x: x,
+          y: y,
+          type: data.type
+        }
       );
 
       const nodes = formatNodes(result);
@@ -61,11 +69,17 @@ module.exports = {
     const {x, y} = data.position;
     try {
       const result = await session.run(`
-        MATCH (n:CLIENT {id:'${data.id}'})
-        SET n.x = ${x}, n.y = ${y}
+        MATCH (n:NODE {id: $nodeID})
+        SET n.x = $x, n.y = $y
         WITH n  
-        MATCH (c:CANVAS {id:'${data.room}' })-[r:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`
+        MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
+        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        {
+          canvasID: data.room,
+          nodeID: data.id,
+          x: x,
+          y: y
+        }
       );
 
       const nodes = formatNodes(result);
@@ -80,11 +94,15 @@ module.exports = {
   async deleteNode(data) {
     try {
       const result = await session.run(`
-        MATCH (n:CANVAS {id:'${data.room}'})-[r:CONTAINS]->(c {id: '${data.id}'})
+        MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c:NODE {id: $nodeID})
         DETACH DELETE c, r
         WITH n  
-        MATCH (c:CANVAS {id:'${data.room}' })-[:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`
+        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        {
+          canvasID: data.room,
+          nodeID: data.id
+        }
       );
 
       const nodes = formatNodes(result);
