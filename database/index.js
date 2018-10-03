@@ -21,8 +21,8 @@ module.exports = {
   async addCanvas(data) {
     try {
       const result = await session.run(`
-        MERGE (n:CANVAS {id: 'newroom'})
-        ON CREATE SET n.created_at = timestamp()
+        MERGE (n:CANVAS {id: '${data}'})
+          ON CREATE SET n.created_at = timestamp()
         WITH n
         MATCH (n)-[r:CONTAINS]->(m)
         RETURN m.id, m.x, m.y, m.type, m.created_at;`
