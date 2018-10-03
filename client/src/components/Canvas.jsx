@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import styled from 'styled-components';
 import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
 
-const Svg = styled.svg`
-  border: 1px solid #ddd;
-  width: 100%;
-  height: 400px;
-`;
+// import styled from 'styled-components';
+// const Svg = styled.svg`
+//   border: 1px solid #ddd;
+//   width: 100%;
+//   height: 400px;
+// `;
 
 
 class Canvas extends Component {
@@ -75,7 +75,11 @@ class Canvas extends Component {
   }
 
   render() {
-    console.log(this.state.nodes[0]);
+    const svgStyle = {
+      'border': '1px solid #ddd',
+      'width': '100%',
+      'height': '400px'
+    }
     const showClients = this.state.nodes.map((node, i) => {
       return node.type === 'client' ? <Client 
                                         id={node.id} 
@@ -87,10 +91,11 @@ class Canvas extends Component {
     })
     return (
       <div>
+        <h2>Shark.io</h2>
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'client' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'server' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'database' })}> Database +</button>
-        <svg width='100%' height='400px'>
+        <svg  style={svgStyle}>
           {showClients.map((node) => {
             return node;
           })}
