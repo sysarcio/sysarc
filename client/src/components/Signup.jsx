@@ -10,6 +10,7 @@ class Signup extends Component {
     };
 
     this.handlePassword = this.handlePassword.bind(this);
+    this.handleEmail = this.handleEmail.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
   }
 
@@ -63,7 +64,7 @@ class Signup extends Component {
             required
             title="Must be a valid email address"
             value={this.state.email}
-            onChange={(e) => this.handleEmail(e)}
+            onChange={this.handleEmail}
           />
           <input
             type="password"

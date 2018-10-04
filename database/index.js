@@ -38,11 +38,13 @@ function formatNodes(data) {
 module.exports = {
   async addUser(user) {
     try {
-      await session.run(`
-        CREATE (u:USER {id: $id, email: $email, password: $password})`,
+      const newUser = await session.run(`
+        CREATE (u:USER {id: $id, email: $email, password: $password})
+        RETURN u.id`,
         {id: user.id, email: user.email, password: user.password}
       );
       session.close();
+      return newUser.records[0];
     } catch(err) {
       throw err;
     }
@@ -51,11 +53,20 @@ module.exports = {
   async getUser(userObj) {
     try {
       const user = await session.run(`
-        MATCH (u:USER {email: $email})`,
+        MATCH (u:USER {email: $email})
+        RETURN u.id, u.email, u.password`,
         {email: userObj.email}
       );
+      
       session.close();
-      return dbUser;
+      if (!user.records.length) {
+        throw {
+          message: `User not found with email address '${userObj.email}'`,
+          code: 401
+        };
+      }
+      
+      return user.records[0];
     } catch(err) {
       throw err;
     }
@@ -64,13 +75,51 @@ module.exports = {
   async addCanvas(canvasID) {
     try {
       const result = await session.run(`
-        MERGE (n:CANVAS {id: $canvasID})
-          ON CREATE SET n.created_at = timestamp()
+        MATCH (u:USER {id: $userID})
+        CREATE (c:CANVAS {id: $canvasID})`,
+        {canvasID: canvasID}
+      );
+
+      const nodes = formatNodes(result);
+      session.close();
+
+      return nodes;
+    } catch(err) {
+      console.log(err);
+    }
+  },
+
+  async getCanvas(canvasID) {
+    try {
+      const result = await session.run(`
+        MATCH (n:CANVAS {id: $canvasID})
         WITH n
-        MATCH (n)-[r:CONTAINS]->(m)
+        OPTIONAL MATCH (n)-[r:CONTAINS]->(m)
+        WITH n, m
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
         RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
         {canvasID: canvasID}
+      );
+
+      const nodes = formatNodes(result);
+      session.close();
+
+      return nodes;
+    } catch(err) {
+      console.log(err);
+    }
+  },
+
+  async getUserCanvases(userID) {
+    try {
+      const result = await session.run(`
+        MATCH (u:USER {id: $userID})
+        WITH u
+        OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m)
+        WITH n, m
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        {userID: userID}
       );
 
       const nodes = formatNodes(result);
@@ -179,6 +228,7 @@ module.exports = {
       );
 
       const nodes = formatNodes(result);
+      console.log(nodes);
       session.close();
       return nodes;
     } catch(err) {

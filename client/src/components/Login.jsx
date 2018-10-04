@@ -10,6 +10,7 @@ class Login extends Component {
     };
 
     this.handlePassword = this.handlePassword.bind(this);
+    this.handleEmail = this.handleEmail.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
   }
 
@@ -27,7 +28,7 @@ class Login extends Component {
     });
   }
 
-  handleLogin(e) {
+  async handleLogin(e) {
     const isValid = document.getElementById("login-form").checkValidity();
     
     if (isValid) {
@@ -41,15 +42,13 @@ class Login extends Component {
         }
       };
 
-      axios(options)
-        .then(data => {
-          console.log(data);
-          this.props.history.push('/');
-        })
-        .catch(err => {
-          // Actually show user what went wrong
-          console.log(err);
-        });
+      try {
+        await axios(options);
+        this.props.history.push('/');
+      } catch(err) {
+        // Actually show user what went wrong
+        console.log(err);
+      }
     }
   }
 
@@ -63,7 +62,7 @@ class Login extends Component {
             required
             title="Must be a valid email address"
             value={this.state.email}
-            onChange={(e) => this.handleEmail(e)}
+            onChange={this.handleEmail}
           />
           <input
             type="password"

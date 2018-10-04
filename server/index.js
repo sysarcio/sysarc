@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
+const session = require('express-session');
 
 const routes = require('./routes');
 const app = express();
@@ -13,6 +14,16 @@ const io = require('socket.io')(server);
 const port = process.env.PORT || 3000;
 
 const db = require('../database/index');
+
+app.use(session({
+  secret: Date.now(),
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7 // Set max age to one week
+  }
+}));
 
 // const Redis = require('ioredis');
 // const redis = new Redis({

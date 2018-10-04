@@ -11,7 +11,9 @@ router.post('/signup', async (req, res) => {
   try {
     const password = await bcrypt.hash(req.body.password, 10);
     req.body.password = password;
-    await db.addUser(req.body);
+    const user = await db.addUser(req.body);
+
+    req.session.userID = user.get('u.id');
     res.send('Successfully signed up. Redirect to home page');
   } catch(err) {
     console.log(err);
@@ -20,17 +22,35 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
-    // const password = await bcrypt.compare(req.body.password, 10);
-    // req.body.password = password;
     const user = await db.getUser(req.body);
-    res.send('Successfully logged in. Redirect to home page');
+    const valid = await bcrypt.compare(req.body.password, user.get('u.password'));
+    
+    if (!valid) {
+      throw {
+        message: 'Incorrect password',
+        code: 401
+      };
+    }
+    
+    req.session.userID = user.get('u.id');
+    res.send();
   } catch(err) {
-    console.log(err);
-    res.statusMessage = 'Unable to sign in';
-    res.sendStatus(403);
+    res.statusMessage = err.message;
+    res.sendStatus(err.code);
   }
+});
+
+router.post('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.end();
+  });
+});
+
+router.post('/addCanvas', (req, res) => {
+  // console.log(req.session, req.body);
+  res.end();
 });
 
 module.exports = router;
