@@ -14,7 +14,8 @@ class Client extends React.Component {
       text: '',
       routeType: '',
       animate: false,
-      showTransition: true
+      showTransition: true,
+      routes: this.props.routes
     }
     
     this.setRouteType = this.setRouteType.bind(this);
@@ -102,16 +103,14 @@ startAnimation() {
     });
 
    this.toggleHidden();
-
-
- 
 }
 
 
   render() {
 
     const rectStyle = this.state.showTransition === true ? {
-      'transition': 'all 300ms'
+      'transition': 'all 300ms',
+      'border': '1px solid #ddd'
     } : null;
 
     
@@ -161,11 +160,12 @@ startAnimation() {
                   </button>
                 
                   </div>
+                  {this.state.routes.map((endpoint, i) => {
+                    return <div key={i}> {endpoint.method}: /{endpoint.url}</div>
+                  })}
                   <button onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
               </form>
-              {/* {this.state.routes.map((endpoint, i) => {
-                return <div> {endpoint.method}: {endpoint.url}</div>
-              })} */}
+              
               
             </div>
           }

@@ -96,13 +96,11 @@ class Canvas extends Component {
 
   //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
-    console.log('new route data-->', data);
     data.room = this.props.match.params.name;
     this.socket.emit('add route', data);
   }
 
   render() {
-    console.log('nodes data-->', this.state.nodes)
     const svgStyle = {
       'border': '1px solid #ddd',
       'width': '100%',
@@ -111,6 +109,7 @@ class Canvas extends Component {
     const showClients = this.state.nodes.map(node => {
       console.log(node.routes);
       return node.type === 'CLIENT' ? <Client
+                                        routes={node.routes}
                                         id={node.id} 
                                         key={node.id} 
                                         x={node.position.x} 
