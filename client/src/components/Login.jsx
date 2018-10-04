@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class Login extends Component {
   constructor(props) {
@@ -7,32 +8,76 @@ class Login extends Component {
       email: '',
       password: ''
     };
+
+    this.handlePassword = this.handlePassword.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   handleEmail(e) {
+    e.preventDefault();
     this.setState({
       email: e.target.value
     });
   }
 
   handlePassword(e) {
+    e.preventDefault();
     this.setState({
       password: e.target.value
     });
   }
 
-  handleLogin() {
-    // actually handle login first
-    // if successful login...
-    this.props.history.push('/');
+  handleLogin(e) {
+    const isValid = document.getElementById("login-form").checkValidity();
+    
+    if (isValid) {
+      e.preventDefault();
+      const options = {
+        method: 'POST',
+        url: '/api/login',
+        data: {
+          email: this.state.email,
+          password: this.state.password
+        }
+      };
+
+      axios(options)
+        .then(data => {
+          console.log(data);
+          this.props.history.push('/');
+        })
+        .catch(err => {
+          // Actually show user what went wrong
+          console.log(err);
+        });
+    }
   }
 
   render() {
     return (
       <div className='login'>
-        <input type="text" value={this.state.text} onChange={(e) => this.handleEmail(e)} placeholder='Email' />
-        <input type="text" value={this.state.text} onChange={(e) => this.handlePassword(e)} placeholder='Password' />
-        <button onClick={() => this.handleLogin()}>Login</button>
+        <form id="login-form">
+          <input 
+            type="email"
+            placeholder='Email'
+            required
+            title="Must be a valid email address"
+            value={this.state.email}
+            onChange={(e) => this.handleEmail(e)}
+          />
+          <input
+            type="password"
+            placeholder='Password'
+            required
+            value={this.state.password}
+            onChange={this.handlePassword}
+          />
+          <input
+            type="submit"
+            onClick={this.handleLogin}
+            value="Login"
+          />
+        </form>
       </div>
     );
   }

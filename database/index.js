@@ -37,8 +37,28 @@ function formatNodes(data) {
 
 module.exports = {
   async addUser(user) {
-    console.log(user);
-    return user;
+    try {
+      await session.run(`
+        CREATE (u:USER {id: $id, email: $email, password: $password})`,
+        {id: user.id, email: user.email, password: user.password}
+      );
+      session.close();
+    } catch(err) {
+      throw err;
+    }
+  },
+
+  async getUser(userObj) {
+    try {
+      const user = await session.run(`
+        MATCH (u:USER {email: $email})`,
+        {email: userObj.email}
+      );
+      session.close();
+      return dbUser;
+    } catch(err) {
+      throw err;
+    }
   },
 
   async addCanvas(canvasID) {

@@ -44,7 +44,11 @@ class Signup extends Component {
       axios(options)
         .then(data => {
           console.log(data);
-          // this.props.history.push('/');
+          this.props.history.push('/');
+        })
+        .catch(err => {
+          // Actually show user what went wrong
+          console.log(err);
         });
     }
   }
