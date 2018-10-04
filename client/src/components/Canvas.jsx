@@ -4,7 +4,6 @@ import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
-import html2canvas from 'html2canvas';
 import canvg from 'canvg';
 
 import styled from 'styled-components';
@@ -74,9 +73,8 @@ class Canvas extends Component {
     var canvas = document.createElement('canvas');
     // canvas.width = width;
     // canvas.height = height;
-    var source = canvasView.outerHTML;
 
-    canvg(canvas, source);
+    canvg(canvas, canvasView.outerHTML);
 
     console.log(canvas.toDataURL('image/png'));
   }
@@ -103,7 +101,7 @@ class Canvas extends Component {
 
   render() {
     const svgStyle = {
-      border: '1px solid #ddd',
+      border: '1px solid white',
       width: '100%',
       height: '400px'
     };
@@ -158,6 +156,9 @@ class Canvas extends Component {
         </button>
         <button onClick={() => this.takeScreenshot()}> --Save Image -- </button>
         <svg className="canvas" style={svgStyle}>
+          <g>
+            <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
+          </g>
           {showClients}
         </svg>
       </div>
