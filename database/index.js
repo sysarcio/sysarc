@@ -5,16 +5,34 @@ const driver = neo4j.driver(process.env.GRAPHENEDB_URI, neo4j.auth.basic(process
 const session = driver.session();
 
 function formatNodes(data) {
-  return data.records.map(record => {
-    return {
-      position: {
-        x: neo4j.int(record.get('m.x')).toNumber(),
-        y: neo4j.int(record.get('m.y')).toNumber()
-      },
-      id: record.get('m.id'),
-      type: record.get('m.type')
+  const output = {};
+
+  data.records.forEach(record => {
+    if (output[record.get('m.id')]) {
+      output[record.get('m.id')].routes
+        .push({
+          id: record.get('p.id'),
+          url: record.get('p.url'),
+          method: record.get('p.method')
+        })
+    } else {
+      output[record.get('m.id')] = {
+        position: {
+          x: neo4j.int(record.get('m.x')).toNumber(),
+          y: neo4j.int(record.get('m.y')).toNumber()
+        },
+        id: record.get('m.id'),
+        type: record.get('m.type'),
+        routes: [{
+          id: record.get('p.id'),
+          url: record.get('p.url'),
+          method: record.get('p.method')
+        }]
+      }
     }
   });
+
+  return Object.values(output);
 }
 
 module.exports = {
@@ -25,7 +43,8 @@ module.exports = {
           ON CREATE SET n.created_at = timestamp()
         WITH n
         MATCH (n)-[r:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
         {canvasID: canvasID}
       );
 
@@ -46,7 +65,8 @@ module.exports = {
         CREATE (n)-[r:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
         WITH n
         MATCH (n)-[r:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
         {
           canvasID: data.room,
           nodeID: data.nodeID,
@@ -73,7 +93,8 @@ module.exports = {
         SET n.x = $x, n.y = $y
         WITH n  
         MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
         {
           canvasID: data.room,
           nodeID: data.id,
@@ -98,7 +119,8 @@ module.exports = {
         DETACH DELETE c, r
         WITH n  
         MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-        RETURN m.id, m.x, m.y, m.type, m.created_at;`,
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
         {
           canvasID: data.room,
           nodeID: data.id
@@ -107,6 +129,31 @@ module.exports = {
 
       const nodes = formatNodes(result);
 
+      session.close();
+      return nodes;
+    } catch(err) {
+      console.log(err);
+    }
+  },
+
+  async addRoute(data) {
+    try {
+      const result = await session.run(`
+        MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })
+        CREATE (o)-[r:CONTAINS]->(n:ROUTE {id: $routeID, url: $url, method: $method})
+        WITH o,n  
+        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)-[:CONTAINS]->(p)
+        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        {
+          canvasID: data.room,
+          nodeID: data.id,
+          url: data.url,
+          method: data.method,
+          routeID: data.routeID
+        }
+      );
+
+      const nodes = formatNodes(result);
       session.close();
       return nodes;
     } catch(err) {
