@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import Canvas from './Canvas.jsx';
 import Login from './Login.jsx';
-
+import Signup from './Signup.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -37,6 +37,10 @@ class App extends Component {
         <Route
           path='/login'
           component={Login}
+        />
+        <Route
+          path='/signup'
+          component={Signup}
         />
         <Route
           path='/canvas/:name'

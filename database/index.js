@@ -36,6 +36,11 @@ function formatNodes(data) {
 }
 
 module.exports = {
+  async addUser(user) {
+    console.log(user);
+    return user;
+  },
+
   async addCanvas(canvasID) {
     try {
       const result = await session.run(`
