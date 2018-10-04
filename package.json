@@ -22,8 +22,10 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "canvg": "^1.5.3",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "html2canvas": "0.5.0-beta4",
     "ioredis": "^4.0.0",
     "neo4j-driver": "^1.6.3",
     "path": "^0.12.7",
