@@ -68,15 +68,35 @@ class Canvas extends Component {
   }
 
   takeScreenshot() {
+    // create a new object that contains all the SVGs currently on the board
     let canvasView = document.querySelector('.canvas');
 
+    //create a blank canvas to draw the board onto
     var canvas = document.createElement('canvas');
-    // canvas.width = width;
-    // canvas.height = height;
 
+    //draw the board onto the canvas
     canvg(canvas, canvasView.outerHTML);
 
-    console.log(canvas.toDataURL('image/png'));
+    //create a URL to point to the PNG screenshot of the canvas
+    let downloadURL = canvas.toDataURL('image/png');
+
+    //create a new anchor to hold the image and download event
+    var a = window.document.createElement('a');
+
+    //set the href to your url, and give it the PNG type.
+    (a.href = downloadURL), { type: 'image/png' };
+
+    //set the filename
+    a.download = 'canvas.png';
+
+    //append download to body
+    document.body.appendChild(a);
+
+    //execute click event on element
+    a.click();
+
+    // Remove anchor from body
+    document.body.removeChild(a);
   }
 
   handleNodeMove(data) {
