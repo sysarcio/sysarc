@@ -4,7 +4,7 @@ import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
-
+import posed from "react-pose";
 import styled from 'styled-components';
 
 const Svg = styled.svg`
@@ -12,6 +12,20 @@ const Svg = styled.svg`
   width: 100%;
   height: 400px;
 `;
+
+// const Svg = styled(posed.div({
+//   top: { y: 100 },
+//   bottom: { y: 300 }
+// }))`
+//   border: 1px solid #ddd;
+//   position: absolute;
+
+//   ${props => `
+//     height: 400px;
+//     width: 100%;
+//     left: calc(50% - ${props.size / 2}px);
+//   `}
+// `;
 
 
 class Canvas extends Component {
@@ -88,6 +102,7 @@ class Canvas extends Component {
   }
 
   render() {
+    console.log('nodes data-->', this.state.nodes)
     const svgStyle = {
       'border': '1px solid #ddd',
       'width': '100%',
@@ -109,9 +124,9 @@ class Canvas extends Component {
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
-        <svg style={svgStyle}>
+        <Svg >
           {showClients}
-        </svg>
+        </Svg>
       </div>
     );
   }
