@@ -4,6 +4,7 @@ import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
+import posed from "react-pose";
 import canvg from 'canvg';
 
 import styled from 'styled-components';
@@ -13,6 +14,21 @@ const Svg = styled.svg`
   width: 100%;
   height: 400px;
 `;
+
+// const Svg = styled(posed.div({
+//   top: { y: 100 },
+//   bottom: { y: 300 }
+// }))`
+//   border: 1px solid #ddd;
+//   position: absolute;
+
+//   ${props => `
+//     height: 400px;
+//     width: 100%;
+//     left: calc(50% - ${props.size / 2}px);
+//   `}
+// `;
+
 
 class Canvas extends Component {
   constructor(props) {
@@ -114,7 +130,6 @@ class Canvas extends Component {
 
   //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
-    console.log('new route data-->', data);
     data.room = this.props.match.params.name;
     this.socket.emit('add route', data);
   }
@@ -127,53 +142,21 @@ class Canvas extends Component {
     };
     const showClients = this.state.nodes.map(node => {
       console.log(node.routes);
-      return node.type === 'CLIENT' ? (
-        <Client
-          id={node.id}
-          key={node.id}
-          x={node.position.x}
-          y={node.position.y}
-          handleMovement={this.handleNodeMove}
-          handleNewRoute={this.handleNewNodeRoute}
-          handleDelete={this.handleNodeDelete}
-        />
-      ) : null;
+      return node.type === 'CLIENT' ? <Client
+        routes={node.routes}
+        id={node.id}
+        key={node.id}
+        x={node.position.x}
+        y={node.position.y}
+        handleMovement={this.handleNodeMove}
+        handleNewRoute={this.handleNewNodeRoute}
+        handleDelete={this.handleNodeDelete} /> : null
     });
     return (
       <div className="theCanvas">
-        <button
-          onClick={() =>
-            this.handleNewNode({
-              position: { x: 20, y: 20 },
-              type: 'CLIENT'
-            })
-          }
-        >
-          {' '}
-          Client +
-        </button>
-        <button
-          onClick={() =>
-            this.handleNewNode({
-              position: { x: 250, y: 20 },
-              type: 'SERVER'
-            })
-          }
-        >
-          {' '}
-          Server +
-        </button>
-        <button
-          onClick={() =>
-            this.handleNewNode({
-              position: { x: 350, y: 20 },
-              type: 'DATABASE'
-            })
-          }
-        >
-          {' '}
-          Database +
-        </button>
+        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
         <button onClick={() => this.takeScreenshot()}> --Save Image -- </button>
         <svg className="canvas" style={svgStyle}>
           <g>
