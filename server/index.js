@@ -53,7 +53,7 @@ io.on('connection', socket => {
     socket.join(canvas);
 
     try {
-      const nodes = await db.getCanvas(canvas);
+      let nodes = await db.getCanvas(canvas);
       io.to(canvas).emit('room data', nodes);
     } catch(err) {
       console.log(err);

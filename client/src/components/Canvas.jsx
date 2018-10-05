@@ -55,6 +55,11 @@ class Canvas extends Component {
     this.handleNewNodeRoute = this.handleNewNodeRoute.bind(this);
   }
 
+  get(node, prop) {
+    let i = node._fieldLookup[prop];
+    return node._fields[i];
+  }
+
   //data = {x: val, y: val, type: '', routes: [{routeId: '5tgdr', method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
   handleNewNode(data) {
     data.room = this.props.match.params.name;
@@ -93,13 +98,14 @@ class Canvas extends Component {
       'width': '100%',
       'height': '400px'
     }
+    // console.log(this.state.nodes[0].get);
     const showClients = this.state.nodes.map(node => {
-      console.log(node.routes);
-      return node.type === 'CLIENT' ? <Client
-                                        id={node.id} 
-                                        key={node.id} 
-                                        x={node.position.x} 
-                                        y={node.position.y} 
+      // console.log(node.get);
+      return this.get(node, 'type') === 'CLIENT' ? <Client
+                                        id={this.get(node, 'id')} 
+                                        key={this.get(node, 'id')} 
+                                        x={this.get(node, 'x')} 
+                                        y={this.get(node, 'y')} 
                                         handleMovement={this.handleNodeMove} 
                                         handleNewRoute={this.handleNewNodeRoute}
                                         handleDelete={this.handleNodeDelete} /> : null
