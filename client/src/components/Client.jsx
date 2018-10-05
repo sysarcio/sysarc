@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
-
+import Endpoint from './Endpoint.jsx';
 
 class Client extends React.Component {
   constructor(props) {
@@ -106,6 +106,20 @@ class Client extends React.Component {
   }
 
   render() {
+
+    const showEndpoints = this.props.routes.length ?
+      
+        this.props.routes.map((endpoint, i) => {
+          return <Endpoint
+            handleRouteDelete={this.props.handleRouteDelete}
+            handleRouteUpdate={this.props.handleRouteUpdate}
+            key={i}
+            method={endpoint.method}
+            url={endpoint.url}
+            routeId={endpoint.id} />
+        }) : null;
+      
+
     const rectStyle = this.state.showTransition === true ? {
       'transition': 'all 300ms',
       'border': '1px solid #ddd'
@@ -131,7 +145,7 @@ class Client extends React.Component {
           {!this.state.isHidden &&
             <div>  
               <form>
-                <div>
+                
                 <select value={this.state.routeType} onChange={this.setRouteType}>
                     <option> Select your route</option>
                     <option value="GET">Get</option>
@@ -152,10 +166,8 @@ class Client extends React.Component {
                     onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
                   </button>
                 
-                  </div>
-                  {this.props.routes.map((endpoint, i) => {
-                    return <div key={i}> {endpoint.method}: /{endpoint.url}</div>
-                  })}
+                  <div>{showEndpoints}</div> 
+              
                   <button type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
               </form>
               
