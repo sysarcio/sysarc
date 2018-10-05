@@ -4,7 +4,7 @@ import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
-import posed from "react-pose";
+import posed from 'react-pose';
 import canvg from 'canvg';
 
 import styled from 'styled-components';
@@ -28,7 +28,6 @@ const Svg = styled.svg`
 //     left: calc(50% - ${props.size / 2}px);
 //   `}
 // `;
-
 
 class Canvas extends Component {
   constructor(props) {
@@ -64,6 +63,7 @@ class Canvas extends Component {
     this.socket.on('route added', data => {
       this.setNodes(data);
     });
+    this.downloadScreenshot = this.downloadScreenshot.bind(this);
     this.takeScreenshot = this.takeScreenshot.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
@@ -83,24 +83,15 @@ class Canvas extends Component {
     });
   }
 
-  takeScreenshot() {
-    // create a new object that contains all the SVGs currently on the board
-    let canvasView = document.querySelector('.canvas');
-
-    //create a blank canvas to draw the board onto
-    var canvas = document.createElement('canvas');
-
-    //draw the board onto the canvas
-    canvg(canvas, canvasView.outerHTML);
-
-    //create a URL to point to the PNG screenshot of the canvas
-    let downloadURL = canvas.toDataURL('image/png');
+  downloadScreenshot() {
+    //get the PNG URL to generate a snapshot of the page
+    let imageURL = this.takeScreenshot();
 
     //create a new anchor to hold the image and download event
     var a = window.document.createElement('a');
 
     //set the href to your url, and give it the PNG type.
-    (a.href = downloadURL), { type: 'image/png' };
+    (a.href = imageURL), { type: 'image/png' };
 
     //set the filename
     a.download = 'canvas.png';
@@ -113,6 +104,20 @@ class Canvas extends Component {
 
     // Remove anchor from body
     document.body.removeChild(a);
+  }
+
+  takeScreenshot() {
+    // create a new object that contains all the SVGs currently on the board
+    let canvasView = document.querySelector('.canvas');
+
+    //create a blank canvas to draw the board onto
+    var canvas = document.createElement('canvas');
+
+    //draw the board onto the canvas
+    canvg(canvas, canvasView.outerHTML);
+
+    //return a URL to point to the PNG screenshot of the canvas
+    return canvas.toDataURL('image/png');
   }
 
   handleNodeMove(data) {
@@ -142,22 +147,58 @@ class Canvas extends Component {
     };
     const showClients = this.state.nodes.map(node => {
       console.log(node.routes);
-      return node.type === 'CLIENT' ? <Client
-        routes={node.routes}
-        id={node.id}
-        key={node.id}
-        x={node.position.x}
-        y={node.position.y}
-        handleMovement={this.handleNodeMove}
-        handleNewRoute={this.handleNewNodeRoute}
-        handleDelete={this.handleNodeDelete} /> : null
+      return node.type === 'CLIENT' ? (
+        <Client
+          routes={node.routes}
+          id={node.id}
+          key={node.id}
+          x={node.position.x}
+          y={node.position.y}
+          handleMovement={this.handleNodeMove}
+          handleNewRoute={this.handleNewNodeRoute}
+          handleDelete={this.handleNodeDelete}
+        />
+      ) : null;
     });
     return (
       <div className="theCanvas">
-        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
-        <button onClick={() => this.takeScreenshot()}> --Save Image -- </button>
+        <button
+          onClick={() =>
+            this.handleNewNode({
+              position: { x: 20, y: 20 },
+              type: 'CLIENT'
+            })
+          }
+        >
+          {' '}
+          Client +
+        </button>
+        <button
+          onClick={() =>
+            this.handleNewNode({
+              position: { x: 250, y: 20 },
+              type: 'SERVER'
+            })
+          }
+        >
+          {' '}
+          Server +
+        </button>
+        <button
+          onClick={() =>
+            this.handleNewNode({
+              position: { x: 350, y: 20 },
+              type: 'DATABASE'
+            })
+          }
+        >
+          {' '}
+          Database +
+        </button>
+        <button onClick={() => this.downloadScreenshot()}>
+          {' '}
+          --Save Image --{' '}
+        </button>
         <svg className="canvas" style={svgStyle}>
           <g>
             <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
