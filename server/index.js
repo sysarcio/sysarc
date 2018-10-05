@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
+const session = require('express-session');
 
 const routes = require('./routes');
 const app = express();
@@ -13,6 +14,15 @@ const io = require('socket.io')(server);
 const port = process.env.PORT || 3000;
 
 const db = require('../database/index');
+
+app.use(session({
+  secret: 'my session secret',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // Set max age to one week
+  }
+}));
 
 // const Redis = require('ioredis');
 // const redis = new Redis({
@@ -39,12 +49,12 @@ server.listen(port, () => {
 io.on('connection', socket => {
   console.log('socket connected server side');
   
-  socket.on('join room', async room => {
-    socket.join(room);
+  socket.on('join room', async canvas => {
+    socket.join(canvas);
 
     try {
-      const nodes = await db.addCanvas(room);
-      io.to(room).emit('room data', nodes);
+      const nodes = await db.getCanvas(canvas);
+      io.to(canvas).emit('room data', nodes);
     } catch(err) {
       console.log(err);
     }

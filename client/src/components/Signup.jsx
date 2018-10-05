@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-class Login extends Component {
+class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +11,7 @@ class Login extends Component {
 
     this.handlePassword = this.handlePassword.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
   }
 
   handleEmail(e) {
@@ -28,34 +28,36 @@ class Login extends Component {
     });
   }
 
-  async handleLogin(e) {
-    const isValid = document.getElementById("login-form").checkValidity();
+  handleSignup(e) {
+    const isValid = document.getElementById("signup-form").checkValidity();
     
     if (isValid) {
       e.preventDefault();
       const options = {
         method: 'POST',
-        url: '/api/login',
+        url: '/api/signup',
         data: {
           email: this.state.email,
           password: this.state.password
         }
       };
 
-      try {
-        await axios(options);
-        this.props.history.push('/');
-      } catch(err) {
-        // Actually show user what went wrong
-        console.log(err);
-      }
+      axios(options)
+        .then(data => {
+          console.log(data);
+          this.props.history.push('/');
+        })
+        .catch(err => {
+          // Actually show user what went wrong
+          console.log(err);
+        });
     }
   }
 
   render() {
     return (
-      <div className='login'>
-        <form id="login-form">
+      <div className='signup'>
+        <form id="signup-form">
           <input 
             type="email"
             placeholder='Email'
@@ -73,8 +75,8 @@ class Login extends Component {
           />
           <input
             type="submit"
-            onClick={this.handleLogin}
-            value="Login"
+            onClick={this.handleSignup}
+            value="Signup"
           />
         </form>
       </div>
@@ -82,4 +84,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default Signup;
