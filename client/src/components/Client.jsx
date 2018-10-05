@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
-
-
 class Client extends React.Component {
   constructor(props) {
     super(props);
@@ -9,13 +7,15 @@ class Client extends React.Component {
       x: this.props.x,
       y: this.props.y,
       id: this.props.id,
-      routes: this.props.routes, 
+      routes: this.props.routes,
       isHidden: true,
       text: '',
       routeType: '',
       animate: false,
       showTransition: true,
-      routes: this.props.routes
+      routes: this.props.routes,
+      currentX: this.props.x,
+      currentY: this.props.y
     }
     
     this.setRouteType = this.setRouteType.bind(this);
@@ -25,14 +25,21 @@ class Client extends React.Component {
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.startAnimation = this.startAnimation.bind(this);
     this.toggleTransition = this.toggleTransition.bind(this);
+
   }
 
   handleMouseDown(e) {
+    this.toggleTransition();
     this.coords = {
       x: e.pageX,
       y: e.pageY
-    }
+    };
     document.addEventListener('mousemove', this.handleMouseMove);
+    this.setState({
+      dragging: !this.state.dragging,
+      currentX: this.state.x,
+      currentY: this.state.y
+    })
   }
 
   handleMouseUp() {
@@ -46,8 +53,13 @@ class Client extends React.Component {
       },
       type: 'CLIENT'
     };
-
-    this.props.handleMovement(data);
+    this.props.handleMovement(data, () => {
+      this.setState({
+        dragging: !this.state.dragging,
+        currentX: this.props.x,
+        currentY: this.props.y
+      })
+    });
     this.toggleTransition();
   }
 
@@ -59,38 +71,39 @@ class Client extends React.Component {
 
   handleMouseMove(e) {
 
-    this.toggleTransition();
-
-
     const xDiff = this.coords.x - e.pageX;
     const yDiff = this.coords.y - e.pageY;
 
     this.coords.x = e.pageX;
     this.coords.y = e.pageY;
 
-    // console.log(this.props.id);
     this.setState({
       x: this.state.x - xDiff,
-      y: this.state.y - yDiff
+      y: this.state.y - yDiff,
+    }, () => {
+      this.setState({
+        currentX: this.state.x,
+        currentY: this.state.y
+      })
     });
   }
 
   toggleHidden() {
-    this.setState({
-      isHidden: !this.state.isHidden
-    })
+      this.setState({
+        isHidden: !this.state.isHidden
+      });
   }
 
   handleText(e) {
     this.setState({
       text: e.target.value
-    })
+    });
   }
 
   setRouteType(e) {
     this.setState({
       routeType: e.target.value
-    })
+    });
   }
 
   startAnimation() {
@@ -108,12 +121,17 @@ class Client extends React.Component {
   render() {
     const rectStyle = this.state.showTransition === true ? {
       'transition': 'all 300ms',
-      'border': '1px solid #ddd'
+      'border': '1px solid #ddd',
     } : null;
-    const {x, y} = this.state;
+    const fadeInStyle = this.state.showTransition === true ? {
+      'transition': 'all 200ms 100ms',
+      'opacity': this.state.animate ? '1' : '0'
+    } : null;
+    let x = this.state.currentX;
+    let y = this.state.currentY;
+
     return (
       <g>
-
         <rect
           x={x}
           y={y}
@@ -129,10 +147,10 @@ class Client extends React.Component {
         <foreignObject x={x + 5} y={y + 70} width="375" height="250">
           
           {!this.state.isHidden &&
-            <div>  
-              <form>
-                <div>
-                <select value={this.state.routeType} onChange={this.setRouteType}>
+            <div style={fadeInStyle}>  
+              <form style={fadeInStyle}>
+                <div style={fadeInStyle}>
+                <select style={fadeInStyle} value={this.state.routeType} onChange={this.setRouteType}>
                     <option> Select your route</option>
                     <option value="GET">Get</option>
                     <option value="POST"> Post</option>
@@ -141,13 +159,13 @@ class Client extends React.Component {
                     <option value="OPTIONS">Options</option>
                   </select>
               
-                  <input
+                  <input style={fadeInStyle}
                     placeholder='Enter endpoint details'
                     value={this.state.text}
                     onChange={this.handleText.bind(this)}>
                   </input>
 
-                  <button
+                  <button style={fadeInStyle}
                     type="button"
                     onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
                   </button>
@@ -156,7 +174,7 @@ class Client extends React.Component {
                   {this.props.routes.map((endpoint, i) => {
                     return <div key={i}> {endpoint.method}: /{endpoint.url}</div>
                   })}
-                  <button type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
+                  <button style={fadeInStyle} type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
               </form>
               
             </div>
@@ -165,9 +183,8 @@ class Client extends React.Component {
         <foreignObject x={x + 80} y={y - 10} width="15" height="15">
           <p onClick={this.startAnimation}>+</p>
         </foreignObject>
-        
       </g>
-    )
+    );
   }
 }
 
