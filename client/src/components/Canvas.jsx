@@ -54,6 +54,7 @@ class Canvas extends Component {
     });
     // TODO: change the name of 'move node' emitter or listener later
     this.socket.on('node moved', data => {
+      console.log('we heard back from socket', data);
       this.setNodes(data);
     });
 
@@ -115,7 +116,7 @@ class Canvas extends Component {
     document.body.removeChild(a);
   }
 
-  handleNodeMove(data) {
+  handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
     // console.log(`dummy output:`);
     // console.log(data);
