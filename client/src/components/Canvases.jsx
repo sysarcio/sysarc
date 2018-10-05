@@ -32,6 +32,7 @@ class Canvases extends Component {
 
     try {
       const {data: canvases} = await axios(options);
+      console.log(canvases);
       this.setState({
         canvases
       });

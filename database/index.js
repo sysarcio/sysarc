@@ -110,32 +110,6 @@ module.exports = {
     }
   },
 
-  async getUserCanvases(userID) {
-    try {
-      const result = await session.run(`
-        MATCH (u:USER {id: $userID})
-        WITH u
-        OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m)
-        RETURN m.id, m.name`,
-        {
-          userID: userID
-        }
-      );
-
-      const canvases = result.records.map(r => {
-        return {
-          id: r.get('m.id'),
-          name: r.get('m.name')
-        }
-      });
-      session.close();
-
-      return canvases;
-    } catch(err) {
-      console.log(err);
-    }
-  },
-
   async addNode(data) {
     const {x, y} = data.position;
     try {
