@@ -15,19 +15,7 @@ const Svg = styled.svg`
   height: 400px;
 `;
 
-// const Svg = styled(posed.div({
-//   top: { y: 100 },
-//   bottom: { y: 300 }
-// }))`
-//   border: 1px solid #ddd;
-//   position: absolute;
 
-//   ${props => `
-//     height: 400px;
-//     width: 100%;
-//     left: calc(50% - ${props.size / 2}px);
-//   `}
-// `;
 
 class Canvas extends Component {
   constructor(props) {
@@ -64,12 +52,23 @@ class Canvas extends Component {
     this.socket.on('route added', data => {
       this.setNodes(data);
     });
+
+    this.socket.on('route updated', data => {
+      this.setNodes(data);
+    })
+
+    this.socket.on('route deleted', data => {
+      this.setNodes(data);
+    })
+
     this.downloadScreenshot = this.downloadScreenshot.bind(this);
     this.takeScreenshot = this.takeScreenshot.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
     this.handleNewNodeRoute = this.handleNewNodeRoute.bind(this);
+    this.handleRouteUpdate = this.handleRouteUpdate.bind(this);
+    this.handleRouteDelete = this.handleRouteDelete.bind(this);
   }
 
   //data = {x: val, y: val, type: '', routes: [{routeId: '5tgdr', method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
@@ -141,9 +140,19 @@ class Canvas extends Component {
     this.socket.emit('add route', data);
   }
 
+  handleRouteUpdate(data) {
+    data.room = this.props.match.params.name;
+    this.socket.emit('update route', data);
+  }
+
+  handleRouteDelete(data) {
+    data.room = this.props.match.params.name;
+    this.socket.emit('delete route', data);
+  }
+
   render() {
     const svgStyle = {
-      border: '1px solid white',
+      border: '1px solid black',
       width: '100%',
       height: '400px'
     };
@@ -151,55 +160,27 @@ class Canvas extends Component {
 
       // console.log(node.routes);
       return node.type === 'CLIENT' ? <Client
+
         routes={node.routes}
         id={node.id}
         key={node.id}
         x={node.position.x}
         y={node.position.y}
         handleMovement={this.handleNodeMove}
+        handleRouteUpdate={this.handleRouteUpdate}
         handleNewRoute={this.handleNewNodeRoute}
+        handleRouteDelete={this.handleRouteDelete}
         handleDelete={this.handleNodeDelete} /> : null
 
     });
     return (
+      
       <div className="theCanvas">
-        <button
-          onClick={() =>
-            this.handleNewNode({
-              position: { x: 20, y: 20 },
-              type: 'CLIENT'
-            })
-          }
-        >
-          {' '}
-          Client +
-        </button>
-        <button
-          onClick={() =>
-            this.handleNewNode({
-              position: { x: 250, y: 20 },
-              type: 'SERVER'
-            })
-          }
-        >
-          {' '}
-          Server +
-        </button>
-        <button
-          onClick={() =>
-            this.handleNewNode({
-              position: { x: 350, y: 20 },
-              type: 'DATABASE'
-            })
-          }
-        >
-          {' '}
-          Database +
-        </button>
-        <button onClick={() => this.downloadScreenshot()}>
-          {' '}
-          --Save Image --{' '}
-        </button>
+        <h2>Shark.io</h2>
+        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
+        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
+        <button onClick={() => this.takeScreenshot()}> Save Canvas </button>
         <svg className="canvas" style={svgStyle}>
           <g>
             <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
