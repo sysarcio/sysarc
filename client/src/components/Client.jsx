@@ -93,31 +93,25 @@ class Client extends React.Component {
     })
   }
 
-startAnimation() {
-        // Added two nested requestAnimationFrames
-    requestAnimationFrame(() => {
-      // Firefox will sometimes merge changes that happened here
+  startAnimation() {
+          // Added two nested requestAnimationFrames
       requestAnimationFrame(() => {
-        this.setState({ animate: !this.state.animate });
+        // Firefox will sometimes merge changes that happened here
+        requestAnimationFrame(() => {
+          this.setState({ animate: !this.state.animate });
+        });
       });
-    });
 
-   this.toggleHidden();
-}
-
+    this.toggleHidden();
+  }
 
   render() {
-
     const rectStyle = this.state.showTransition === true ? {
       'transition': 'all 300ms',
       'border': '1px solid #ddd'
     } : null;
-
-    
-   
     const {x, y} = this.state;
     return (
-   
       <g>
 
         <rect
@@ -128,9 +122,7 @@ startAnimation() {
           fill="yellow"
           style={rectStyle}
           onMouseDown={this.handleMouseDown}
-          onMouseUp={this.handleMouseUp}
-          // onDoubleClick={()=> this.props.handleDelete({id: this.state.id})}
-          
+          onMouseUp={this.handleMouseUp}          
         />
         <text x={x + 35} y={y + 20}>Client</text>
       
@@ -156,16 +148,16 @@ startAnimation() {
                   </input>
 
                   <button
+                    type="button"
                     onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
                   </button>
                 
                   </div>
-                  {this.state.routes.map((endpoint, i) => {
+                  {this.props.routes.map((endpoint, i) => {
                     return <div key={i}> {endpoint.method}: /{endpoint.url}</div>
                   })}
-                  <button onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
+                  <button type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
               </form>
-              
               
             </div>
           }
@@ -179,40 +171,4 @@ startAnimation() {
   }
 }
 
-
 export default Client;
-
-
-/*
-// {/* <foreignObject x={x + 5} y={y + 70} width="375" height="250">
-
-//   {!this.state.isHidden &&
-//     <div>
-//       <form>
-//         <div>
-//           <select value={this.state.routeType} onChange={this.setRouteType}>
-//             <option> Select your route</option>
-//             <option value="GET">Get</option>
-//             <option value="POST"> Post</option>
-//             <option value="DELETE">Delete</option>
-//             <option value="PUT">Put</option>
-//             <option value="OPTIONS">Options</option>
-//           </select>
-
-//           <input
-//             placeholder='Enter endpoint details'
-//             value={this.state.text}
-//             onChange={this.handleText.bind(this)}>
-//           </input>
-
-//           <button
-//             onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
-//                   </button>
-//         </div>
-//       </form>
-//       {/* {this.state.routes.map((endpoint, i) => {
-//                 return <div> {endpoint.method}: {endpoint.url}</div>
-//               })} */
-//     </div>
-//   }
-// </foreignObject> */} */
