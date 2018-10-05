@@ -51,7 +51,7 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/addCanvas', (req, res) => {
-  
+  console.log(req.session);
 });
 
 module.exports = router;
