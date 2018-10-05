@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
     const user = await db.addUser(req.body);
 
     req.session.userID = user.get('u.id');
-    res.send('Successfully signed up. Redirect to home page');
+    console.log(req.session);
   } catch(err) {
     console.log(err);
     res.statusMessage = 'That email address is already in use';
@@ -35,6 +35,8 @@ router.post('/login', async (req, res) => {
     }
     
     req.session.userID = user.get('u.id');
+    console.log(req.session);
+
     res.send();
   } catch(err) {
     res.statusMessage = err.message;
@@ -49,8 +51,7 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/addCanvas', (req, res) => {
-  // console.log(req.session, req.body);
-  res.end();
+  
 });
 
 module.exports = router;

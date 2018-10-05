@@ -16,8 +16,8 @@ const port = process.env.PORT || 3000;
 const db = require('../database/index');
 
 app.use(session({
-  secret: Date.now(),
-  resave: false,
+  secret: 'my session secret',
+  resave: true,
   saveUninitialized: true,
   cookie: {
     secure: true,

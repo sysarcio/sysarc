@@ -30,7 +30,7 @@ class Canvases extends Component {
 
     try {
       const id = await axios(options);
-      this.props.history.push(`/canvas/${id}`);
+      // this.props.history.push(`/canvas/${id}`);
     } catch(err) {
       // Actually let user know that something went wrong
       console.log(err);
