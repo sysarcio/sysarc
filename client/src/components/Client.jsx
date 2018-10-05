@@ -156,14 +156,15 @@ startAnimation() {
                   </input>
 
                   <button
+                    type="button"
                     onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
                   </button>
                 
                   </div>
-                  {this.state.routes.map((endpoint, i) => {
+                  {this.props.routes.map((endpoint, i) => {
                     return <div key={i}> {endpoint.method}: /{endpoint.url}</div>
                   })}
-                  <button onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
+                  <button type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
               </form>
               
               
