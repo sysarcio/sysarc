@@ -54,7 +54,7 @@ class Canvas extends Component {
     });
     // TODO: change the name of 'move node' emitter or listener later
     this.socket.on('node moved', data => {
-      console.log('we heard back from socket', data);
+      // console.log('we heard back from socket', data);
       this.setNodes(data);
     });
 
@@ -142,7 +142,7 @@ class Canvas extends Component {
       height: '400px'
     };
     const showClients = this.state.nodes.map(node => {
-      console.log(node.routes);
+      // console.log(node.routes);
       return node.type === 'CLIENT' ? <Client
         routes={node.routes}
         id={node.id}

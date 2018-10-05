@@ -121,7 +121,11 @@ class Client extends React.Component {
   render() {
     const rectStyle = this.state.showTransition === true ? {
       'transition': 'all 300ms',
-      'border': '1px solid #ddd'
+      'border': '1px solid #ddd',
+    } : null;
+    const fadeInStyle = this.state.showTransition === true ? {
+      'transition': 'all 200ms 100ms',
+      'opacity': this.state.animate ? '1' : '0'
     } : null;
     let x = this.state.currentX;
     let y = this.state.currentY;
@@ -143,10 +147,10 @@ class Client extends React.Component {
         <foreignObject x={x + 5} y={y + 70} width="375" height="250">
           
           {!this.state.isHidden &&
-            <div>  
-              <form>
-                <div>
-                <select value={this.state.routeType} onChange={this.setRouteType}>
+            <div style={fadeInStyle}>  
+              <form style={fadeInStyle}>
+                <div style={fadeInStyle}>
+                <select style={fadeInStyle} value={this.state.routeType} onChange={this.setRouteType}>
                     <option> Select your route</option>
                     <option value="GET">Get</option>
                     <option value="POST"> Post</option>
@@ -155,13 +159,13 @@ class Client extends React.Component {
                     <option value="OPTIONS">Options</option>
                   </select>
               
-                  <input
+                  <input style={fadeInStyle}
                     placeholder='Enter endpoint details'
                     value={this.state.text}
                     onChange={this.handleText.bind(this)}>
                   </input>
 
-                  <button
+                  <button style={fadeInStyle}
                     type="button"
                     onClick={() => this.props.handleNewRoute({ id: this.state.id, method: this.state.routeType, url: this.state.text })}> +
                   </button>
@@ -170,7 +174,7 @@ class Client extends React.Component {
                   {this.props.routes.map((endpoint, i) => {
                     return <div key={i}> {endpoint.method}: /{endpoint.url}</div>
                   })}
-                  <button type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
+                  <button style={fadeInStyle} type="button" onClick={() => this.props.handleDelete({ id: this.state.id })}>Delete</button>
               </form>
               
             </div>
