@@ -49,12 +49,12 @@ server.listen(port, () => {
 io.on('connection', socket => {
   console.log('socket connected server side');
   
-  socket.on('join room', async room => {
-    socket.join(room);
+  socket.on('join room', async canvas => {
+    socket.join(canvas);
 
     try {
-      const nodes = await db.addCanvas(room);
-      io.to(room).emit('room data', nodes);
+      const nodes = await db.getCanvas(canvas);
+      io.to(canvas).emit('room data', nodes);
     } catch(err) {
       console.log(err);
     }

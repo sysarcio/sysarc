@@ -50,8 +50,39 @@ router.post('/logout', (req, res) => {
   });
 });
 
-router.post('/addCanvas', (req, res) => {
-  console.log(req.session);
+router.post('/canvas/add', async (req, res) => {  
+  const canvasID = uuidv4();
+
+  try {
+    if (!req.session.userID) {
+      throw {
+        message: 'User not logged in',
+        code: 401
+      };
+    }
+    const canvas = await db.addCanvas({userID: req.session.userID, canvasID, canvasName: req.body.name});
+    res.send({id: canvas.get('c.id'), name: canvas.get('c.name')});
+  } catch(err) {
+    console.log(err);
+    res.statusMessage = err.message;
+    res.sendStatus(err.code);
+  }
 });
+
+router.get('/canvases', async (req, res) => {
+  try {
+    if (!req.session.userID) {
+      throw {
+        message: 'User not logged in',
+        code: 401
+      };
+    }
+
+    const canvases = await db.getUserCanvases(req.session.userID);
+    res.send(canvases);
+  } catch(err) {
+    console.log(err);
+  }
+})
 
 module.exports = router;
