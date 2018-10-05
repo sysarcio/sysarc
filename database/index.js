@@ -7,51 +7,145 @@ const session = driver.session();
 function formatNodes(data) {
   const output = {};
 
-  data.records.forEach(record => {
-    if (output[record.get('m.id')]) {
-      output[record.get('m.id')].routes
-        .push({
-          id: record.get('p.id'),
-          url: record.get('p.url'),
-          method: record.get('p.method')
-        })
-    } else {
-      output[record.get('m.id')] = {
-        position: {
-          x: neo4j.int(record.get('m.x')).toNumber(),
-          y: neo4j.int(record.get('m.y')).toNumber()
-        },
-        id: record.get('m.id'),
-        type: record.get('m.type'),
-        routes: [{
-          id: record.get('p.id'),
-          url: record.get('p.url'),
-          method: record.get('p.method')
-        }]
+  if (data.records.length) {
+    data.records.forEach(record => {
+      if (output[record.get('m.id')]) {
+        output[record.get('m.id')].routes
+          .push({
+            id: record.get('p.id'),
+            url: record.get('p.url'),
+            method: record.get('p.method')
+          })
+      } else {
+        output[record.get('m.id')] = {
+          position: {
+            x: neo4j.int(record.get('m.x')).toNumber(),
+            y: neo4j.int(record.get('m.y')).toNumber()
+          },
+          id: record.get('m.id'),
+          type: record.get('m.type'),
+          routes: [{
+            id: record.get('p.id'),
+            url: record.get('p.url'),
+            method: record.get('p.method')
+          }]
+        }
       }
-    }
-  });
+    });
+  }
 
   return Object.values(output);
 }
 
 module.exports = {
-  async addCanvas(canvasID) {
+  async addUser({id, email, password}) {
+    try {
+      const newUser = await session.run(`
+        CREATE (u:USER {id: $id, email: $email, password: $password})
+        RETURN u.id`,
+        {
+          id: id,
+          email: email,
+          password: password
+        }
+      );
+      session.close();
+      return newUser.records[0];
+    } catch(err) {
+      throw err;
+    }
+  },
+
+  async getUser({email}) {
+    try {
+      const user = await session.run(`
+        MATCH (u:USER {email: $email})
+        RETURN u.id, u.email, u.password`,
+        {
+          email: email
+        }
+      );
+      
+      session.close();
+      if (!user.records.length) {
+        throw {
+          message: `User not found with email address '${email}'`,
+          code: 401
+        };
+      }
+      
+      return user.records[0];
+    } catch(err) {
+      throw err;
+    }
+  },
+
+  async addCanvas({userID, canvasID, canvasName}) {
+    try {
+      let result = await session.run(`
+        MATCH (u:USER {id: $userID})
+        CREATE (c:CANVAS {id: $canvasID, name: $canvasName})<-[:CAN_EDIT]-(u)
+        RETURN c.id, c.name`,
+        {
+          userID: userID,
+          canvasID: canvasID,
+          canvasName: canvasName
+        }
+      );
+      
+      canvas = result.records[0];
+      session.close();
+
+      return canvas;
+    } catch(err) {
+      console.log(err);
+    }
+  },
+
+  async getCanvas(canvasID) {
     try {
       const result = await session.run(`
-        MERGE (n:CANVAS {id: $canvasID})
-          ON CREATE SET n.created_at = timestamp()
+        MATCH (n:CANVAS {id: $canvasID})
         WITH n
-        MATCH (n)-[r:CONTAINS]->(m)
+        OPTIONAL MATCH (n)-[r:CONTAINS]->(m)
+        WITH n, m
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
         RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
-        {canvasID: canvasID}
+        {
+          canvasID: canvasID
+        }
       );
 
       const nodes = formatNodes(result);
       session.close();
 
       return nodes;
+    } catch(err) {
+      console.log(err);
+    }
+  },
+
+  async getUserCanvases(userID) {
+    try {
+      const result = await session.run(`
+        MATCH (u:USER {id: $userID})
+        WITH u
+        OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m)
+        RETURN m.id, m.name`,
+        {
+          userID: userID
+        }
+      );
+
+      const canvases = result.records.map(r => {
+        return {
+          id: r.get('m.id'),
+          name: r.get('m.name')
+        }
+      });
+      session.close();
+
+      return canvases;
     } catch(err) {
       console.log(err);
     }
@@ -112,7 +206,7 @@ module.exports = {
     }
   },
 
-  async deleteNode(data) {
+  async deleteNode({room, id}) {
     try {
       const result = await session.run(`
         MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c:NODE {id: $nodeID})
@@ -122,8 +216,8 @@ module.exports = {
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
         RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
         {
-          canvasID: data.room,
-          nodeID: data.id
+          canvasID: room,
+          nodeID: id
         }
       );
 
@@ -154,6 +248,7 @@ module.exports = {
       );
 
       const nodes = formatNodes(result);
+      console.log(nodes);
       session.close();
       return nodes;
     } catch(err) {
