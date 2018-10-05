@@ -53,14 +53,7 @@ class Canvas extends Component {
       this.setNodes(data);
     });
 
-    this.socket.on('route updated', data => {
-      this.setNodes(data);
-    })
-
-    this.socket.on('route deleted', data => {
-      this.setNodes(data);
-    })
-
+    this.get = this.get.bind(this);
     this.downloadScreenshot = this.downloadScreenshot.bind(this);
     this.takeScreenshot = this.takeScreenshot.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
@@ -69,6 +62,11 @@ class Canvas extends Component {
     this.handleNewNodeRoute = this.handleNewNodeRoute.bind(this);
     this.handleRouteUpdate = this.handleRouteUpdate.bind(this);
     this.handleRouteDelete = this.handleRouteDelete.bind(this);
+  }
+
+  get(node, prop) {
+    let i = node._fieldLookup[prop];
+    return node._fields[i];
   }
 
   //data = {x: val, y: val, type: '', routes: [{routeId: '5tgdr', method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
@@ -152,26 +150,23 @@ class Canvas extends Component {
 
   render() {
     const svgStyle = {
-      border: '1px solid black',
-      width: '100%',
-      height: '400px'
-    };
+      'border': '1px solid #ddd',
+      'width': '100%',
+      'height': '400px'
+    }
+    // console.log(this.state.nodes[0].get);
     const showClients = this.state.nodes.map(node => {
-
-      // console.log(node.routes);
-      return node.type === 'CLIENT' ? <Client
-
-        routes={node.routes}
-        id={node.id}
-        key={node.id}
-        x={node.position.x}
-        y={node.position.y}
-        handleMovement={this.handleNodeMove}
-        handleRouteUpdate={this.handleRouteUpdate}
-        handleNewRoute={this.handleNewNodeRoute}
-        handleRouteDelete={this.handleRouteDelete}
-        handleDelete={this.handleNodeDelete} /> : null
-
+      // console.log(node.get);
+      return this.get(node, 'type') === 'CLIENT' ? <Client
+                                        get={this.get}
+                                        routes={this.get(node, 'routes')}
+                                        id={this.get(node, 'id')} 
+                                        key={this.get(node, 'id')} 
+                                        x={this.get(node, 'x')} 
+                                        y={this.get(node, 'y')} 
+                                        handleMovement={this.handleNodeMove} 
+                                        handleNewRoute={this.handleNewNodeRoute}
+                                        handleDelete={this.handleNodeDelete} /> : null
     });
     return (
       

@@ -4,39 +4,6 @@ const driver = neo4j.driver(process.env.GRAPHENEDB_URI, neo4j.auth.basic(process
 
 const session = driver.session();
 
-function formatNodes(data) {
-  const output = {};
-
-  if (data.records.length) {
-    data.records.forEach(record => {
-      if (output[record.get('m.id')]) {
-        output[record.get('m.id')].routes
-          .push({
-            id: record.get('p.id'),
-            url: record.get('p.url'),
-            method: record.get('p.method')
-          })
-      } else {
-        output[record.get('m.id')] = {
-          position: {
-            x: neo4j.int(record.get('m.x')).toNumber(),
-            y: neo4j.int(record.get('m.y')).toNumber()
-          },
-          id: record.get('m.id'),
-          type: record.get('m.type'),
-          routes: [{
-            id: record.get('p.id'),
-            url: record.get('p.url'),
-            method: record.get('p.method')
-          }]
-        }
-      }
-    });
-  }
-
-  return Object.values(output);
-}
-
 module.exports = {
   async addUser({id, email, password}) {
     try {
@@ -107,19 +74,18 @@ module.exports = {
       const result = await session.run(`
         MATCH (n:CANVAS {id: $canvasID})
         WITH n
-        OPTIONAL MATCH (n)-[r:CONTAINS]->(m)
-        WITH n, m
+        OPTIONAL MATCH (n)-[:CONTAINS]->(m)
+        WITH m
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
           canvasID: canvasID
         }
       );
 
-      const nodes = formatNodes(result);
       session.close();
-
-      return nodes;
+      
+      return result.records;
     } catch(err) {
       console.log(err);
     }
@@ -131,21 +97,14 @@ module.exports = {
         MATCH (u:USER {id: $userID})
         WITH u
         OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m)
-        RETURN m.id, m.name`,
+        RETURN m.id AS id, m.name AS name`,
         {
           userID: userID
         }
       );
-
-      const canvases = result.records.map(r => {
-        return {
-          id: r.get('m.id'),
-          name: r.get('m.name')
-        }
-      });
       session.close();
 
-      return canvases;
+      return result.records;
     } catch(err) {
       console.log(err);
     }
@@ -156,11 +115,11 @@ module.exports = {
     try {
       const result = await session.run(`
         MATCH (n:CANVAS {id: $canvasID})
-        CREATE (n)-[r:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
+        CREATE (n)-[:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
         WITH n
-        MATCH (n)-[r:CONTAINS]->(m)
+        MATCH (n)-[:CONTAINS]->(m)
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
           canvasID: data.room,
           nodeID: data.nodeID,
@@ -170,10 +129,8 @@ module.exports = {
         }
       );
 
-      const nodes = formatNodes(result);
-
       session.close();
-      return nodes;
+      return result.records;
     } catch(err) {
       console.log(err);
     }
@@ -188,7 +145,7 @@ module.exports = {
         WITH n  
         MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
           canvasID: data.room,
           nodeID: data.id,
@@ -197,10 +154,8 @@ module.exports = {
         }
       );
 
-      const nodes = formatNodes(result);
-
       session.close();
-      return nodes;
+      return result.records;
     } catch(err) {
       console.log(err);
     }
@@ -214,17 +169,15 @@ module.exports = {
         WITH n  
         MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
           canvasID: room,
           nodeID: id
         }
       );
 
-      const nodes = formatNodes(result);
-
       session.close();
-      return nodes;
+      return result.records;
     } catch(err) {
       console.log(err);
     }
@@ -237,7 +190,7 @@ module.exports = {
         CREATE (o)-[r:CONTAINS]->(n:ROUTE {id: $routeID, url: $url, method: $method})
         WITH o,n  
         MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)-[:CONTAINS]->(p)
-        RETURN m.id, m.x, m.y, m.type, m.created_at, p.id, p.url, p.method;`,
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
           canvasID: data.room,
           nodeID: data.id,
@@ -247,10 +200,8 @@ module.exports = {
         }
       );
 
-      const nodes = formatNodes(result);
-      console.log(nodes);
       session.close();
-      return nodes;
+      return result.records;
     } catch(err) {
       console.log(err);
     }
