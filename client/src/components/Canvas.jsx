@@ -87,7 +87,7 @@ class Canvas extends Component {
   downloadScreenshot() {
     //get the PNG URL to generate a snapshot of the page
     let imageURL = this.takeScreenshot();
-
+    console.log(imageURL);
     //create a new anchor to hold the image and download event
     var a = window.document.createElement('a');
 
@@ -152,15 +152,10 @@ class Canvas extends Component {
   }
 
   render() {
-    const svgStyle = {
-      'border': '1px solid #ddd',
-      'width': '100%',
-      'height': '400px'
-    }
-
     const showNodes = this.state.nodes.map(node => {
       if (this.get(node, 'type') === 'SERVER') {
-        return <Server get={this.get}
+        return <Server 
+          get={this.get}
           routes={this.get(node, 'routes')}
           id={this.get(node, 'id')}
           key={this.get(node, 'id')}
@@ -168,9 +163,11 @@ class Canvas extends Component {
           y={this.get(node, 'y')}
           handleMovement={this.handleNodeMove}
           handleNewRoute={this.handleNewNodeRoute}
-          handleDelete={this.handleNodeDelete} />
+          handleDelete={this.handleNodeDelete}
+        />
       } else if (this.get(node, 'type') === 'DATABASE') {
-        return <Database get={this.get}
+        return <Database 
+          get={this.get}
           routes={this.get(node, 'routes')}
           id={this.get(node, 'id')}
           key={this.get(node, 'id')}
@@ -178,8 +175,8 @@ class Canvas extends Component {
           y={this.get(node, 'y')}
           handleMovement={this.handleNodeMove}
           handleNewRoute={this.handleNewNodeRoute}
-          handleDelete={this.handleNodeDelete} />
-
+          handleDelete={this.handleNodeDelete}
+        />
       } else {
         return <Client
           get={this.get}
@@ -190,23 +187,28 @@ class Canvas extends Component {
           y={this.get(node, 'y')}
           handleMovement={this.handleNodeMove}
           handleNewRoute={this.handleNewNodeRoute}
-          handleDelete={this.handleNodeDelete} />
+          handleDelete={this.handleNodeDelete}
+        />
       };
     });
+    
     return (
-      
-      <div className="theCanvas">
+      <div>
         <h2>Shark.io</h2>
-        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
-        <button onClick={() => this.takeScreenshot()}> Save Canvas </button>
-        <svg className="canvas" style={svgStyle}>
-          <g>
-            <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
-          </g>
-          {showNodes}
-        </svg>
+        <div className="canvas-container">
+          <svg className="canvas">
+            <g>
+              <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
+            </g>
+            {showNodes}
+          </svg>
+          <div className="tool-bar">
+            <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
+            <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
+            <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
+            <button onClick={this.downloadScreenshot}> Save Canvas </button>
+          </div>
+        </div>
       </div>
     );
   }
