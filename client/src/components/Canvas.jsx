@@ -84,7 +84,7 @@ class Canvas extends Component {
   downloadScreenshot() {
     //get the PNG URL to generate a snapshot of the page
     let imageURL = this.takeScreenshot();
-
+    console.log(imageURL);
     //create a new anchor to hold the image and download event
     var a = window.document.createElement('a');
 
@@ -175,7 +175,7 @@ class Canvas extends Component {
         <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
         <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
-        <button onClick={() => this.takeScreenshot()}> Save Canvas </button>
+        <button onClick={this.downloadScreenshot}> Save Canvas </button>
         <svg className="canvas" style={svgStyle}>
           <g>
             <rect x="0" y="0" width="100%" height="400px" fill="#fff" />

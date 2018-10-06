@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
     const user = await db.addUser(req.body);
 
     req.session.userID = user.get('u.id');
-    console.log(req.session);
+    res.end();
   } catch(err) {
     console.log(err);
     res.statusMessage = 'That email address is already in use';
@@ -35,9 +35,8 @@ router.post('/login', async (req, res) => {
     }
     
     req.session.userID = user.get('u.id');
-    console.log(req.session);
 
-    res.send();
+    res.end();
   } catch(err) {
     res.statusMessage = err.message;
     res.sendStatus(err.code);
@@ -82,6 +81,8 @@ router.get('/canvases', async (req, res) => {
     res.send(canvases);
   } catch(err) {
     console.log(err);
+    res.statusMessage = err.message;
+    res.sendStatus(err.code);
   }
 })
 

@@ -28,7 +28,7 @@ class Signup extends Component {
     });
   }
 
-  handleSignup(e) {
+  async handleSignup(e) {
     const isValid = document.getElementById("signup-form").checkValidity();
     
     if (isValid) {
@@ -42,15 +42,13 @@ class Signup extends Component {
         }
       };
 
-      axios(options)
-        .then(data => {
-          console.log(data);
-          this.props.history.push('/');
-        })
-        .catch(err => {
-          // Actually show user what went wrong
-          console.log(err);
-        });
+      try {
+        const data = await axios(options);
+        console.log(data);
+        this.props.history.push('/');
+      } catch(err) {
+        console.log(err);
+      }
     }
   }
 
