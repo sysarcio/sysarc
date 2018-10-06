@@ -4,19 +4,14 @@ import Client from './Client.jsx';
 import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
-import posed from 'react-pose';
 import canvg from 'canvg';
+// import styled from 'styled-components';
 
-import styled from 'styled-components';
-
-const Svg = styled.svg`
-  border: 1px solid #ddd;
-  width: 100%;
-  height: 400px;
-`;
-
-
-
+// const Svg = styled.svg`
+//   border: 1px solid #ddd;
+//   width: 100%;
+//   height: 400px;
+// `;
 class Canvas extends Component {
   constructor(props) {
     super(props);
@@ -162,19 +157,41 @@ class Canvas extends Component {
       'width': '100%',
       'height': '400px'
     }
-    // console.log(this.state.nodes[0].get);
-    const showClients = this.state.nodes.map(node => {
-      // console.log(node.get);
-      return this.get(node, 'type') === 'CLIENT' ? <Client
-                                        get={this.get}
-                                        routes={this.get(node, 'routes')}
-                                        id={this.get(node, 'id')} 
-                                        key={this.get(node, 'id')} 
-                                        x={this.get(node, 'x')} 
-                                        y={this.get(node, 'y')} 
-                                        handleMovement={this.handleNodeMove} 
-                                        handleNewRoute={this.handleNewNodeRoute}
-                                        handleDelete={this.handleNodeDelete} /> : null
+
+    const showNodes = this.state.nodes.map(node => {
+      if (this.get(node, 'type') === 'SERVER') {
+        return <Server get={this.get}
+          routes={this.get(node, 'routes')}
+          id={this.get(node, 'id')}
+          key={this.get(node, 'id')}
+          x={this.get(node, 'x')}
+          y={this.get(node, 'y')}
+          handleMovement={this.handleNodeMove}
+          handleNewRoute={this.handleNewNodeRoute}
+          handleDelete={this.handleNodeDelete} />
+      } else if (this.get(node, 'type') === 'DATABASE') {
+        return <Database get={this.get}
+          routes={this.get(node, 'routes')}
+          id={this.get(node, 'id')}
+          key={this.get(node, 'id')}
+          x={this.get(node, 'x')}
+          y={this.get(node, 'y')}
+          handleMovement={this.handleNodeMove}
+          handleNewRoute={this.handleNewNodeRoute}
+          handleDelete={this.handleNodeDelete} />
+
+      } else {
+        return <Client
+          get={this.get}
+          routes={this.get(node, 'routes')}
+          id={this.get(node, 'id')}
+          key={this.get(node, 'id')}
+          x={this.get(node, 'x')}
+          y={this.get(node, 'y')}
+          handleMovement={this.handleNodeMove}
+          handleNewRoute={this.handleNewNodeRoute}
+          handleDelete={this.handleNodeDelete} />
+      };
     });
     return (
       
@@ -188,7 +205,7 @@ class Canvas extends Component {
           <g>
             <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
           </g>
-          {showClients}
+          {showNodes}
         </svg>
       </div>
     );
