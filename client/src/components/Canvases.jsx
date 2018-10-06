@@ -13,6 +13,11 @@ class Canvases extends Component {
     this.createCanvas = this.createCanvas.bind(this);
   }
 
+  get(node, prop) {
+    let i = node._fieldLookup[prop];
+    return node._fields[i];
+  }
+
   handleChange(e) {
     this.setState({
       text: e.target.value
@@ -79,11 +84,11 @@ class Canvases extends Component {
                 padding: '20px',
                 overflow: 'hidden'
               }}
-              onClick={() => this.goToCanvas(c.id)}
-              key={c.id}
+              onClick={() => this.goToCanvas(this.get(c, 'id'))}
+              key={this.get(c, 'id')}
             >
-              <p>name: {c.name}</p>
-              <pre>id: {c.id}</pre>
+              <p>name: {this.get(c, 'name')}</p>
+              <pre>id: {this.get(c, 'id')}</pre>
             </div>
           ))}
         </div>
