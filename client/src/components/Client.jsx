@@ -160,7 +160,7 @@ class Client extends React.Component {
         />
         <text x={x + 35} y={y + 20}>Client</text>
       
-        <foreignObject x={x + 5} y={y + 70} width="375" height="250">
+        <foreignObject x={x + 5} y={y + 70} width="100" height="100">
           
           {!this.state.isHidden &&
             <div style={fadeInStyle}>  
