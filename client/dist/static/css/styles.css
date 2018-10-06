@@ -6,3 +6,24 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.canvas-container {
+  display: flex;
+  height: 90vh;
+  padding: 10px;
+}
+
+.canvas {
+  border: 1px solid rgb(221, 221, 221);
+  width: 80%;
+}
+
+.tool-bar {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 20%;
+  border: 1px solid #ccc;
+  border-left: none;
+  background: #fafafa;
+}

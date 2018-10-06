@@ -69,6 +69,7 @@ router.post('/canvas/add', async (req, res) => {
 });
 
 router.get('/canvases', async (req, res) => {
+  console.log('get canvases');
   try {
     if (!req.session.userID) {
       throw {
