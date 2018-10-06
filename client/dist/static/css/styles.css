@@ -7,6 +7,22 @@ body {
   padding: 0;
 }
 
+.canvases {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.canvas-thumbnail {
+  height: 150px;
+  width: 200px;
+  border: 1px solid black;
+  margin: 20px;
+  padding: 20px;
+  overflow: hidden;
+}
+
 .canvas-container {
   display: flex;
   height: 90vh;
