@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import CanvasThumbnail from './CanvasThumbnail.jsx';
 import axios from 'axios';
 
 class Canvases extends Component {
@@ -11,6 +12,7 @@ class Canvases extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.createCanvas = this.createCanvas.bind(this);
+    this.goToCanvas = this.goToCanvas.bind(this);
   }
 
   async componentDidMount() {
@@ -75,25 +77,16 @@ class Canvases extends Component {
           value={this.state.text}
         />
         <button onClick={this.createCanvas}>Create Canvas</button>
-        <div>
+        <div className="canvases">
           {this.state.canvases.map(c => {
             if (this.get(c, 'id')) {
               return (
-                <div
-                  style={{
-                    height: '100px',
-                    width: '200px',
-                    border: '1px solid black',
-                    margin: '20px',
-                    padding: '20px',
-                    overflow: 'hidden'
-                  }}
-                  onClick={() => this.goToCanvas(this.get(c, 'id'))}
+                <CanvasThumbnail
+                  get={this.get}
+                  canvas={c}
+                  goToCanvas={this.goToCanvas}
                   key={this.get(c, 'id')}
-                >
-                <p>name: {this.get(c, 'name')}</p>
-                <pre>id: {this.get(c, 'id')}</pre>
-              </div>
+                />
               )
             }
           })}

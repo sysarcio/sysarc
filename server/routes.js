@@ -2,7 +2,6 @@ const express = require('express');
 const db = require('../database/index');
 const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
-const LZString = require('lz-string');
 
 const router = express.Router();
 

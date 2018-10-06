@@ -129,9 +129,9 @@ class Client extends React.Component {
             handleRouteDelete={this.props.handleRouteDelete}
             handleRouteUpdate={this.props.handleRouteUpdate}
             key={i}
-            method={endpoint.method}
-            url={endpoint.url}
-            routeId={endpoint.id} />
+            method={this.props.get(endpoint, 'method')}
+            url={this.props.get(endpoint, 'url')}
+            routeId={this.props.get(endpoint, 'id')} />
         }) : null;
       
 
