@@ -5,6 +5,7 @@ import Server from './Server.jsx';
 import Database from './Database.jsx';
 import { throws } from 'assert';
 import canvg from 'canvg';
+import axios from 'axios';
 // import styled from 'styled-components';
 
 // const Svg = styled.svg`
@@ -57,6 +58,7 @@ class Canvas extends Component {
     })
 
     this.get = this.get.bind(this);
+    this.uploadScreenshot = this.uploadScreenshot.bind(this);
     this.downloadScreenshot = this.downloadScreenshot.bind(this);
     this.takeScreenshot = this.takeScreenshot.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
@@ -84,10 +86,33 @@ class Canvas extends Component {
     });
   }
 
+  uploadScreenshot() {
+    //get the PNG URL to generate a snapshot of the page
+    let imageURL = this.takeScreenshot();
+
+    const options = {
+      method: 'POST',
+      url: '/api/uploadScreenshot',
+      data: {
+        canvasID: window.location.href.split('/canvas/')[1],
+        image: imageURL
+      }
+    };
+
+    axios(options)
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        // Actually show user what went wrong
+        console.log(err);
+      });
+  }
+
   downloadScreenshot() {
     //get the PNG URL to generate a snapshot of the page
     let imageURL = this.takeScreenshot();
-    console.log(imageURL);
+    // console.log(imageURL);
     //create a new anchor to hold the image and download event
     var a = window.document.createElement('a');
 
@@ -122,7 +147,6 @@ class Canvas extends Component {
   }
 
   handleNodeMove(data, cb) {
-
     data.room = this.props.match.params.name;
     // console.log(`dummy output:`);
     // console.log(data);
@@ -152,6 +176,7 @@ class Canvas extends Component {
   }
 
   render() {
+
     const showNodes = this.state.nodes.map(node => {
       if (this.get(node, 'type') === 'SERVER') {
         return <Server 
@@ -207,6 +232,7 @@ class Canvas extends Component {
             <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
             <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
             <button onClick={this.downloadScreenshot}> Save Canvas </button>
+            <button onClick={this.uploadScreenshot}> Upload Canvas </button>
           </div>
         </div>
       </div>
