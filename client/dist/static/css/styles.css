@@ -6,3 +6,40 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.canvases {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.canvas-thumbnail {
+  height: 150px;
+  width: 200px;
+  border: 1px solid black;
+  margin: 20px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.canvas-container {
+  display: flex;
+  height: 90vh;
+  padding: 10px;
+}
+
+.canvas {
+  border: 1px solid rgb(221, 221, 221);
+  width: 80%;
+}
+
+.tool-bar {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 20%;
+  border: 1px solid #ccc;
+  border-left: none;
+  background: #fafafa;
+}

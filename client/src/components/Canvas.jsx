@@ -149,11 +149,11 @@ class Canvas extends Component {
   }
 
   render() {
-    const svgStyle = {
-      'border': '1px solid #ddd',
-      'width': '100%',
-      'height': '400px'
-    }
+    // const svgStyle = {
+    //   'border': '1px solid #ddd',
+    //   'width': '100%',
+    //   'height': '80vh'
+    // }
     // console.log(this.state.nodes[0].get);
     const showClients = this.state.nodes.map(node => {
       // console.log(node.get);
@@ -169,19 +169,22 @@ class Canvas extends Component {
                                         handleDelete={this.handleNodeDelete} /> : null
     });
     return (
-      
-      <div className="theCanvas">
+      <div>
         <h2>Shark.io</h2>
-        <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
-        <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
-        <button onClick={this.downloadScreenshot}> Save Canvas </button>
-        <svg className="canvas" style={svgStyle}>
-          <g>
-            <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
-          </g>
-          {showClients}
-        </svg>
+        <div className="canvas-container">
+          <svg className="canvas">
+            <g>
+              <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
+            </g>
+            {showClients}
+          </svg>
+          <div className="tool-bar">
+            <button onClick={() => this.handleNewNode({ position: { x: 20, y: 20 }, type: 'CLIENT' })}> Client +</button>
+            <button onClick={() => this.handleNewNode({ position: { x: 250, y: 20 }, type: 'SERVER' })}> Server +</button>
+            <button onClick={() => this.handleNewNode({ position: { x: 350, y: 20 }, type: 'DATABASE' })}> Database +</button>
+            <button onClick={this.downloadScreenshot}> Save Canvas </button>
+          </div>
+        </div>
       </div>
     );
   }
