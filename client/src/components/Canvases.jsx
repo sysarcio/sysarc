@@ -13,17 +13,6 @@ class Canvases extends Component {
     this.createCanvas = this.createCanvas.bind(this);
   }
 
-  get(node, prop) {
-    let i = node._fieldLookup[prop];
-    return node._fields[i];
-  }
-
-  handleChange(e) {
-    this.setState({
-      text: e.target.value
-    });
-  }
-
   async componentDidMount() {
     const options = {
       method: 'GET',
@@ -38,7 +27,20 @@ class Canvases extends Component {
       });
     } catch(err) {
       console.log(err);
+      // tell user they must be logged in
+      this.props.history.push('/login');
     }
+  }
+
+  get(node, prop) {
+    let i = node._fieldLookup[prop];
+    return node._fields[i];
+  }
+
+  handleChange(e) {
+    this.setState({
+      text: e.target.value
+    });
   }
 
   async createCanvas() {
@@ -74,23 +76,27 @@ class Canvases extends Component {
         />
         <button onClick={this.createCanvas}>Create Canvas</button>
         <div>
-          {this.state.canvases.map(c => (
-            <div
-              style={{
-                height: '100px',
-                width: '200px',
-                border: '1px solid black',
-                margin: '20px',
-                padding: '20px',
-                overflow: 'hidden'
-              }}
-              onClick={() => this.goToCanvas(this.get(c, 'id'))}
-              key={this.get(c, 'id')}
-            >
-              <p>name: {this.get(c, 'name')}</p>
-              <pre>id: {this.get(c, 'id')}</pre>
-            </div>
-          ))}
+          {this.state.canvases.map(c => {
+            if (this.get(c, 'id')) {
+              return (
+                <div
+                  style={{
+                    height: '100px',
+                    width: '200px',
+                    border: '1px solid black',
+                    margin: '20px',
+                    padding: '20px',
+                    overflow: 'hidden'
+                  }}
+                  onClick={() => this.goToCanvas(this.get(c, 'id'))}
+                  key={this.get(c, 'id')}
+                >
+                <p>name: {this.get(c, 'name')}</p>
+                <pre>id: {this.get(c, 'id')}</pre>
+              </div>
+              )
+            }
+          })}
         </div>
       </div>
     )
