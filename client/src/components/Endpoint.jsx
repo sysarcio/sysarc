@@ -1,7 +1,5 @@
 import React from 'react';
 
-
-
 class Endpoint extends React.Component {
 
   constructor(props) {
@@ -10,7 +8,6 @@ class Endpoint extends React.Component {
       text: '',
       method: this.props.method,
       showInputBox: false,
-      showSave: 'Save',
       routeId: this.props.routeId
     }
   }
@@ -34,7 +31,6 @@ class Endpoint extends React.Component {
     })
   }
  render() {
-   console.log('route id', this.props.routeId)
    
    const updateDisplay = !this.state.showInputBox ?
      <div> {this.props.method}: / {this.props.url}
