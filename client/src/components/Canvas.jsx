@@ -148,6 +148,7 @@ class Canvas extends Component {
 
   handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
+    this.uploadScreenshot();
     // console.log(`dummy output:`);
     // console.log(data);
     this.socket.emit('move node', data);
@@ -155,6 +156,7 @@ class Canvas extends Component {
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
+    this.uploadScreenshot();
     // console.log('deleted');
     this.socket.emit('delete node', data);
   }
@@ -162,16 +164,19 @@ class Canvas extends Component {
   //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
+    this.uploadScreenshot();
     this.socket.emit('add route', data);
   }
 
   handleRouteUpdate(data) {
     data.room = this.props.match.params.name;
+    this.uploadScreenshot();
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
     data.room = this.props.match.params.name;
+    this.uploadScreenshot();
     this.socket.emit('delete route', data);
   }
 
