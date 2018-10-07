@@ -108,7 +108,7 @@ module.exports = {
         MATCH (u:USER {id: $userID})
         WITH u
         OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m)
-        RETURN m.id AS id, m.name AS name`,
+        RETURN m.id AS id, m.name AS name, m.image AS image`,
         {
           userID: userID
         }
