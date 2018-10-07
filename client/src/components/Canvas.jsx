@@ -169,7 +169,6 @@ class Canvas extends Component {
   }
 
   handleRouteUpdate(data) {
-    console.log('Canvas Update Endpoint Data: ', data);
     data.room = this.props.match.params.name;
     // this.uploadScreenshot();
     console.log('about to send updated route: ', data)
@@ -177,7 +176,6 @@ class Canvas extends Component {
   }
 
   handleRouteDelete(data) {
-    console.log('Canvas Delete Endpoint Data: ', data);
     data.room = this.props.match.params.name;
     // this.uploadScreenshot();
     console.log('about to send deleted route: ', data)
@@ -219,8 +217,6 @@ class Canvas extends Component {
           />
         );
       } else {
-        // console.log('Handle Route Delete in canvas: ', this.handleRouteDelete);
-        // console.log('Handle Route Update in canvas: ', this.handleRouteUpdate);
         return (
           <Client
             get={this.get}

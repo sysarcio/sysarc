@@ -143,9 +143,6 @@ class Client extends React.Component {
   }
 
   render() {
-    // console.log('props outside map function: ',this.props);
-    // console.log('handleRouteDelete: ', this.props.handleRouteDelete)
-    // console.log('handleRouteUpdate: ', this.props.handleRouteUpdate)
     const showEndpoints = this.props.routes.length ?
       
         this.props.routes.map((endpoint, i) => {
