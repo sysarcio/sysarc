@@ -74,6 +74,7 @@ class Client extends React.Component {
   }
 
   handleMouseMove(e) {
+
     const xDiff = this.coords.x - e.pageX;
     const yDiff = this.coords.y - e.pageY;
     
@@ -143,10 +144,10 @@ class Client extends React.Component {
   }
 
   render() {
+
     const showEndpoints = this.props.routes.length ?
       
         this.props.routes.map((endpoint, i) => {
-          console.log('props inside map function: ',this.props);
           return <Endpoint
             handleRouteDelete={this.handleRouteDeleteFormat}
             handleRouteUpdate={this.handleRouteUpdateFormat}
@@ -161,7 +162,7 @@ class Client extends React.Component {
       'transition': 'all 300ms',
     } : null;
     const fadeInStyle = this.state.showTransition === true ? {
-      'transition': 'all 300ms 200ms',
+      'transition': 'all 200ms 100ms',
       'opacity': this.state.animate ? '1' : '0'
     } : null;
 
