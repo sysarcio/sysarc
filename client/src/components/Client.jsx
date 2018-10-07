@@ -108,7 +108,7 @@ class Client extends React.Component {
   }
 
   startAnimation() {
-          // Added two nested requestAnimationFrames
+      // Added two nested requestAnimationFrames
       requestAnimationFrame(() => {
         // Firefox will sometimes merge changes that happened here
         requestAnimationFrame(() => {
@@ -120,9 +120,6 @@ class Client extends React.Component {
   }
 
   render() {
-    // console.log('props outside map function: ',this.props);
-    // console.log('handleRouteDelete: ', this.props.handleRouteDelete)
-    // console.log('handleRouteUpdate: ', this.props.handleRouteUpdate)
     const showEndpoints = this.props.routes.length ?
       
         this.props.routes.map((endpoint, i) => {
@@ -139,7 +136,6 @@ class Client extends React.Component {
 
     const rectStyle = this.state.showTransition === true ? {
       'transition': 'all 500ms',
-      // 'border': '1px solid #ddd',
     } : null;
     const fadeInStyle = this.state.showTransition === true ? {
       'transition': 'all 300ms 200ms',

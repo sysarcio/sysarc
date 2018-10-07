@@ -35,9 +35,8 @@ class Canvas extends Component {
     this.socket.on('node added', data => {
       this.setNodes(data);
     });
-    // TODO: change the name of 'move node' emitter or listener later
+    
     this.socket.on('node moved', data => {
-      // console.log('we heard back from socket', data);
       this.setNodes(data);
     });
 
@@ -149,15 +148,12 @@ class Canvas extends Component {
   handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    // console.log(`dummy output:`);
-    // console.log(data);
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    // console.log('deleted');
     this.socket.emit('delete node', data);
   }
 
@@ -169,14 +165,12 @@ class Canvas extends Component {
   }
 
   handleRouteUpdate(data) {
-    console.log('Canvas Update Endpoint Data: ', data);
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
-    console.log('Canvas Delete Endpoint Data: ', data);
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
     this.socket.emit('delete route', data);
@@ -213,8 +207,6 @@ class Canvas extends Component {
           />
         );
       } else {
-        // console.log('Handle Route Delete in canvas: ', this.handleRouteDelete);
-        // console.log('Handle Route Update in canvas: ', this.handleRouteUpdate);
         return (
           <Client
             get={this.get}
