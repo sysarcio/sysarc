@@ -16,6 +16,7 @@ class Endpoint extends React.Component {
     this.setState({
       routeId: this.props.routeId
     })
+
   }
 
   handleTextChange(e) {
@@ -31,7 +32,8 @@ class Endpoint extends React.Component {
     })
   }
  render() {
-   
+  console.log('Endpoint props: ', this.props);
+  console.log('Endpoint state: ', this.state);
    const updateDisplay = !this.state.showInputBox ?
      <div> {this.props.method}: / {this.props.url}
        <button type='button' onClick={this.toggleInputBox.bind(this)}>Update</button>
