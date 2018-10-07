@@ -32,6 +32,7 @@ body {
 .canvas {
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
+  background-color: #fff;
 }
 
 .tool-bar {

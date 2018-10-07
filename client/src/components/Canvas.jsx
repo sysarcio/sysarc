@@ -33,18 +33,22 @@ class Canvas extends Component {
     });
 
     this.socket.on('node added', data => {
+      console.log('node added event received: ', data);
       this.setNodes(data);
     });
     
     this.socket.on('node moved', data => {
+      console.log('node moved event received: ', data);
       this.setNodes(data);
     });
 
     this.socket.on('node deleted', data => {
+      console.log('node deleted event received: ', data);
       this.setNodes(data);
     });
 
     this.socket.on('route added', data => {
+      console.log('route added event received: ', data);
       this.setNodes(data);
     });
 
@@ -147,32 +151,32 @@ class Canvas extends Component {
 
   handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('delete node', data);
   }
 
   //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('add route', data);
   }
 
   handleRouteUpdate(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('delete route', data);
   }
 
@@ -189,6 +193,8 @@ class Canvas extends Component {
             y={this.get(node, 'y')}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
@@ -203,6 +209,8 @@ class Canvas extends Component {
             y={this.get(node, 'y')}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
@@ -230,9 +238,6 @@ class Canvas extends Component {
         <h2>Shark.io</h2>
         <div className="canvas-container">
           <svg className="canvas">
-            <g>
-              <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
-            </g>
             {showNodes}
           </svg>
           <div className="tool-bar">

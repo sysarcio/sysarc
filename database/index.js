@@ -204,7 +204,8 @@ module.exports = {
         MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })
         CREATE (o)-[r:CONTAINS]->(n:ROUTE {id: $routeID, url: $url, method: $method})
         WITH o,n  
-        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)-[:CONTAINS]->(p)
+        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
         RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
           canvasID: data.room,

@@ -129,38 +129,71 @@ class Server extends React.Component {
           handleRouteDelete={this.props.handleRouteDelete}
           handleRouteUpdate={this.props.handleRouteUpdate}
           key={i}
-          method={this.props.get(endpoint, 'method')}
-          url={this.props.get(endpoint, 'url')}
-          routeId={this.props.get(endpoint, 'id')} />
+          method={endpoint.properties.method}
+          url={endpoint.properties.url}
+          routeId={endpoint.properties.id} />
       }) : null;
-
 
     const rectStyle = this.state.showTransition === true ? {
       'transition': 'all 300ms',
-      'border': '1px solid #ddd',
     } : null;
     const fadeInStyle = this.state.showTransition === true ? {
       'transition': 'all 200ms 100ms',
       'opacity': this.state.animate ? '1' : '0'
     } : null;
+
     let x = this.state.currentX;
     let y = this.state.currentY;
+    const collapsedDimensions = [100,100];
+    const expandedDimensions = [350,250];
 
     return (
-      <g>
+      <g
+      onMouseDown={this.handleMouseDown}
+      onMouseUp={this.handleMouseUp}  
+      >
         <rect
           x={x}
           y={y}
-          width={this.state.animate ? 350 : 100}
-          height={this.state.animate ? 250 : 50}
-          fill="yellow"
+          rx="10"
+          ry="10"
+          width={this.state.animate ? expandedDimensions[0] : collapsedDimensions[0]}
+          height= {this.state.animate ? expandedDimensions[1] : collapsedDimensions[1]}
+          fill="hsla(202, 78%, 76%, 1)"
+          stroke="rgba(205, 205, 205, 0.25)"
+          strokeWidth="5"
           style={rectStyle}
-          onMouseDown={this.handleMouseDown}
-          onMouseUp={this.handleMouseUp}
         />
         <text x={x + 35} y={y + 20}>Server</text>
-
-        <foreignObject x={x + 5} y={y + 70} width="100" height="100">
+        <path
+        x={x}
+        y={y}
+        fill="black"
+        onClick={this.startAnimation}
+        stroke="rgba(205, 205, 205, 0.25)"
+        strokeWidth="5"
+        d={
+          `M ${x+10} ${y+20}
+          a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 0 1,0 ${collapsedDimensions[0]/50},0 
+          v ${-collapsedDimensions[0]/20} 
+          h ${collapsedDimensions[0]/20} 
+          a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 90 1,0 0,${-collapsedDimensions[0]/50} 
+          h ${-collapsedDimensions[0]/20} 
+          v ${-collapsedDimensions[0]/20} 
+          a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 0 1,0 ${-collapsedDimensions[0]/50},0 
+          v ${collapsedDimensions[0]/20} 
+          h ${-collapsedDimensions[0]/20} 
+          a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 45 1,0 0,${collapsedDimensions[0]/50} 
+          h ${collapsedDimensions[0]/20} 
+          v ${collapsedDimensions[0]/20}`} 
+        />
+        <foreignObject 
+          x={x} 
+          y={y+25}
+          width={this.state.animate ? expandedDimensions[0] : collapsedDimensions[0]}
+          height= {this.state.animate ? expandedDimensions[1]-25 : collapsedDimensions[1]-25}
+          style={rectStyle}
+        >
 
           {!this.state.isHidden &&
             <div style={fadeInStyle}>
@@ -194,9 +227,6 @@ class Server extends React.Component {
 
             </div>
           }
-        </foreignObject>
-        <foreignObject x={x + 80} y={y - 10} width="15" height="15">
-          <p onClick={this.startAnimation}>+</p>
         </foreignObject>
       </g>
     );
