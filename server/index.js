@@ -75,6 +75,7 @@ io.on('connection', socket => {
     data.nodeID = uuidv4();
 
     try {
+      console.log('add node data: ', data);
       const nodes = await db.addNode(data);
       io.to(data.room).emit('room data', nodes);
       // io.to(data.room).emit('node added', nodes);
@@ -97,6 +98,7 @@ io.on('connection', socket => {
     data.routeID = uuidv4();
 
     try {
+      console.log('add route data: ', data);
       const nodes = await db.addRoute(data);
       io.to(data.room).emit('room data', nodes);
       // io.to(data.room).emit('route added', nodes);
@@ -104,7 +106,32 @@ io.on('connection', socket => {
       console.log(err);
     }
   });
+
+  socket.on('update route', async data => {
+
+    try {
+      console.log('update route data: ', data);
+      const nodes = await db.updateRoute(data);
+      console.log('server data: ', nodes);
+      io.to(data.room).emit('route updated', nodes);
+    } catch(err) {
+      console.log(err);
+    }
+  });
+
+  socket.on('delete route', async data => {
+
+    try {
+      console.log('delete route data: ', data);
+      const nodes = await db.deleteRoute(data);
+      console.log('server data: ', nodes);
+      io.to(data.room).emit('route deleted', nodes);
+    } catch(err) {
+      console.log(err);
+    }
+  });
 });
+
 
 app.get('/*', (_, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));

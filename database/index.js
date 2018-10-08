@@ -199,6 +199,7 @@ module.exports = {
 
   async addRoute(data) {
     try {
+      console.log('addRoute input data: ', data)
       const result = await session.run(
         `
         MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })
@@ -217,6 +218,62 @@ module.exports = {
       );
 
       session.close();
+      return result.records;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  async updateRoute(data) {
+    try {
+      console.log('updateRoute input data: ', data);
+      const result = await session.run(
+        `
+        MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })-[:CONTAINS]->(n:ROUTE {id: $routeID})
+        SET n.url = $url
+        WITH o,n  
+        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        {
+          canvasID: data.room,
+          nodeID: data.id,
+          url: data.url,
+          method: data.method,
+          routeID: data.routeID
+        }
+      );
+
+      session.close();
+      console.log('query result: ', result.records);
+      return result.records;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  async deleteRoute(data) {
+    try {
+      console.log('deleteRoute input data: ', data);
+      const result = await session.run(
+        `
+        MATCH (c:CANVAS {id:$canvasID})-[r:CONTAINS]->(o:NODE {id:$nodeID })-[b:CONTAINS]->(n:ROUTE {id: $routeID})
+        DETACH DELETE b,n
+        WITH o
+        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        {
+          canvasID: data.room,
+          nodeID: data.id,
+          url: data.url,
+          method: data.method,
+          routeID: data.routeID
+        }
+      );
+
+      session.close();
+      console.log('query result: ', result.records);
       return result.records;
     } catch (err) {
       console.log(err);

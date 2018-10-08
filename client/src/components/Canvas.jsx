@@ -163,18 +163,21 @@ class Canvas extends Component {
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
+    console.log('about to send new route: ', data)
     this.socket.emit('add route', data);
   }
 
   handleRouteUpdate(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
+    console.log('about to send updated route: ', data)
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
+    console.log('about to send deleted route: ', data)
     this.socket.emit('delete route', data);
   }
 
