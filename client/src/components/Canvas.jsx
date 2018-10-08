@@ -35,9 +35,8 @@ class Canvas extends Component {
     this.socket.on('node added', data => {
       this.setNodes(data);
     });
-    // TODO: change the name of 'move node' emitter or listener later
+    
     this.socket.on('node moved', data => {
-      // console.log('we heard back from socket', data);
       this.setNodes(data);
     });
 
@@ -149,15 +148,12 @@ class Canvas extends Component {
   handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    // console.log(`dummy output:`);
-    // console.log(data);
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    // console.log('deleted');
     this.socket.emit('delete node', data);
   }
 
@@ -193,6 +189,8 @@ class Canvas extends Component {
             y={this.get(node, 'y')}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
@@ -207,6 +205,8 @@ class Canvas extends Component {
             y={this.get(node, 'y')}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
@@ -221,6 +221,8 @@ class Canvas extends Component {
             y={this.get(node, 'y')}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
@@ -232,9 +234,6 @@ class Canvas extends Component {
         <h2>Shark.io</h2>
         <div className="canvas-container">
           <svg className="canvas">
-            <g>
-              <rect x="0" y="0" width="100%" height="400px" fill="#fff" />
-            </g>
             {showNodes}
           </svg>
           <div className="tool-bar">
