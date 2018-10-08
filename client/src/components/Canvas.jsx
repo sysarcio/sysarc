@@ -29,6 +29,7 @@ class Canvas extends Component {
     });
 
     this.socket.on('room data', data => {
+      console.log('new room data ------>', data);
       this.setNodes(data);
     });
 
@@ -183,38 +184,20 @@ class Canvas extends Component {
 
   render() {
     const showNodes = this.state.nodes.map(node => {
-      if (this.get(node, 'type') === 'CLIENT') {
-      // if (this.get(node, 'type') === 'SERVER') {
-      //   {/* key={this.get(node, 'id')} */}
-      //   {/* x={this.get(node, 'x')} */}
-      //   {/* y={this.get(node, 'y')} */}
-      //   {/* routes={this.get(node, 'routes')} */}
-      //   return (
-      //     <Server
-      //       get={this.get}
-      //       node={node}
-      //       key={this.get(node, 'id')}
-      //       handleMovement={this.handleNodeMove}
-      //       handleNewRoute={this.handleNewNodeRoute}
-      //       handleRouteDelete={this.handleRouteDelete}
-      //       handleRouteUpdate={this.handleRouteUpdate}
-      //       handleDelete={this.handleNodeDelete}
-      //     />
-      //   );
-      // } else if (this.get(node, 'type') === 'DATABASE') {
-      //   return (
-      //     <Database
-      //       get={this.get}
-      //       node={node}
-      //       id={this.get(node, 'id')}
-      //       handleMovement={this.handleNodeMove}
-      //       handleNewRoute={this.handleNewNodeRoute}
-      //       handleRouteDelete={this.handleRouteDelete}
-      //       handleRouteUpdate={this.handleRouteUpdate}
-      //       handleDelete={this.handleNodeDelete}
-      //     />
-      //   );
-      // } else {
+      if (this.get(node, 'type') === 'SERVER') {
+        return (
+          <Server
+            get={this.get}
+            node={node}
+            key={this.get(node, 'id')}
+            handleMovement={this.handleNodeMove}
+            handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
+            handleDelete={this.handleNodeDelete}
+          />
+        );
+      } else if (this.get(node, 'type') === 'CLIENT') {
         return (
           <Client
             get={this.get}
@@ -227,8 +210,22 @@ class Canvas extends Component {
             handleDelete={this.handleNodeDelete}
           />
         );
+      } else {
+        return (
+          <Database
+            get={this.get}
+            node={node}
+            key={this.get(node, 'id')}
+            handleMovement={this.handleNodeMove}
+            handleNewRoute={this.handleNewNodeRoute}
+            handleRouteDelete={this.handleRouteDelete}
+            handleRouteUpdate={this.handleRouteUpdate}
+            handleDelete={this.handleNodeDelete}
+          />
+        );
       }
-    });
+    }
+  );
 
     return (
       <div>

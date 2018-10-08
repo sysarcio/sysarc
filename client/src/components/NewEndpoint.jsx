@@ -1,19 +1,17 @@
 import React from 'react';
 
-class Endpoint extends React.Component {
+class NewEndpoint extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      routeId: this.props.endpoint.properties.id,
-      method: this.props.endpoint.properties.method,
-      url: this.props.endpoint.properties.url
+      method: 'GET',
+      url: '',
     }
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleMethodChange = this.handleMethodChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleTextChange(e) {
@@ -29,27 +27,26 @@ class Endpoint extends React.Component {
   }
 
   handleClick() {
-    this.props.handleRouteUpdate({
-      routeID: this.props.endpoint.properties.id,
-      url: this.state.url,
-      method: this.state.method
-    })
-  }
+    this.props.toggleAddRoute();
 
-  handleDelete() {
-    this.props.handleRouteDelete({
-      routeID: this.props.endpoint.properties.id,
-      nodeID: this.props.nodeID
+    this.props.handleNewRoute({
+      url: this.state.url,
+      method: this.state.method,
+      id: this.props.nodeID
     });
+
+    // this.setState({
+    //   method: '',
+    //   url: ''
+    // })
   }
 
   render() {
-    console.log('route state on render ------>', this.state);
-    const {properties} = this.props.endpoint;
     return (
       <div className="endpoint">
         <select
-          defaultValue={properties.method}
+          name=""
+          defaultValue={this.state.tempMethod}
           onChange={this.handleMethodChange}
           className="endpoint-method"
         >
@@ -75,7 +72,7 @@ class Endpoint extends React.Component {
         </button>
         <button
           type='button' 
-          onClick={this.handleDelete}
+          onClick={this.props.toggleAddRoute}
           className="endpoint-delete"
         >
           x
@@ -86,4 +83,4 @@ class Endpoint extends React.Component {
 }
 
 
-export default Endpoint;
+export default NewEndpoint;

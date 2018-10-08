@@ -113,7 +113,8 @@ io.on('connection', socket => {
       console.log('update route data: ', data);
       const nodes = await db.updateRoute(data);
       console.log('server data: ', nodes);
-      io.to(data.room).emit('route updated', nodes);
+      io.to(data.room).emit('room data', nodes);
+      // io.to(data.room).emit('route updated', nodes);
     } catch(err) {
       console.log(err);
     }
@@ -125,7 +126,8 @@ io.on('connection', socket => {
       console.log('delete route data: ', data);
       const nodes = await db.deleteRoute(data);
       console.log('server data: ', nodes);
-      io.to(data.room).emit('route deleted', nodes);
+      io.to(data.room).emit('room data', nodes);
+      // io.to(data.room).emit('route deleted', nodes);
     } catch(err) {
       console.log(err);
     }
