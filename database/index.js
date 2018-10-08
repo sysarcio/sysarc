@@ -258,7 +258,7 @@ module.exports = {
       const result = await session.run(
         `
         MATCH (c:CANVAS {id:$canvasID})-[r:CONTAINS]->(o:NODE {id:$nodeID })-[b:CONTAINS]->(n:ROUTE {id: $routeID})
-        DELETE b
+        DETACH DELETE b,n
         WITH o
         MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
         OPTIONAL MATCH (m)-[:CONTAINS]->(p)
