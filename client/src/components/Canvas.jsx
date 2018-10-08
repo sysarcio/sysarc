@@ -38,7 +38,6 @@ class Canvas extends Component {
     });
     
     this.socket.on('node moved', data => {
-      console.log('node moved event received: ', data);
       this.setNodes(data);
     });
 
@@ -151,13 +150,13 @@ class Canvas extends Component {
 
   handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
-    // this.uploadScreenshot();
+    this.uploadScreenshot();
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
-    // this.uploadScreenshot();
+    this.uploadScreenshot();
     this.socket.emit('delete node', data);
   }
 
