@@ -36,7 +36,7 @@ class Canvas extends Component {
       console.log('node added event received: ', data);
       this.setNodes(data);
     });
-    
+
     this.socket.on('node moved', data => {
       console.log('node moved event received: ', data);
       this.setNodes(data);
@@ -139,11 +139,19 @@ class Canvas extends Component {
     // create a new object that contains all the SVGs currently on the board
     let canvasView = document.querySelector('.canvas');
 
+    //create a clone so we can manipulate without changing the user's view
+    let canvasViewClone = canvasView.cloneNode(true);
+
+    // add grey background to screenshot
+    canvasViewClone.innerHTML =
+      '<g> <rect x="0" y="0" width="100%" height="400px" fill="#BEBEBE" /></g>' +
+      canvasViewClone.innerHTML;
+
     //create a blank canvas to draw the board onto
     var canvas = document.createElement('canvas');
 
     //draw the board onto the canvas
-    canvg(canvas, canvasView.outerHTML);
+    canvg(canvas, canvasViewClone.outerHTML);
 
     //return a URL to point to the PNG screenshot of the canvas
     return canvas.toDataURL('image/png');
@@ -151,35 +159,35 @@ class Canvas extends Component {
 
   handleNodeMove(data, cb) {
     data.room = this.props.match.params.name;
-    // this.uploadScreenshot();
+    this.uploadScreenshot();
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
-    // this.uploadScreenshot();
+    this.uploadScreenshot();
     this.socket.emit('delete node', data);
   }
 
   //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
-    // this.uploadScreenshot();
-    console.log('about to send new route: ', data)
+    this.uploadScreenshot();
+    console.log('about to send new route: ', data);
     this.socket.emit('add route', data);
   }
 
   handleRouteUpdate(data) {
     data.room = this.props.match.params.name;
     // this.uploadScreenshot();
-    console.log('about to send updated route: ', data)
+    console.log('about to send updated route: ', data);
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
     data.room = this.props.match.params.name;
     // this.uploadScreenshot();
-    console.log('about to send deleted route: ', data)
+    console.log('about to send deleted route: ', data);
     this.socket.emit('delete route', data);
   }
 
@@ -240,9 +248,7 @@ class Canvas extends Component {
       <div>
         <h2>Shark.io</h2>
         <div className="canvas-container">
-          <svg className="canvas">
-            {showNodes}
-          </svg>
+          <svg className="canvas">{showNodes}</svg>
           <div className="tool-bar">
             <button
               onClick={() =>
