@@ -15,8 +15,7 @@ class Endpoint extends React.Component {
   componentDidMount() {
     this.setState({
       routeId: this.props.routeId
-    })
-
+    });
   }
 
   handleTextChange(e) {

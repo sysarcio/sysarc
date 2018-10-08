@@ -32,7 +32,7 @@ body {
 .canvas {
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
-  background-color: #fff;
+  background-color: #ccc;
 }
 
 .tool-bar {
@@ -43,4 +43,28 @@ body {
   border: 1px solid #ccc;
   border-left: none;
   background: #fafafa;
+}
+
+/* Temp client style */
+.client-container {
+  overflow: hidden;
+  transition: all 0.5s;
+  /* transition-property: width height 0.5s; */
+}
+
+.route {
+  display: flex;
+  justify-content: center;
+}
+
+.route-method {
+  width: 25%;
+}
+
+.route-url {
+  width: 50%;
+}
+
+.route-save {
+  width: 25%
 }

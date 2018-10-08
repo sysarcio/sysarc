@@ -17,9 +17,9 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showForm: false,
+      // showForm: false,
       nodes: [],
-      method: { type: '', url: '' }
+      // method: { type: '', url: '' }
     };
 
     this.socket = io.connect();
@@ -32,29 +32,29 @@ class Canvas extends Component {
       this.setNodes(data);
     });
 
-    this.socket.on('node added', data => {
-      this.setNodes(data);
-    });
+    // this.socket.on('node added', data => {
+    //   this.setNodes(data);
+    // });
     
-    this.socket.on('node moved', data => {
-      this.setNodes(data);
-    });
+    // this.socket.on('node moved', data => {
+    //   this.setNodes(data);
+    // });
 
-    this.socket.on('node deleted', data => {
-      this.setNodes(data);
-    });
+    // this.socket.on('node deleted', data => {
+    //   this.setNodes(data);
+    // });
 
-    this.socket.on('route added', data => {
-      this.setNodes(data);
-    });
+    // this.socket.on('route added', data => {
+    //   this.setNodes(data);
+    // });
 
-    this.socket.on('route updated', data => {
-      this.setNodes(data);
-    });
+    // this.socket.on('route updated', data => {
+    //   this.setNodes(data);
+    // });
 
-    this.socket.on('route deleted', data => {
-      this.setNodes(data);
-    });
+    // this.socket.on('route deleted', data => {
+    //   this.setNodes(data);
+    // });
 
     this.get = this.get.bind(this);
     this.uploadScreenshot = this.uploadScreenshot.bind(this);
@@ -80,6 +80,7 @@ class Canvas extends Component {
   }
 
   setNodes(data) {
+    console.log(data);
     this.setState({
       nodes: data
     });
@@ -100,11 +101,11 @@ class Canvas extends Component {
 
     axios(options)
       .then(data => {
-        console.log(data);
+        // console.log(data);
       })
       .catch(err => {
         // Actually show user what went wrong
-        console.log(err);
+        // console.log(err);
       });
   }
 
@@ -145,8 +146,9 @@ class Canvas extends Component {
     return canvas.toDataURL('image/png');
   }
 
-  handleNodeMove(data, cb) {
+  handleNodeMove(data) {
     data.room = this.props.match.params.name;
+    console.log('node move data ---->', data);
     this.uploadScreenshot();
     this.socket.emit('move node', data);
   }
@@ -178,47 +180,43 @@ class Canvas extends Component {
 
   render() {
     const showNodes = this.state.nodes.map(node => {
-      if (this.get(node, 'type') === 'SERVER') {
-        return (
-          <Server
-            get={this.get}
-            routes={this.get(node, 'routes')}
-            id={this.get(node, 'id')}
-            key={this.get(node, 'id')}
-            x={this.get(node, 'x')}
-            y={this.get(node, 'y')}
-            handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
-            handleRouteDelete={this.handleRouteDelete}
-            handleRouteUpdate={this.handleRouteUpdate}
-            handleDelete={this.handleNodeDelete}
-          />
-        );
-      } else if (this.get(node, 'type') === 'DATABASE') {
-        return (
-          <Database
-            get={this.get}
-            routes={this.get(node, 'routes')}
-            id={this.get(node, 'id')}
-            key={this.get(node, 'id')}
-            x={this.get(node, 'x')}
-            y={this.get(node, 'y')}
-            handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
-            handleRouteDelete={this.handleRouteDelete}
-            handleRouteUpdate={this.handleRouteUpdate}
-            handleDelete={this.handleNodeDelete}
-          />
-        );
-      } else {
+      if (this.get(node, 'type') === 'CLIENT') {
+      // if (this.get(node, 'type') === 'SERVER') {
+      //   {/* key={this.get(node, 'id')} */}
+      //   {/* x={this.get(node, 'x')} */}
+      //   {/* y={this.get(node, 'y')} */}
+      //   {/* routes={this.get(node, 'routes')} */}
+      //   return (
+      //     <Server
+      //       get={this.get}
+      //       node={node}
+      //       key={this.get(node, 'id')}
+      //       handleMovement={this.handleNodeMove}
+      //       handleNewRoute={this.handleNewNodeRoute}
+      //       handleRouteDelete={this.handleRouteDelete}
+      //       handleRouteUpdate={this.handleRouteUpdate}
+      //       handleDelete={this.handleNodeDelete}
+      //     />
+      //   );
+      // } else if (this.get(node, 'type') === 'DATABASE') {
+      //   return (
+      //     <Database
+      //       get={this.get}
+      //       node={node}
+      //       id={this.get(node, 'id')}
+      //       handleMovement={this.handleNodeMove}
+      //       handleNewRoute={this.handleNewNodeRoute}
+      //       handleRouteDelete={this.handleRouteDelete}
+      //       handleRouteUpdate={this.handleRouteUpdate}
+      //       handleDelete={this.handleNodeDelete}
+      //     />
+      //   );
+      // } else {
         return (
           <Client
             get={this.get}
-            routes={this.get(node, 'routes')}
-            id={this.get(node, 'id')}
+            node={node}
             key={this.get(node, 'id')}
-            x={this.get(node, 'x')}
-            y={this.get(node, 'y')}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewNodeRoute}
             handleRouteDelete={this.handleRouteDelete}
