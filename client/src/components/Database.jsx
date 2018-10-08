@@ -27,6 +27,8 @@ class Database extends React.Component {
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.startAnimation = this.startAnimation.bind(this);
     this.toggleTransition = this.toggleTransition.bind(this);
+    this.handleRouteUpdateFormat = this.handleRouteUpdateFormat.bind(this);
+    this.handleRouteDeleteFormat = this.handleRouteDeleteFormat.bind(this);
 
   }
 
@@ -108,6 +110,27 @@ class Database extends React.Component {
     });
   }
 
+  handleRouteDeleteFormat(receivedData) {
+    const data = {
+      id: this.props.id,
+      routeID: receivedData.routeId,
+      type: 'DATABASE'
+    };
+    console.log('route delete format data: ', data)
+    this.props.handleRouteDelete(data);
+  }
+
+  handleRouteUpdateFormat(receivedData) {
+    const data = {
+      id: this.props.id,
+      routeID: receivedData.routeId,
+      url: receivedData.url,
+      type: 'DATABASE'
+    };
+    console.log('route update format data: ', data)
+    this.props.handleRouteUpdate(data);
+  }
+
   startAnimation() {
     // Added two nested requestAnimationFrames
     requestAnimationFrame(() => {
@@ -126,9 +149,10 @@ class Database extends React.Component {
 
       this.props.routes.map((endpoint, i) => {
         return <Endpoint
-          handleRouteDelete={this.props.handleRouteDelete}
-          handleRouteUpdate={this.props.handleRouteUpdate}
+          handleRouteDelete={this.handleRouteDeleteFormat}
+            handleRouteUpdate={this.handleRouteUpdateFormat}
           key={i}
+          parentId={this.props.id}
           method={endpoint.properties.method}
           url={endpoint.properties.url}
           routeId={endpoint.properties.id} />
