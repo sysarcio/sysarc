@@ -50,10 +50,10 @@ class Endpoint extends React.Component {
       :
       <div>
         {this.props.method}: / <input placeholder={this.props.url} type="text" value={this.state.text} onChange={this.handleTextChange.bind(this)} />
-        <button type='button' onClick={() => this.props.handleRouteUpdate({ routeId: this.props.routeId, url: this.state.text })}>
+        <button type='button' onClick={() => this.handleSubmitEdit(this.props.handleRouteUpdate, { routeId: this.props.routeId, url: this.state.text })}>
           Save Route
         </button>
-        <button  type='button' onClick={() => { this.props.handleRouteDelete({ routeId: this.props.routeId})}} type='button'>
+        <button  type='button' onClick={() => this.handleSubmitEdit(this.props.handleRouteDelete, { routeId: this.props.routeId})}>
           Delete Route
         </button>
       </div>
