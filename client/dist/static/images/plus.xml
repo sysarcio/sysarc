@@ -1,0 +1,38 @@
+<!-- const collapsedDimensions = [100,100];
+    const expandedDimensions = [350,250]; -->
+
+<path
+x={x}
+y={y}
+fill="black"
+onClick={this.startAnimation}
+stroke="rgba(205, 205, 205, 0.25)"
+strokeWidth="5"
+d={
+`M ${x+10} ${y+20}
+a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 0 1,0 ${collapsedDimensions[0]/50},0 
+v ${-collapsedDimensions[0]/20} 
+h ${collapsedDimensions[0]/20} 
+a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 90 1,0 0,${-collapsedDimensions[0]/50} 
+h ${-collapsedDimensions[0]/20} 
+v ${-collapsedDimensions[0]/20} 
+a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 0 1,0 ${-collapsedDimensions[0]/50},0 
+v ${collapsedDimensions[0]/20} 
+h ${-collapsedDimensions[0]/20} 
+a ${collapsedDimensions[0]/100},${collapsedDimensions[0]/100} 45 1,0 0,${collapsedDimensions[0]/50} 
+h ${collapsedDimensions[0]/20} 
+v ${collapsedDimensions[0]/20}`} 
+/>
+
+<rect
+  x={x}
+  y={y}
+  rx="10"
+  ry="10"
+  width={this.state.animate ? expandedDimensions[0] : collapsedDimensions[0]}
+  height= {this.state.animate ? expandedDimensions[1] : collapsedDimensions[1]}
+  fill="hsla(202, 78%, 76%, 1)"
+  stroke="rgba(205, 205, 205, 0.25)"
+  strokeWidth="5"
+  style={rectStyle}
+/>

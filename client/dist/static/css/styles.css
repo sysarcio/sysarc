@@ -32,7 +32,7 @@ body {
 .canvas {
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
-  background-color: #fff;
+  background-color: #ccc;
 }
 
 .tool-bar {
@@ -43,4 +43,49 @@ body {
   border: 1px solid #ccc;
   border-left: none;
   background: #fafafa;
+}
+
+/* Temp client style */
+.node-container {
+  /* overflow: hidden; */
+  transition: all 0.5s;
+  /* transition-property: width height 0.5s; */
+}
+
+.endpoint {
+  display: flex;
+  justify-content: center;
+}
+
+.endpoint-method {
+  width: 25%;
+}
+
+.endpoint-url {
+  width: 40%;
+}
+
+.endpoint-save {
+  width: 15%
+}
+
+.endpoint-delete {
+  width: 10%
+}
+
+.add-route {
+  margin: 0 0 12px 16px;
+}
+
+.endpoints {
+  height: 140px;
+  overflow: scroll;
+}
+
+.delete-node {
+  margin: 0 0 12px 16px;
+}
+
+.node {
+  overflow: hidden;
 }
