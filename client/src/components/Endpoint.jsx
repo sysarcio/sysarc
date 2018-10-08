@@ -31,23 +31,37 @@ class Endpoint extends React.Component {
       showInputBox: !this.state.showInputBox
     })
   }
- render() {
-   const updateDisplay = !this.state.showInputBox ?
-     <div> {this.props.method}: / {this.props.url}
-       <button type='button' onClick={this.toggleInputBox.bind(this)}>Update</button>
-     </div> :
-     
-     <div>
-       {this.props.method}: / <input placeholder={this.props.url} type="text" value={this.state.text} onChange={this.handleTextChange.bind(this)} />
-       
-       <button type='button' onClick={() => this.props.handleRouteUpdate({ routeId: this.props.routeId, text: this.state.text })}>
-         Save Route
-        </button><button  type='button' onClick={() => { this.props.handleRouteDelete({ routeId: this.props.routeId})}} type='button'> Delete Route</button>
-     </div>;
 
-   return (
-     <div>{updateDisplay}</div>
-   )
+  handleSubmitEdit(callback, callbackArgument) {
+    this.setState({
+      showInputBox: !this.state.showInputBox
+    })
+    callback(callbackArgument);
+  }
+
+  render() {
+    const updateDisplay = !this.state.showInputBox 
+      ?
+      <div> {this.props.method}: / {this.props.url}
+        <button type='button' onClick={this.toggleInputBox.bind(this)}>
+          Update
+        </button>
+      </div> 
+      :
+      <div>
+        {this.props.method}: / <input placeholder={this.props.url} type="text" value={this.state.text} onChange={this.handleTextChange.bind(this)} />
+        <button type='button' onClick={() => this.handleSubmitEdit(this.props.handleRouteUpdate, { routeId: this.props.routeId, url: this.state.text })}>
+          Save Route
+        </button>
+        <button  type='button' onClick={() => this.handleSubmitEdit(this.props.handleRouteDelete, { routeId: this.props.routeId})}>
+          Delete Route
+        </button>
+      </div>
+      ;
+  
+    return (
+      <div>{updateDisplay}</div>
+    )
   }
 }
 
