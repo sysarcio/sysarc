@@ -18,7 +18,7 @@ class Canvas extends Component {
     super(props);
     this.state = {
       // showForm: false,
-      nodes: [],
+      nodes: []
       // method: { type: '', url: '' }
     };
 
@@ -141,7 +141,8 @@ class Canvas extends Component {
 
     //create a clone so we can manipulate without changing the user's view
     let canvasViewClone = canvasView.cloneNode(true);
-
+    console.log('printing the Clone');
+    console.log(canvasViewClone);
     // add grey background to screenshot
     canvasViewClone.innerHTML =
       '<g> <rect x="0" y="0" width="100%" height="400px" fill="#BEBEBE" /></g>' +
@@ -180,14 +181,14 @@ class Canvas extends Component {
   handleRouteUpdate(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    console.log('about to send updated route: ', data)
+    console.log('about to send updated route: ', data);
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    console.log('about to send deleted route: ', data)
+    console.log('about to send deleted route: ', data);
     this.socket.emit('delete route', data);
   }
 
@@ -219,7 +220,7 @@ class Canvas extends Component {
             handleDelete={this.handleNodeDelete}
           />
         );
-      } else {
+      } else if (this.get(node, 'type') === 'DATABASE') {
         return (
           <Database
             get={this.get}
@@ -233,8 +234,7 @@ class Canvas extends Component {
           />
         );
       }
-    }
-  );
+    });
 
     return (
       <div>
