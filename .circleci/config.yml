@@ -78,7 +78,6 @@ jobs:
             source $BASH_ENV
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
             "echo $BASH_ENV &&
-            $BASH_ENV &&
             printenv &&
             echo $GRAPHENEDB_URI &&
             echo $GRAPHENEDB_PASSWORD && 
