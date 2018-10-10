@@ -64,16 +64,16 @@ jobs:
           fingerprints:
             - "ba:f6:04:f4:29:26:29:1f:9c:f6:53:da:8f:6a:50:2c"
       - run:
-          name: Deploy Over SSH
-          command: |
-            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh && chmod +x rebuild.sh"
-      - run:
           name: Export env
           command: |
             "echo 'export GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD' >> $BASH_ENV
             echo 'export GRAPHENEDB_URI:$GRAPHENEDB_URI' >> $BASH_ENV
             echo 'export GRAPHENEDB_USERNAME:$GRAPHENEDB_USERNAME' >> $BASH_ENV
             source $BASH_ENV"
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh && chmod +x rebuild.sh"
       - run:
           name: Start rebuild
           command: |
