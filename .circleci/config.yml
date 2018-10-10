@@ -2,6 +2,8 @@ version: 2
 jobs:
   build:
     working_directory: ~/sysarcio
+    branches:
+      only: feat/dockerinit
     steps:
       - checkout
       - run:
@@ -58,10 +60,6 @@ workflows:
     #       - feat/dockerinit
     jobs:
       - build
-        filters:
-          branches:
-            only: feat/dockerinit
-      # - deploy
       # - deploy:
       #     # requires:
       #     #   - build
