@@ -58,6 +58,10 @@ jobs:
       machine:
           enabled: true
       working_directory: ~/sysarcio
+      environment:
+        GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
+        GRAPHENEDB_URI: $GRAPHENEDB_URI
+        GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
       steps:
       - checkout
       - add_ssh_keys:
