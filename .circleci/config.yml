@@ -71,9 +71,9 @@ jobs:
           name: Export env
           command: |
             "echo "$GRAPHENEDB_PASSWORD" "$GRAPHENEDB_URI" "$GRAPHENEDB_USERNAME"
-            # echo "export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"" > .env
             touch .env
             cat .env"
+            # echo "export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"" > .env
       - run:
           name: Deploy Over SSH
           command: |
