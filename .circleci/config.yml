@@ -66,10 +66,9 @@ jobs:
       - run:
           name: Export env
           command: |
-            "echo 'export GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD' >> $BASH_ENV
-            echo 'export GRAPHENEDB_URI:$GRAPHENEDB_URI' >> $BASH_ENV
-            echo 'export GRAPHENEDB_USERNAME:$GRAPHENEDB_USERNAME' >> $BASH_ENV
-            source $BASH_ENV"
+            "echo $GRAPHENEDB_PASSWORD
+            echo $GRAPHENEDB_URI
+            echo $GRAPHENEDB_USERNAME"
       - run:
           name: Deploy Over SSH
           command: |
