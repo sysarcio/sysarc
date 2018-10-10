@@ -80,7 +80,7 @@ jobs:
             "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
             chmod +x rebuild.sh &&
             echo $BASH_ENV &&
-            .$BASH_ENV &&
+            $BASH_ENV &&
             printenv &&
             echo $GRAPHENEDB_URI &&
             echo $GRAPHENEDB_PASSWORD && 
