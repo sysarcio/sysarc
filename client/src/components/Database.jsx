@@ -19,6 +19,11 @@ class Database extends Component {
     this.toggleAddRoute = this.toggleAddRoute.bind(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (this.state.isOpen !== nextState.isOpen || 
+      JSON.stringify(this.props) !== JSON.stringify(nextProps))
+  }
+
   handleDragStart(e) {
     e.target.style.opacity = 0.5;
 
@@ -37,7 +42,7 @@ class Database extends Component {
         x: e.clientX - this.state.x,
         y: e.clientY - this.state.y
       },
-      id: this.props.get(this.props.node, 'id')
+      id: this.props.node.id
     };
 
     this.props.handleMovement(data);
@@ -58,19 +63,20 @@ class Database extends Component {
   }
 
   render() {
+    console.log(`rendering db ${this.props.node.id}`);
     const {node} = this.props;
 
     return (
       <g>
         <foreignObject
-          x={this.props.get(node, 'x')}
-          y={this.props.get(node, 'y')}
+          x={this.props.node.x}
+          y={this.props.node.y}
           width={this.state.isOpen ? "350px" : "100px"}
           height={this.state.isOpen ? "250px" : "100px"}
           className="node-container"
         >
           <div
-            id={this.props.get(node, 'id')}
+            id={this.props.node.id}
             style={{background: 'gray', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
             draggable="true"
             className="node"
@@ -89,24 +95,24 @@ class Database extends Component {
                 <div className="endpoints">
                   {this.state.isAddingRoute && this.state.isOpen ? 
                     <NewEndpoint
-                      nodeID={this.props.get(node, 'id')}
+                      nodeID={this.props.node.id}
                       handleNewRoute={this.props.handleNewRoute}
                       toggleAddRoute={this.toggleAddRoute}
                     />
                   :
                     null
                   }
-                  {this.props.get(node, 'routes').map(endpoint => (
+                  {this.props.node.routes.map(endpoint => (
                     <Endpoint
                       key={endpoint.properties.id}
-                      nodeID={this.props.get(node, 'id')}
+                      nodeID={this.props.node.id}
                       endpoint={endpoint}
                       handleRouteDelete={this.props.handleRouteDelete}
                       handleRouteUpdate={this.props.handleRouteUpdate}
                     />
                   ))}
                 </div>
-                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: this.props.get(node, 'id') })}>Delete</button>
+                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: this.props.node.id })}>Delete</button>
               </div>
             :
               null

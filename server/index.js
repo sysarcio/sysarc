@@ -62,9 +62,9 @@ io.on('connection', socket => {
 
   socket.on('move node', async data => {
     try {
-      const nodes = await db.moveNode(data);
-      io.to(data.room).emit('room data', nodes);
-      // io.to(data.room).emit('node moved', nodes);
+      const node = await db.moveNode(data);
+      // io.to(data.room).emit('room data', node);
+      io.to(data.room).emit('node moved', node); 
     } catch(err) {
       console.log(err);
     }
@@ -75,10 +75,9 @@ io.on('connection', socket => {
     data.nodeID = uuidv4();
 
     try {
-      console.log('add node data: ', data);
       const nodes = await db.addNode(data);
-      io.to(data.room).emit('room data', nodes);
-      // io.to(data.room).emit('node added', nodes);
+      // io.to(data.room).emit('room data', nodes);
+      io.to(data.room).emit('node added', nodes);
     } catch(err) {
       console.log(err);
     }
@@ -87,8 +86,8 @@ io.on('connection', socket => {
   socket.on('delete node', async data => {
     try {
       const nodes = await db.deleteNode(data);
-      io.to(data.room).emit('room data', nodes);
-      // io.to(data.room).emit('node deleted', nodes);
+      // io.to(data.room).emit('room data', nodes);
+      io.to(data.room).emit('node deleted', nodes);
     } catch(err) {
       console.log(err);
     }
@@ -98,10 +97,9 @@ io.on('connection', socket => {
     data.routeID = uuidv4();
 
     try {
-      console.log('add route data: ', data);
       const nodes = await db.addRoute(data);
-      io.to(data.room).emit('room data', nodes);
-      // io.to(data.room).emit('route added', nodes);
+      // io.to(data.room).emit('room data', nodes);
+      // io.to(data.room).emit('route added', route);
     } catch(err) {
       console.log(err);
     }
@@ -110,10 +108,8 @@ io.on('connection', socket => {
   socket.on('update route', async data => {
 
     try {
-      console.log('update route data: ', data);
       const nodes = await db.updateRoute(data);
-      console.log('server data: ', nodes);
-      io.to(data.room).emit('room data', nodes);
+      // io.to(data.room).emit('room data', nodes);
       // io.to(data.room).emit('route updated', nodes);
     } catch(err) {
       console.log(err);
@@ -123,10 +119,8 @@ io.on('connection', socket => {
   socket.on('delete route', async data => {
 
     try {
-      console.log('delete route data: ', data);
       const nodes = await db.deleteRoute(data);
-      console.log('server data: ', nodes);
-      io.to(data.room).emit('room data', nodes);
+      // io.to(data.room).emit('room data', nodes);
       // io.to(data.room).emit('route deleted', nodes);
     } catch(err) {
       console.log(err);

@@ -23,13 +23,13 @@ body {
   overflow: hidden;
 }
 
-.canvas-container {
+#canvas-container {
   display: flex;
   height: 90vh;
   padding: 10px;
 }
 
-.canvas {
+#canvas {
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
   background-color: #ccc;
@@ -48,7 +48,7 @@ body {
 /* Temp client style */
 .node-container {
   /* overflow: hidden; */
-  transition: all 0.5s;
+  /* transition: all 0.5s; */
   /* transition-property: width height 0.5s; */
 }
 

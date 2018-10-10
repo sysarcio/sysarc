@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Endpoint from './Endpoint.jsx';
 import NewEndpoint from './NewEndpoint.jsx';
+import Draggable from 'react-draggable';
 
 class Client extends Component {
   constructor(props) {
@@ -19,25 +20,24 @@ class Client extends Component {
     this.toggleAddRoute = this.toggleAddRoute.bind(this);
   }
 
-  handleDragStart(e) {
-    e.target.style.opacity = 0.5;
+  shouldComponentUpdate(nextProps, nextState) {
+    return JSON.stringify(this.props) !== JSON.stringify(nextProps)
+  }
 
-    this.setState({
-      parent: e.target.parentElement,
-      x: e.clientX - e.target.parentElement.x.baseVal.value,
-      y: e.clientY - e.target.parentElement.y.baseVal.value
-    });
+  handleDragStart(e) {
+    
   }
 
   handleDragEnd(e) {
-    e.target.style.opacity = 1;
+    // e.target.style.opacity = 1;
+    const rect = document.getElementById(this.props.node.id).getBoundingClientRect();
     
     const data = {
       position: {
-        x: e.clientX - this.state.x,
-        y: e.clientY - this.state.y
+        x: rect.x,
+        y: rect.y
       },
-      id: this.props.get(this.props.node, 'id')
+      id: this.props.node.id
     };
 
     this.props.handleMovement(data);
@@ -58,58 +58,25 @@ class Client extends Component {
   }
 
   render() {
+    console.log(`rendering client ${this.props.node.id}`);
     const {node} = this.props;
 
     return (
       <g>
         <foreignObject
-          x={this.props.get(node, 'x')}
-          y={this.props.get(node, 'y')}
           width={this.state.isOpen ? "350px" : "100px"}
           height={this.state.isOpen ? "250px" : "100px"}
+          x={node.x}
+          y={node.y}
           className="node-container"
         >
           <div
-            id={this.props.get(node, 'id')}
+            id={this.props.node.id}
             style={{background: '#fff', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
-            draggable="true"
             className="node client"
-            onDragStart={this.handleDragStart}
+            draggable="true"
             onDragEnd={this.handleDragEnd}
           >
-            <p style={{textAlign: 'center'}} onClick={this.toggleSize}>CLIENT</p>
-            {this.state.isOpen ? 
-              <button onClick={this.toggleAddRoute} className="add-route">+</button>
-            :
-              null
-            }
-            {this.state.isOpen ? 
-              <div>
-                <div className="endpoints">
-                  {this.state.isAddingRoute && this.state.isOpen ? 
-                    <NewEndpoint
-                      nodeID={this.props.get(node, 'id')}
-                      handleNewRoute={this.props.handleNewRoute}
-                      toggleAddRoute={this.toggleAddRoute}
-                    />
-                  :
-                    null
-                  }
-                  {this.props.get(node, 'routes').map(endpoint => (
-                    <Endpoint
-                      key={endpoint.properties.id}
-                      nodeID={this.props.get(node, 'id')}
-                      endpoint={endpoint}
-                      handleRouteDelete={this.props.handleRouteDelete}
-                      handleRouteUpdate={this.props.handleRouteUpdate}
-                    />
-                  ))}
-                </div>
-                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: this.props.get(node, 'id') })}>Delete</button>
-              </div>
-            :
-              null
-            }
           </div>
         </foreignObject>
       </g>
