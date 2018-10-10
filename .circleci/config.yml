@@ -66,7 +66,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com "git clone https://github.com/baybars1223/scripts.git && cd scripts && chmod +x rebuild.sh && ./rebuild.sh"
+            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh && cd scripts && chmod +x rebuild.sh && ./rebuild.sh"
 
 workflows:
   version: 2
