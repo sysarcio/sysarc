@@ -67,16 +67,19 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "ba:f6:04:f4:29:26:29:1f:9c:f6:53:da:8f:6a:50:2c"
-      - run:
-          name: Export env
-          command: |
-            "echo "$GRAPHENEDB_PASSWORD"
-            echo "$GRAPHENEDB_URI"
-            echo "$GRAPHENEDB_USERNAME""
+      # - run:
+      #     name: Export env
+      #     command: |
+      #       "echo "$GRAPHENEDB_PASSWORD"
+      #       echo "$GRAPHENEDB_URI"
+      #       echo "$GRAPHENEDB_USERNAME""
       - run:
           name: Deploy Over SSH
           command: |
             touch .env
+            "echo "$GRAPHENEDB_PASSWORD"
+            echo "$GRAPHENEDB_URI"
+            echo "$GRAPHENEDB_USERNAME""
             "echo $GRAPHENEDB_URI
             echo $GRAPHENEDB_PASSWORD
             echo $GRAPHENEDB_USERNAME"
