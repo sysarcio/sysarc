@@ -58,6 +58,10 @@ jobs:
       machine:
           enabled: true
       working_directory: ~/sysarcio
+      environment:
+        GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+        GRAPHENEDB_URI: $GRAPHENEDB_URI
+        GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
       steps:
       - checkout
       - add_ssh_keys:
@@ -71,6 +75,10 @@ jobs:
       #       # echo "$GRAPHENEDB_USERNAME""
       - run:
           name: Deploy Over SSH
+          environment:
+            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+            GRAPHENEDB_URI: $GRAPHENEDB_URI
+            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
           command: |
             echo $BASH_ENV &&
             # printenv
