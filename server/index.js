@@ -75,16 +75,9 @@ io.on('connection', socket => {
     data.nodeID = uuidv4();
 
     try {
-<<<<<<< HEAD
       const node = await db.addNode(data);
       // io.to(data.room).emit('room data', nodes);
       io.to(data.room).emit('node added', node);
-=======
-      console.log('add node data: ', data);
-      const nodes = await db.addNode(data);
-      io.to(data.room).emit('room data', nodes);
-      // io.to(data.room).emit('node added', nodes);
->>>>>>> parent of c2a3169... Restructure state
     } catch(err) {
       console.log(err);
     }
@@ -92,15 +85,9 @@ io.on('connection', socket => {
 
   socket.on('delete node', async data => {
     try {
-<<<<<<< HEAD
       await db.deleteNode(data);
       // io.to(data.room).emit('room data', nodes);
       io.to(data.room).emit('node deleted', data.id);
-=======
-      const nodes = await db.deleteNode(data);
-      io.to(data.room).emit('room data', nodes);
-      // io.to(data.room).emit('node deleted', nodes);
->>>>>>> parent of c2a3169... Restructure state
     } catch(err) {
       console.log(err);
     }

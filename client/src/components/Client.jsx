@@ -18,22 +18,6 @@ class Client extends Component {
   }
 
   handleDragStart(e) {
-<<<<<<< HEAD
-    // const node = document.getElementById(this.props.node.id);
-    // const {top, left} = $(node).offset();
-    // console.log(top, left);
-  }
-
-  handleDragEnd(e) {
-    const node = $(`#${this.props.node.id}`);
-    const {top, left} = $(node).offset();
-    $(node).hide();
-    
-    const data = {
-      position: {
-        x: left,
-        y: top
-=======
     e.target.style.opacity = 0.5;
 
     this.setState({
@@ -50,7 +34,6 @@ class Client extends Component {
       position: {
         x: e.clientX - this.state.x,
         y: e.clientY - this.state.y
->>>>>>> parent of c2a3169... Restructure state
       },
       id: this.props.get(this.props.node, 'id')
     };
@@ -64,31 +47,6 @@ class Client extends Component {
     console.log(`rendering db ${node.id}`);
 
     return (
-<<<<<<< HEAD
-      <Draggable
-        handle='.node-name'
-        position={{x: node.x, y: node.y}}
-        bounds='parent'
-        onStart={this.handleDragStart}
-        onStop={this.handleDragEnd}
-      >
-        <div
-          id={node.id}
-          style={{
-            background: '#fff',
-            width: '100px',
-            height: '100px',
-            border: '1px solid #ccc',
-            borderRadius: '5px'
-          }}
-          className="node"
-          onClick={this.props.handleNewRoute}
-        >
-          <p className='node-name' style={{textAlign: 'center'}}>CLIENT</p>
-          <button type='button' className='delete-node' onClick={() => this.props.handleDelete({ id: node.id })}>Delete</button>
-        </div>
-      </Draggable>
-=======
       <g>
         <foreignObject
           x={this.props.get(node, 'x')}
@@ -141,7 +99,6 @@ class Client extends Component {
           </div>
         </foreignObject>
       </g>
->>>>>>> parent of c2a3169... Restructure state
     )
   }
 }

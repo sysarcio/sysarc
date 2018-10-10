@@ -17,13 +17,10 @@ class Database extends Component {
     // this.toggleAddRoute = this.toggleAddRoute.bind(this);
   }
 
-<<<<<<< HEAD
   shouldComponentUpdate(nextProps, nextState) {
     return JSON.stringify(this.props) !== JSON.stringify(nextProps)
   }
 
-=======
->>>>>>> parent of c2a3169... Restructure state
   handleDragStart(e) {
     // const node = document.getElementById(this.props.node.id);
     // const {top, left} = $(node).offset();
@@ -52,32 +49,6 @@ class Database extends Component {
     console.log(`rendering db ${node.id}`);
 
     return (
-<<<<<<< HEAD
-      <Draggable
-        handle='.node-name'
-        position={{x: node.x, y: node.y}}
-        bounds='parent'
-        onStart={this.handleDragStart}
-        onStop={this.handleDragEnd}
-      >
-        <div
-          id={node.id}
-          style={{
-            background: '#000',
-            color: '#fff',
-            width: '100px',
-            height: '100px',
-            border: '1px solid #ccc',
-            borderRadius: '5px'
-          }}
-          className="node"
-          onClick={this.props.handleNewRoute}
-        >
-          <p className='node-name' style={{textAlign: 'center'}}>DATABASE</p>
-          <button type='button' className='delete-node' onClick={() => this.props.handleDelete({ id: node.id })}>Delete</button>
-        </div>
-      </Draggable>
-=======
       <g>
         <foreignObject
           x={this.props.get(node, 'x')}
@@ -131,7 +102,6 @@ class Database extends Component {
           </div>
         </foreignObject>
       </g>
->>>>>>> parent of c2a3169... Restructure state
     )
   }
 }

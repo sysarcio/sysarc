@@ -45,29 +45,6 @@ class Server extends Component {
     console.log(`rendering db ${node.id}`);
 
     return (
-<<<<<<< HEAD
-      <div
-        id={node.id}
-        style={{
-          background: 'gray',
-          color: "#fff", 
-          width: '100px',
-          height: '100px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          top: node.y,
-          left: node.x
-        }}
-        draggable="true"
-        className="node"
-        onDragStart={this.handleDragStart}
-        onDragEnd={this.handleDragEnd}
-        onClick={this.toggleSize}
-      >
-        <p style={{textAlign: 'center'}} onClick={this.toggleSize}>SERVER</p>
-        <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: node.id })}>Delete</button>
-      </div>
-=======
       <g>
         <foreignObject
           x={this.props.get(node, 'x')}
@@ -121,7 +98,6 @@ class Server extends Component {
           </div>
         </foreignObject>
       </g>
->>>>>>> parent of c2a3169... Restructure state
     )
   }
 }

@@ -230,7 +230,7 @@ class Canvas extends Component {
   }
 
   render() {
-    const showNodes = this.state.nodes.map(node => {
+    const showNodes = Object.values(this.state.nodes).map(node => {
       if (this.get(node, 'type') === 'SERVER') {
         return (
           <Server
