@@ -84,7 +84,7 @@ jobs:
             echo "GRAPHENEDB_USERNAME=$GRAPHENEDB_USERNAME" > .env
             echo "GRAPHENEDB_URI=$GRAPHENEDB_URI" >> .env
             echo "GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD" >> .env
-            echo "cat .env" 
+            cat .env 
             # printenv
             echo 'export GRAPHENEDB_URI=$GRAPHENEDB_URI' >> $BASH_ENV
             source $BASH_ENV
