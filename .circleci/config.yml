@@ -1,28 +1,28 @@
 version: 2
 jobs:
-#   build:
-#     working_directory: ~/sysarcio
-#     docker:
-#       # - image: circleci/build-image
-#       - image: circleci/node:8
-#     # branches:
-#     #   only: feat/dockerinit
-#     steps:
-#       - checkout
-#       - setup_remote_docker
-#           # docker_layer_caching: true
-#       - run:
-#           name: login-docker
-#           command: docker login -u baybars1223 --password $DOCKER_PASS
-#       - run:
-#           name: docker-pull-last
-#           command: docker pull baybars1223/sysarcio:latest
-#       - run:
-#           name: build-docker-image
-#           command: 'docker build -t baybars1223/sysarcio .'
-#           # command: docker login -u baybars1223 --password-stdin $DOCKER_PASS &&
-#           # command: docker version && service docker start
-#           # command: 'sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
+  build:
+    working_directory: ~/sysarcio
+    docker:
+      # - image: circleci/build-image
+      - image: circleci/node:8
+    # branches:
+    #   only: feat/dockerinit
+    steps:
+      - checkout
+      - setup_remote_docker
+          # docker_layer_caching: true
+      - run:
+          name: login-docker
+          command: docker login -u baybars1223 --password $DOCKER_PASS
+      - run:
+          name: docker-pull-last
+          command: docker pull baybars1223/sysarcio:latest
+      - run:
+          name: build-docker-image
+          command: 'docker build -t baybars1223/sysarcio .'
+          # command: docker login -u baybars1223 --password-stdin $DOCKER_PASS &&
+          # command: docker version && service docker start
+          # command: 'sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
 #       - run:
 #           name: update-npm
 #           command: 'sudo npm install -g npm@5'
@@ -68,15 +68,15 @@ jobs:
           command: |
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh && cd scripts && chmod +x rebuild.sh && ./rebuild.sh"
 
-# workflows:
-#   version: 2
-#   build-and-deploy:
-#     # filters:
-#     #   branches:
-#     #     only:
-#     #       - feat/dockerinit
-#     jobs:
-#       - build
-#       - deploy:
-#           requires:
-#             - build
+workflows:
+  version: 2
+  build-and-deploy:
+    # filters:
+    #   branches:
+    #     only:
+    #       - feat/dockerinit
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
