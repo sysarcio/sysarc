@@ -94,10 +94,6 @@ jobs:
             chmod +x rebuild.sh &&
             ls &&
             ./rebuild.sh"
-          environment:
-            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
-            GRAPHENEDB_URI: $GRAPHENEDB_URI
-            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
             
       # - run:
       #     name: Start rebuild
