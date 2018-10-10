@@ -75,15 +75,11 @@ jobs:
       #       # echo "$GRAPHENEDB_USERNAME""
       - run:
           name: Deploy Over SSH
-          environment:
-            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
-            GRAPHENEDB_URI: $GRAPHENEDB_URI
-            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
           command: |
             touch .env
-            echo $GRAPHENEDB_URI &&
+            "echo $GRAPHENEDB_URI &&
             echo $GRAPHENEDB_PASSWORD && 
-            echo $GRAPHENEDB_USERNAME &&
+            echo $GRAPHENEDB_USERNAME"
             echo $BASH_ENV
             # cp $BASH_ENV .env &&
             echo 'export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"' >> .env
@@ -104,6 +100,10 @@ jobs:
             chmod +x rebuild.sh &&
             ls &&
             ./rebuild.sh"
+          environment:
+            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+            GRAPHENEDB_URI: $GRAPHENEDB_URI
+            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
             
       # - run:
       #     name: Start rebuild
