@@ -12,6 +12,12 @@ jobs:
       - setup_remote_docker
           # docker_layer_caching: true
       - run:
+          name: login-docker
+          command: docker login -u baybars1223 --password-stdin $DOCKER_PASS
+      - run:
+          name: docker-pull-last
+          command: docker pull baybars1223/sysarcio:latest
+      - run:
           name: build-docker-image
           command: 'docker build -t baybars1223/sysarcio .'
           # command: docker login -u baybars1223 --password-stdin $DOCKER_PASS &&
