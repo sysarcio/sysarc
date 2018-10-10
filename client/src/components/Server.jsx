@@ -16,11 +16,6 @@ class Server extends Component {
     // this.toggleAddRoute = this.toggleAddRoute.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (this.state.isOpen !== nextState.isOpen || 
-      JSON.stringify(this.props) !== JSON.stringify(nextProps))
-  }
-
   handleDragStart(e) {
     e.target.style.opacity = 0.5;
 
@@ -39,7 +34,7 @@ class Server extends Component {
         x: e.clientX - this.state.x,
         y: e.clientY - this.state.y
       },
-      id: this.props.node.id
+      id: this.props.get(this.props.node, 'id')
     };
 
     this.props.handleMovement(data);
@@ -50,6 +45,7 @@ class Server extends Component {
     console.log(`rendering db ${node.id}`);
 
     return (
+<<<<<<< HEAD
       <div
         id={node.id}
         style={{
@@ -71,6 +67,61 @@ class Server extends Component {
         <p style={{textAlign: 'center'}} onClick={this.toggleSize}>SERVER</p>
         <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: node.id })}>Delete</button>
       </div>
+=======
+      <g>
+        <foreignObject
+          x={this.props.get(node, 'x')}
+          y={this.props.get(node, 'y')}
+          width={this.state.isOpen ? "350px" : "100px"}
+          height={this.state.isOpen ? "250px" : "100px"}
+          className="node-container"
+        >
+          <div
+            id={this.props.get(node, 'id')}
+            style={{background: '#000', color: '#fff', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
+            draggable="true"
+            className="node"
+            onDragStart={this.handleDragStart}
+            onDragEnd={this.handleDragEnd}
+            onClick={this.toggleSize}
+          >
+            <p style={{textAlign: 'center'}} onClick={this.toggleSize}>SERVER</p>
+            {this.state.isOpen ? 
+              <button onClick={this.toggleAddRoute} className="add-route">+</button>
+            :
+              null
+            }
+            {this.state.isOpen ? 
+              <div>
+                <div className="endpoints">
+                  {this.state.isAddingRoute && this.state.isOpen ? 
+                    <NewEndpoint
+                      nodeID={this.props.get(node, 'id')}
+                      handleNewRoute={this.props.handleNewRoute}
+                      toggleAddRoute={this.toggleAddRoute}
+                    />
+                  :
+                    null
+                  }
+                  {this.props.get(node, 'routes').map(endpoint => (
+                    <Endpoint
+                      key={endpoint.properties.id}
+                      nodeID={this.props.get(node, 'id')}
+                      endpoint={endpoint}
+                      handleRouteDelete={this.props.handleRouteDelete}
+                      handleRouteUpdate={this.props.handleRouteUpdate}
+                    />
+                  ))}
+                </div>
+                <button className="delete-node" type="button" onClick={() => this.props.handleDelete({ id: this.props.get(node, 'id') })}>Delete</button>
+              </div>
+            :
+              null
+            }
+          </div>
+        </foreignObject>
+      </g>
+>>>>>>> parent of c2a3169... Restructure state
     )
   }
 }

@@ -23,16 +23,24 @@ body {
   overflow: hidden;
 }
 
+<<<<<<< HEAD
 #canvas-container {
   overflow: hidden;
+=======
+.canvas-container {
+>>>>>>> parent of c2a3169... Restructure state
   display: flex;
   height: 90vh;
   padding: 10px;
 }
 
+<<<<<<< HEAD
 #canvas {
   overflow: hidden;
   position: relative;
+=======
+.canvas {
+>>>>>>> parent of c2a3169... Restructure state
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
   background-color: #ccc;
@@ -53,6 +61,15 @@ body {
 }
 
 /* Temp client style */
+<<<<<<< HEAD
+=======
+.node-container {
+  /* overflow: hidden; */
+  transition: all 0.5s;
+  /* transition-property: width height 0.5s; */
+}
+
+>>>>>>> parent of c2a3169... Restructure state
 .endpoint {
   display: flex;
   justify-content: center;

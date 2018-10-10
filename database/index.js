@@ -152,9 +152,12 @@ module.exports = {
         `
         MATCH (n:NODE {id: $nodeID})
         SET n.x = $x, n.y = $y
-        RETURN n.x AS x, n.y AS y, n.id AS id;
-        `,
+        WITH n  
+        MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
+        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
         {
+          canvasID: data.room,
           nodeID: data.id,
           x: x,
           y: y
@@ -162,7 +165,7 @@ module.exports = {
       );
 
       session.close();
-      return result.records[0];
+      return result.records;
     } catch (err) {
       console.log(err);
     }
