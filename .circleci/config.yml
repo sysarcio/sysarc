@@ -75,10 +75,10 @@ jobs:
       #       # echo "$GRAPHENEDB_USERNAME""
       - run:
           name: Deploy Over SSH
-          # environment:
-          #   GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
-          #   GRAPHENEDB_URI: $GRAPHENEDB_URI
-          #   GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
+          environment:
+            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+            GRAPHENEDB_URI: $GRAPHENEDB_URI
+            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
           command: |
             touch .env
             echo $GRAPHENEDB_URI &&
