@@ -81,6 +81,9 @@ jobs:
           #   GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
           command: |
             touch .env
+            echo $GRAPHENEDB_URI &&
+            echo $GRAPHENEDB_PASSWORD && 
+            echo $GRAPHENEDB_USERNAME &&
             echo $BASH_ENV
             cp $BASH_ENV .env &&
             echo 'export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"' >> .env
