@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/sysarcio
     docker:
       # - image: circleci/build-image
-      - image: docker pull circleci/build-image
+      - image: circleci/build-image
     branches:
       only: feat/dockerinit
     steps:
