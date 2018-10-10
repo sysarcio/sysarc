@@ -76,7 +76,7 @@ workflows:
     #     only:
     #       - feat/dockerinit
     jobs:
-      - build
+      # - build
       - deploy:
-          requires:
-            - build
+          # requires:
+          #   - build
