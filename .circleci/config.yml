@@ -67,18 +67,9 @@ jobs:
           name: Deploy Over SSH
           command: |
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com
-      - run:
-          name: kill containers
-          command: "docker stop baybars1223/sysarcio:latest && docker rm baybars1223/sysarcio:latest"
-      - run:
-          name: get it
-          command: docker pull baybars1223/sysarcio:latest
-      - run:
-          name: run it
-          command: docker run --name baybars1223/sysarcio:latest -p 80:80 --env-file .env -d baybars1223/sysarcio:latest
-
-              
-
+            docker stop baybars1223/sysarcio:latest && docker rm baybars1223/sysarcio:latest
+            docker pull baybars1223/sysarcio:latest
+            docker run --name baybars1223/sysarcio:latest -p 80:80 -d baybars1223/sysarcio:latest
 
 workflows:
   version: 2
