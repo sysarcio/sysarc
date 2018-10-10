@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
           name: build-docker-image
-          command: sudo service docker stop
+          command: systemctl start docker
           # command: 'sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
       - run:
           name: update-npm
