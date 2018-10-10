@@ -71,10 +71,6 @@ jobs:
       #       # echo "$GRAPHENEDB_USERNAME""
       - run:
           name: Deploy Over SSH
-          environment:
-            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
-            GRAPHENEDB_URI: $GRAPHENEDB_URI
-            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
           command: |
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
             "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
@@ -84,6 +80,11 @@ jobs:
             echo $GRAPHENEDB_USERNAME &&
             ls &&
             ./rebuild.sh"
+          environment:
+            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+            GRAPHENEDB_URI: $GRAPHENEDB_URI
+            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
+            
       # - run:
       #     name: Start rebuild
       #     environment:
