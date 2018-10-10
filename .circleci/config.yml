@@ -51,15 +51,15 @@ jobs:
   #         command: |
   #           ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com "ls cd circleci-demo-javascript-express && ls && chmod +x rebuild.sh && ./rebuild.sh"
 
-workflows:
-  version: 2
-  build-and-deploy:
-    # filters:
-    #   branches:
-    #     only:
-    #       - feat/dockerinit
-    jobs:
-      - build
-      # - deploy:
-      #     # requires:
-      #     #   - build
+# workflows:
+#   version: 2
+#   build-and-deploy:
+#     filters:
+#       branches:
+#         only:
+#           - feat/dockerinit
+#     jobs:
+#       - build
+#       # - deploy:
+#       #     # requires:
+#       #     #   - build
