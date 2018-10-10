@@ -70,9 +70,7 @@ jobs:
       - run:
           name: Export env
           command: |
-            "echo "$GRAPHENEDB_PASSWORD"
-            echo "$GRAPHENEDB_URI"
-            echo "$GRAPHENEDB_USERNAME"
+            "echo "$GRAPHENEDB_PASSWORD" "$GRAPHENEDB_URI" "$GRAPHENEDB_USERNAME"
             echo "export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"" > .env
             cat .env"
       - run:
