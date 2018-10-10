@@ -4,14 +4,15 @@ jobs:
     working_directory: ~/sysarcio
     docker:
       # - image: circleci/build-image
-      - image: circleci/node:8.11.1
+      - image: docker pull circleci/build-image
     branches:
       only: feat/dockerinit
     steps:
       - checkout
       - run:
           name: build-docker-image
-          command: 'sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
+          command: 'docker build -t baybars1223/sysarcio .'
+          # sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo 
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@5'
