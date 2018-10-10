@@ -75,9 +75,9 @@ io.on('connection', socket => {
     data.nodeID = uuidv4();
 
     try {
-      const nodes = await db.addNode(data);
+      const node = await db.addNode(data);
       // io.to(data.room).emit('room data', nodes);
-      io.to(data.room).emit('node added', nodes);
+      io.to(data.room).emit('node added', node);
     } catch(err) {
       console.log(err);
     }
@@ -85,9 +85,9 @@ io.on('connection', socket => {
 
   socket.on('delete node', async data => {
     try {
-      const nodes = await db.deleteNode(data);
+      await db.deleteNode(data);
       // io.to(data.room).emit('room data', nodes);
-      io.to(data.room).emit('node deleted', nodes);
+      io.to(data.room).emit('node deleted', data.id);
     } catch(err) {
       console.log(err);
     }

@@ -24,15 +24,22 @@ body {
 }
 
 #canvas-container {
+  overflow: hidden;
   display: flex;
   height: 90vh;
   padding: 10px;
 }
 
 #canvas {
+  overflow: hidden;
+  position: relative;
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
   background-color: #ccc;
+}
+
+.node-name:hover {
+  cursor: move;
 }
 
 .tool-bar {
@@ -46,12 +53,6 @@ body {
 }
 
 /* Temp client style */
-.node-container {
-  /* overflow: hidden; */
-  /* transition: all 0.5s; */
-  /* transition-property: width height 0.5s; */
-}
-
 .endpoint {
   display: flex;
   justify-content: center;
@@ -87,5 +88,6 @@ body {
 }
 
 .node {
+  /* position: absolute; */
   overflow: hidden;
 }
