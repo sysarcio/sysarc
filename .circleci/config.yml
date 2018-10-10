@@ -3,16 +3,15 @@ jobs:
   build:
     working_directory: ~/sysarcio
     docker:
+      # - image: circleci/build-image
       - image: circleci/node:8.11.1
     branches:
       only: feat/dockerinit
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
           name: build-docker-image
-          command: 'ls && sudo docker build -t baybars1223/sysarcio .'
+          command: 'ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@5'
