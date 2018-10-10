@@ -73,7 +73,7 @@ jobs:
           name: Deploy Over SSH
           command: |
             echo $BASH_ENV &&
-            printenv
+            # printenv
             echo 'export GRAPHENEDB_URI=$GRAPHENEDB_URI' >> $BASH_ENV
             source $BASH_ENV
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
