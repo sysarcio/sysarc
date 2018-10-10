@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: build-docker-image
-          command: 'docker build -t baybars1223/sysarcio .'
+          command: 'sudo docker build -t baybars1223/sysarcio .'
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@5'
