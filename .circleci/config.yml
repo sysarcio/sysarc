@@ -73,6 +73,9 @@ jobs:
           name: Deploy Over SSH
           command: |
             echo $BASH_ENV &&
+            printenv
+            echo 'export GRAPHENEDB_URI=$GRAPHENEDB_URI' >> $BASH_ENV
+            source $BASH_ENV
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
             "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
             chmod +x rebuild.sh && 
