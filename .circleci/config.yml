@@ -72,10 +72,10 @@ jobs:
 workflows:
   version: 2
   build-and-deploy:
-    filters:
-      branches:
-        only:
-          - feat/dockerinit
+    # filters:
+    #   branches:
+    #     only:
+    #       - feat/dockerinit
     jobs:
       - build
       - deploy:
