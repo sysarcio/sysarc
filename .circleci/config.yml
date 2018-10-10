@@ -2,6 +2,8 @@ version: 2
 jobs:
   build:
     working_directory: ~/sysarcio
+    docker:
+      - image: circleci/node:8.11.1
     branches:
       only: feat/dockerinit
     steps:
