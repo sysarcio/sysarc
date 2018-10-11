@@ -70,6 +70,10 @@ jobs:
       - run:
           name: Export env
           command: |
+            touch .env
+            echo 'export PATH="$GRAPHENEDB_PASSWORD"' >> .env
+            echo 'export GIT_SHA1="$GRAPHENEDB_URI"' >> .env
+            cat .env
             "echo "$GRAPHENEDB_PASSWORD" "$GRAPHENEDB_URI" "$GRAPHENEDB_USERNAME"
             touch .env
             cat .env"
