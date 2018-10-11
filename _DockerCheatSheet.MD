@@ -19,7 +19,7 @@ docker run hello-world
 
 ## List Docker images
 
-docker image ls
+docker image lss
 
 ## List Docker containers (running, all, all in quiet mode)
 
