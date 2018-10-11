@@ -35,6 +35,10 @@ body {
   background-color: #ccc;
 }
 
+.node-name:hover {
+  cursor: move;
+}
+
 .tool-bar {
   display: flex;
   flex-direction: column;
@@ -87,5 +91,6 @@ body {
 }
 
 .node {
+  /* position: absolute; */
   overflow: hidden;
 }

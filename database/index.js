@@ -126,12 +126,9 @@ module.exports = {
     try {
       const result = await session.run(
         `
-        MATCH (n:CANVAS {id: $canvasID})
-        CREATE (n)-[:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
-        WITH n
-        MATCH (n)-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        MATCH (c:CANVAS {id: $canvasID})
+        CREATE (c)-[:CONTAINS]->(n:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
+        RETURN n.x AS x, n.y AS y, n.id AS id, n.type AS type`,
         {
           canvasID: data.room,
           nodeID: data.nodeID,
@@ -142,7 +139,7 @@ module.exports = {
       );
 
       session.close();
-      return result.records;
+      return result.records[0];
     } catch (err) {
       console.log(err);
     }
@@ -176,14 +173,10 @@ module.exports = {
 
   async deleteNode({ room, id }) {
     try {
-      const result = await session.run(
+      await session.run(
         `
         MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c:NODE {id: $nodeID})
-        DETACH DELETE c, r
-        WITH n  
-        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        DETACH DELETE c, r`,
         {
           canvasID: room,
           nodeID: id
@@ -191,7 +184,6 @@ module.exports = {
       );
 
       session.close();
-      return result.records;
     } catch (err) {
       console.log(err);
     }

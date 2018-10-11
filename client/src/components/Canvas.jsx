@@ -6,20 +6,12 @@ import Database from './Database.jsx';
 import { throws } from 'assert';
 import canvg from 'canvg';
 import axios from 'axios';
-// import styled from 'styled-components';
 
-// const Svg = styled.svg`
-//   border: 1px solid #ddd;
-//   width: 100%;
-//   height: 400px;
-// `;
 class Canvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // showForm: false,
-      nodes: []
-      // method: { type: '', url: '' }
+      nodes: {}
     };
 
     this.socket = io.connect();
@@ -29,23 +21,38 @@ class Canvas extends Component {
     });
 
     this.socket.on('room data', data => {
-      console.log('new room data ------>', data);
-      this.setNodes(data);
+      const nodes = data.reduce((o, n) => {
+        o[this.get(n, 'id')] = {
+          id: this.get(n, 'id'),
+          x: this.get(n, 'x'),
+          y: this.get(n, 'y'),
+          type: this.get(n, 'type'),
+          created_at: this.get(n, 'created_at')
+        };
+        return o;
+      }, {});
+
+      this.setNodes(nodes);
     });
 
-    this.socket.on('node added', data => {
-      console.log('node added event received: ', data);
-      this.setNodes(data);
+    this.socket.on('node added', node => {
+      node = {
+        id: this.get(node, 'id'),
+        x: this.get(node, 'x'),
+        y: this.get(node, 'y'),
+        type: this.get(node, 'type'),
+        created_at: this.get(node, 'created_at')
+      }
+      this.addNode(node);
     });
 
-    this.socket.on('node moved', data => {
-      console.log('node moved event received: ', data);
-      this.setNodes(data);
+    this.socket.on('node moved', node => {
+      this.moveNode(node);
     });
 
-    // this.socket.on('node deleted', data => {
-    //   this.setNodes(data);
-    // });
+    this.socket.on('node deleted', id => {
+      this.deleteNode(id);
+    });
 
     // this.socket.on('route added', data => {
     //   this.setNodes(data);
@@ -60,12 +67,11 @@ class Canvas extends Component {
     // });
 
     this.get = this.get.bind(this);
-    this.uploadScreenshot = this.uploadScreenshot.bind(this);
-    this.downloadScreenshot = this.downloadScreenshot.bind(this);
-    this.takeScreenshot = this.takeScreenshot.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
+    this.moveNode = this.moveNode.bind(this);
+
     this.handleNewNodeRoute = this.handleNewNodeRoute.bind(this);
     this.handleRouteUpdate = this.handleRouteUpdate.bind(this);
     this.handleRouteDelete = this.handleRouteDelete.bind(this);
@@ -74,6 +80,38 @@ class Canvas extends Component {
   get(node, prop) {
     let i = node._fieldLookup[prop];
     return node._fields[i];
+  }
+  
+  setNodes(data) {
+    this.setState({
+      nodes: data
+    });
+  }
+
+  addNode(node) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    nodes[node.id] = node;
+    this.setState({
+      nodes
+    });
+  }
+
+  moveNode(node) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    const id = this.get(node, 'id');
+    nodes[id].x = this.get(node, 'x');
+    nodes[id].y = this.get(node, 'y');
+    this.setState({
+      nodes
+    });
+  }
+
+  deleteNode(id) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    delete nodes[id];
+    this.setState({
+      nodes
+    });
   }
 
   //data = {x: val, y: val, type: '', routes: [{routeId: '5tgdr', method: 'get', url: '/clientsomething'}, {method: 'post, url: ''}];
@@ -160,17 +198,16 @@ class Canvas extends Component {
 
   handleNodeMove(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('delete node', data);
   }
 
-  //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
@@ -193,41 +230,41 @@ class Canvas extends Component {
   }
 
   render() {
-    const showNodes = this.state.nodes.map(node => {
-      if (this.get(node, 'type') === 'SERVER') {
+    const showNodes = Object.values(this.state.nodes).map(node => {
+      if (node.type === 'SERVER') {
         return (
           <Server
             get={this.get}
             node={node}
-            key={this.get(node, 'id')}
+            key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
+            handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
-      } else if (this.get(node, 'type') === 'CLIENT') {
+      } else if (node.type === 'CLIENT') {
         return (
           <Client
             get={this.get}
             node={node}
-            key={this.get(node, 'id')}
+            key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
+            handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
           />
         );
-      } else if (this.get(node, 'type') === 'DATABASE') {
+      } else if (node.type === 'DATABASE') {
         return (
           <Database
             get={this.get}
             node={node}
-            key={this.get(node, 'id')}
+            key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
+            handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
@@ -275,8 +312,8 @@ class Canvas extends Component {
               {' '}
               Database +
             </button>
-            <button onClick={this.downloadScreenshot}> Save Canvas </button>
-            <button onClick={this.uploadScreenshot}> Upload Canvas </button>
+            {/* <button onClick={this.downloadScreenshot}> Save Canvas </button>
+            <button onClick={this.uploadScreenshot}> Upload Canvas </button> */}
           </div>
         </div>
       </div>

@@ -6,17 +6,15 @@ class Client extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
       parent: null,
       x: null,
-      y: null,
-      isAddingRoute: false
+      y: null
     };
 
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
-    this.toggleSize = this.toggleSize.bind(this);
-    this.toggleAddRoute = this.toggleAddRoute.bind(this);
+    // this.toggleSize = this.toggleSize.bind(this);
+    // this.toggleAddRoute = this.toggleAddRoute.bind(this);
   }
 
   handleDragStart(e) {
@@ -37,40 +35,27 @@ class Client extends Component {
         x: e.clientX - this.state.x,
         y: e.clientY - this.state.y
       },
-      id: this.props.get(this.props.node, 'id')
+      id: this.props.node.id
     };
 
     this.props.handleMovement(data);
   }
 
-  toggleAddRoute() {
-    this.setState({
-      isAddingRoute:!this.state.isAddingRoute
-    });
-  }
-
-  toggleSize(e) {
-    if (e.target === e.currentTarget) {
-      this.setState({
-        isOpen: !this.state.isOpen
-      });
-    }
-  }
-
   render() {
     const {node} = this.props;
+    console.log(`rendering db ${node.id}`);
 
     return (
       <g>
         <foreignObject
-          x={this.props.get(node, 'x')}
-          y={this.props.get(node, 'y')}
+          x={node.x}
+          y={node.y}
           width={this.state.isOpen ? "350px" : "100px"}
           height={this.state.isOpen ? "250px" : "100px"}
           className="node-container"
         >
           <div
-            id={this.props.get(node, 'id')}
+            id={node.id }
             style={{background: '#fff', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
             draggable="true"
             className="node client"
@@ -88,7 +73,7 @@ class Client extends Component {
                 <div className="endpoints">
                   {this.state.isAddingRoute && this.state.isOpen ? 
                     <NewEndpoint
-                      nodeID={this.props.get(node, 'id')}
+                      nodeID={node.id}
                       handleNewRoute={this.props.handleNewRoute}
                       toggleAddRoute={this.toggleAddRoute}
                     />
