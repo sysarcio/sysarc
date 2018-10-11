@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
-import Draggable from 'react-draggable';
 import Endpoint from './Endpoint.jsx';
 import NewEndpoint from './NewEndpoint.jsx';
 
@@ -8,7 +6,9 @@ class Database extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      parent: null,
+      x: null,
+      y: null
     };
 
     this.handleDragStart = this.handleDragStart.bind(this);
@@ -22,22 +22,24 @@ class Database extends Component {
   }
 
   handleDragStart(e) {
-    // const node = document.getElementById(this.props.node.id);
-    // const {top, left} = $(node).offset();
-    // console.log(top, left);
+    e.target.style.opacity = 0.5;
+
+    this.setState({
+      parent: e.target.parentElement,
+      x: e.clientX - e.target.parentElement.x.baseVal.value,
+      y: e.clientY - e.target.parentElement.y.baseVal.value
+    });
   }
 
   handleDragEnd(e) {
-    const node = $(`#${this.props.node.id}`);
-    const {top, left} = $(node).offset();
-    $(node).hide();
+    e.target.style.opacity = 1;
     
     const data = {
       position: {
-        x: left,
-        y: top
+        x: e.clientX - this.state.x,
+        y: e.clientY - this.state.y
       },
-      id: this.props.get(this.props.node, 'id')
+      id: this.props.node.id
     };
 
     this.props.handleMovement(data);
@@ -45,20 +47,19 @@ class Database extends Component {
 
   render() {
     const {node} = this.props;
-    $(`#${node.id}`).show();
     console.log(`rendering db ${node.id}`);
 
     return (
       <g>
         <foreignObject
-          x={this.props.get(node, 'x')}
-          y={this.props.get(node, 'y')}
+          x={node.x}
+          y={node.y}
           width={this.state.isOpen ? "350px" : "100px"}
           height={this.state.isOpen ? "250px" : "100px"}
           className="node-container"
         >
           <div
-            id={this.props.get(node, 'id')}
+            id={node.id}
             style={{background: 'gray', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
             draggable="true"
             className="node"

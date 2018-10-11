@@ -6,6 +6,7 @@ class Server extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      parent: null,
       x: null,
       y: null
     };
@@ -34,7 +35,7 @@ class Server extends Component {
         x: e.clientX - this.state.x,
         y: e.clientY - this.state.y
       },
-      id: this.props.get(this.props.node, 'id')
+      id: this.props.node.id
     };
 
     this.props.handleMovement(data);
@@ -47,14 +48,14 @@ class Server extends Component {
     return (
       <g>
         <foreignObject
-          x={this.props.get(node, 'x')}
-          y={this.props.get(node, 'y')}
+          x={node.x}
+          y={node.y}
           width={this.state.isOpen ? "350px" : "100px"}
           height={this.state.isOpen ? "250px" : "100px"}
           className="node-container"
         >
           <div
-            id={this.props.get(node, 'id')}
+            id={node.id}
             style={{background: '#000', color: '#fff', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
             draggable="true"
             className="node"

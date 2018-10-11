@@ -231,12 +231,12 @@ class Canvas extends Component {
 
   render() {
     const showNodes = Object.values(this.state.nodes).map(node => {
-      if (this.get(node, 'type') === 'SERVER') {
+      if (node.type === 'SERVER') {
         return (
           <Server
             get={this.get}
             node={node}
-            key={this.get(node, 'id')}
+            key={node.id}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
@@ -244,12 +244,12 @@ class Canvas extends Component {
             handleDelete={this.handleNodeDelete}
           />
         );
-      } else if (this.get(node, 'type') === 'CLIENT') {
+      } else if (node.type === 'CLIENT') {
         return (
           <Client
             get={this.get}
             node={node}
-            key={this.get(node, 'id')}
+            key={node.id}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
@@ -257,12 +257,12 @@ class Canvas extends Component {
             handleDelete={this.handleNodeDelete}
           />
         );
-      } else if (this.get(node, 'type') === 'DATABASE') {
+      } else if (node.type === 'DATABASE') {
         return (
           <Database
             get={this.get}
             node={node}
-            key={this.get(node, 'id')}
+            key={node.id}
             handleMovement={this.handleNodeMove}
             handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
