@@ -72,6 +72,8 @@ jobs:
           command: |
             cat <<EOF > .env
             GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD
+            GRAPHENEDB_URI=$GRAPHENEDB_URI
+            GRAPHENEDB_USERNAME=$GRAPHENEDB_USERNAME
             EOF
             cat .env
             cat <<EOF > .env
