@@ -6,20 +6,12 @@ import Database from './Database.jsx';
 import { throws } from 'assert';
 import canvg from 'canvg';
 import axios from 'axios';
-// import styled from 'styled-components';
 
-// const Svg = styled.svg`
-//   border: 1px solid #ddd;
-//   width: 100%;
-//   height: 400px;
-// `;
 class Canvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // showForm: false,
       nodes: {}
-      // method: { type: '', url: '' }
     };
 
     this.socket = io.connect();
@@ -29,15 +21,14 @@ class Canvas extends Component {
     });
 
     this.socket.on('room data', data => {
-      // console.log('new room data ------>', data);
       const nodes = data.reduce((o, n) => {
         o[this.get(n, 'id')] = {
           id: this.get(n, 'id'),
           x: this.get(n, 'x'),
           y: this.get(n, 'y'),
           type: this.get(n, 'type'),
-          created_at: this.get(n, 'created_at'),
-          routes: this.get(n, 'routes')
+          routes: this.get(n, 'routes') || [],
+          created_at: this.get(n, 'created_at')
         };
         return o;
       }, {});
@@ -45,20 +36,25 @@ class Canvas extends Component {
       this.setNodes(nodes);
     });
 
-    this.socket.on('node added', data => {
-      // console.log('node added event received: ', data);
-      this.setNodes(data);
+    this.socket.on('node added', node => {
+      node = {
+        id: this.get(node, 'id'),
+        x: this.get(node, 'x'),
+        y: this.get(node, 'y'),
+        type: this.get(node, 'type'),
+        routes: this.get(node, 'routes') || [],
+        created_at: this.get(node, 'created_at')
+      }
+      this.addNode(node);
     });
 
     this.socket.on('node moved', node => {
-      // console.log('node moved event received: ', movedNode);
-      
       this.moveNode(node);
     });
 
-    // this.socket.on('node deleted', data => {
-    //   this.setNodes(data);
-    // });
+    this.socket.on('node deleted', id => {
+      this.deleteNode(id);
+    });
 
     // this.socket.on('route added', data => {
     //   this.setNodes(data);
@@ -73,16 +69,16 @@ class Canvas extends Component {
     // });
 
     this.get = this.get.bind(this);
-    this.uploadScreenshot = this.uploadScreenshot.bind(this);
-    this.downloadScreenshot = this.downloadScreenshot.bind(this);
-    this.takeScreenshot = this.takeScreenshot.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
     this.handleNodeMove = this.handleNodeMove.bind(this);
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
+    this.moveNode = this.moveNode.bind(this);
+
     this.handleNewNodeRoute = this.handleNewNodeRoute.bind(this);
     this.handleRouteUpdate = this.handleRouteUpdate.bind(this);
     this.handleRouteDelete = this.handleRouteDelete.bind(this);
-    this.moveNode = this.moveNode.bind(this);
+    this.uploadScreenshot = this.uploadScreenshot.bind(this);
+    this.downloadScreenshot = this.downloadScreenshot.bind(this);
   }
 
   get(node, prop) {
@@ -96,11 +92,27 @@ class Canvas extends Component {
     });
   }
 
+  addNode(node) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    nodes[node.id] = node;
+    this.setState({
+      nodes
+    });
+  }
+
   moveNode(node) {
     const nodes = JSON.parse(JSON.stringify(this.state.nodes));
     const id = this.get(node, 'id');
     nodes[id].x = this.get(node, 'x');
     nodes[id].y = this.get(node, 'y');
+    this.setState({
+      nodes
+    });
+  }
+
+  deleteNode(id) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    delete nodes[id];
     this.setState({
       nodes
     });
@@ -112,106 +124,112 @@ class Canvas extends Component {
     this.socket.emit('add node', data);
   }
 
+  setNodes(data) {
+    console.log(data);
+    this.setState({
+      nodes: data
+    });
+  }
+
   uploadScreenshot() {
-    // //get the PNG URL to generate a snapshot of the page
-    // let imageURL = this.takeScreenshot();
+    //get the PNG URL to generate a snapshot of the page
+    let imageURL = this.takeScreenshot();
 
-    // const options = {
-    //   method: 'POST',
-    //   url: '/api/uploadScreenshot',
-    //   data: {
-    //     canvasID: window.location.href.split('/canvas/')[1],
-    //     image: imageURL
-    //   }
-    // };
+    const options = {
+      method: 'POST',
+      url: '/api/uploadScreenshot',
+      data: {
+        canvasID: window.location.href.split('/canvas/')[1],
+        image: imageURL
+      }
+    };
 
-    // axios(options)
-    //   .then(data => {
-    //     // console.log(data);
-    //   })
-    //   .catch(err => {
-    //     // Actually show user what went wrong
-    //     // console.log(err);
-    //   });
+    axios(options)
+      .then(data => {
+        // console.log(data);
+      })
+      .catch(err => {
+        // Actually show user what went wrong
+        // console.log(err);
+      });
   }
 
   downloadScreenshot() {
-    // //get the PNG URL to generate a snapshot of the page
-    // let imageURL = this.takeScreenshot();
-    // // console.log(imageURL);
-    // //create a new anchor to hold the image and download event
-    // var a = window.document.createElement('a');
+    //get the PNG URL to generate a snapshot of the page
+    let imageURL = this.takeScreenshot();
+    // console.log(imageURL);
+    //create a new anchor to hold the image and download event
+    var a = window.document.createElement('a');
 
-    // //set the href to your url, and give it the PNG type.
-    // (a.href = imageURL), { type: 'image/png' };
+    //set the href to your url, and give it the PNG type.
+    (a.href = imageURL), { type: 'image/png' };
 
-    // //set the filename
-    // a.download = 'canvas.png';
+    //set the filename
+    a.download = 'canvas.png';
 
-    // //append download to body
-    // document.body.appendChild(a);
+    //append download to body
+    document.body.appendChild(a);
 
-    // //execute click event on element
-    // a.click();
+    //execute click event on element
+    a.click();
 
-    // // Remove anchor from body
-    // document.body.removeChild(a);
+    // Remove anchor from body
+    document.body.removeChild(a);
   }
 
   takeScreenshot() {
-    // // create a new object that contains all the SVGs currently on the board
-    // let canvasView = document.querySelector('.canvas');
+    // create a new object that contains all the SVGs currently on the board
+    let canvasView = document.querySelector('.canvas');
 
-    // //create a clone so we can manipulate without changing the user's view
-    // let canvasViewClone = canvasView.cloneNode(true);
-    // // console.log('printing the Clone');
-    // // console.log(canvasViewClone);
-    // // add grey background to screenshot
-    // canvasViewClone.innerHTML =
-    //   '<g> <rect x="0" y="0" width="100%" height="400px" fill="#BEBEBE" /></g>' +
-    //   canvasViewClone.innerHTML;
+    //create a clone so we can manipulate without changing the user's view
+    let canvasViewClone = canvasView.cloneNode(true);
+    console.log('printing the Clone');
+    console.log(canvasViewClone);
+    // add grey background to screenshot
+    canvasViewClone.innerHTML =
+      '<g> <rect x="0" y="0" width="100%" height="400px" fill="#BEBEBE" /></g>' +
+      canvasViewClone.innerHTML;
 
-    // //create a blank canvas to draw the board onto
-    // var canvas = document.createElement('canvas');
+    //create a blank canvas to draw the board onto
+    var canvas = document.createElement('canvas');
 
-    // //draw the board onto the canvas
-    // canvg(canvas, canvasViewClone.outerHTML);
+    //draw the board onto the canvas
+    canvg(canvas, canvasViewClone.outerHTML);
 
-    // //return a URL to point to the PNG screenshot of the canvas
-    // return canvas.toDataURL('image/png');
+    //return a URL to point to the PNG screenshot of the canvas
+    return canvas.toDataURL('image/png');
   }
 
   handleNodeMove(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('move node', data);
   }
 
   handleNodeDelete(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     this.socket.emit('delete node', data);
   }
 
-  //{id:'', route: '', text: ''}
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
-    // console.log('about to send new route: ', data);
+    // this.uploadScreenshot();
+    console.log('about to send new route: ', data);
     this.socket.emit('add route', data);
   }
 
   handleRouteUpdate(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    // console.log('about to send updated route: ', data);
+    console.log('about to send updated route: ', data);
     this.socket.emit('update route', data);
   }
 
   handleRouteDelete(data) {
     data.room = this.props.match.params.name;
     this.uploadScreenshot();
-    // console.log('about to send deleted route: ', data);
+    console.log('about to send deleted route: ', data);
     this.socket.emit('delete route', data);
   }
 
@@ -220,6 +238,7 @@ class Canvas extends Component {
       if (node.type === 'SERVER') {
         return (
           <Server
+            get={this.get}
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
@@ -232,6 +251,7 @@ class Canvas extends Component {
       } else if (node.type === 'CLIENT') {
         return (
           <Client
+            get={this.get}
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
@@ -244,6 +264,7 @@ class Canvas extends Component {
       } else if (node.type === 'DATABASE') {
         return (
           <Database
+            get={this.get}
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
@@ -259,8 +280,8 @@ class Canvas extends Component {
     return (
       <div>
         <h2>Shark.io</h2>
-        <div id="canvas-container">
-          <svg id="canvas">{showNodes}</svg>
+        <div className="canvas-container">
+          <svg className="canvas">{showNodes}</svg>
           <div className="tool-bar">
             <button
               onClick={() =>

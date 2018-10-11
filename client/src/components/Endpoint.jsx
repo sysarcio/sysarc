@@ -16,12 +16,6 @@ class Endpoint extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
   }
 
-  shouldComponentUpdate() {
-    const {properties} = this.props.endpoint;
-    return this.state.method !== properties.method || 
-      this.state.url !== properties.url;
-  }
-
   handleTextChange(e) {
     this.setState({
       url: e.target.value
@@ -50,6 +44,7 @@ class Endpoint extends React.Component {
   }
 
   render() {
+    console.log('route state on render ------>', this.state);
     const {properties} = this.props.endpoint;
     return (
       <div className="endpoint">
