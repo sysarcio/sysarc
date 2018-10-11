@@ -242,7 +242,7 @@ class Canvas extends Component {
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
+            handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
@@ -255,7 +255,7 @@ class Canvas extends Component {
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
+            handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
@@ -268,7 +268,7 @@ class Canvas extends Component {
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewNodeRoute}
+            handleNewRoute={this.handleNewRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}

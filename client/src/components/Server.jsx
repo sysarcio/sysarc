@@ -42,20 +42,20 @@ class Server extends Component {
 
     this.props.handleMovement(data);
   }
-
+  
   toggleAddRoute() {
-    this.setState({
-      isAddingRoute:!this.state.isAddingRoute
-    });
-  }
-
-  toggleSize(e) {
-    if (e.target === e.currentTarget) {
-      this.setState({
-        isOpen: !this.state.isOpen
-      });
-    }
-  }
+     this.setState({
+       isAddingRoute:!this.state.isAddingRoute
+     });
+   }
+ 
+   toggleSize(e) {
+     if (e.target === e.currentTarget) {
+       this.setState({
+         isOpen: !this.state.isOpen
+       });
+     }
+   }
 
   render() {
     const {node} = this.props;

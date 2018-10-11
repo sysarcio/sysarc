@@ -6,6 +6,7 @@ class Database extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
       isAddingRoute: false,
       isOpen: false,
       parent: null,
@@ -17,6 +18,10 @@ class Database extends Component {
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.toggleSize = this.toggleSize.bind(this);
     this.toggleAddRoute = this.toggleAddRoute.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return JSON.stringify(this.props) !== JSON.stringify(nextProps)
   }
 
   handleDragStart(e) {
@@ -42,20 +47,20 @@ class Database extends Component {
 
     this.props.handleMovement(data);
   }
-
+  
   toggleAddRoute() {
-    this.setState({
-      isAddingRoute:!this.state.isAddingRoute
-    });
-  }
-
-  toggleSize(e) {
-    if (e.target === e.currentTarget) {
-      this.setState({
-        isOpen: !this.state.isOpen
-      });
-    }
-  }
+     this.setState({
+       isAddingRoute:!this.state.isAddingRoute
+     });
+   }
+ 
+   toggleSize(e) {
+     if (e.target === e.currentTarget) {
+       this.setState({
+         isOpen: !this.state.isOpen
+       });
+     }
+   }        
 
   render() {
     const {node} = this.props;
