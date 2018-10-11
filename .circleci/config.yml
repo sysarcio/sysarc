@@ -67,43 +67,43 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "ba:f6:04:f4:29:26:29:1f:9c:f6:53:da:8f:6a:50:2c"
-      - run:
-          name: Export env
-          command: |
-            touch .env
-            echo 'export PATH="$GRAPHENEDB_PASSWORD"' >> .env
-            echo 'export GIT_SHA1="$GRAPHENEDB_URI"' >> .env
-            cat .env
-            "echo "$GRAPHENEDB_PASSWORD" "$GRAPHENEDB_URI" "$GRAPHENEDB_USERNAME"
-            touch .env
-            cat .env"
-            # echo "export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"" > .env
+      # - run:
+      #     name: Export env
+      #     command: |
+      #       touch .env
+      #       echo 'export PATH="$GRAPHENEDB_PASSWORD"' >> .env
+      #       echo 'export GIT_SHA1="$GRAPHENEDB_URI"' >> .env
+      #       cat .env
+      #       "echo "$GRAPHENEDB_PASSWORD" "$GRAPHENEDB_URI" "$GRAPHENEDB_USERNAME"
+      #       touch .env
+      #       cat .env"
+      #       # echo "export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"" > .env
       - run:
           name: Deploy Over SSH
           command: |
-            touch .env
-            echo "$GRAPHENEDB_PASSWORD"
-            echo "$GRAPHENEDB_URI"
-            echo "$GRAPHENEDB_USERNAME"
-            echo $GRAPHENEDB_URI
-            echo $GRAPHENEDB_PASSWORD
-            echo $GRAPHENEDB_USERNAME
-            echo $BASH_ENV
-            # cp $BASH_ENV .env &&
-            echo 'export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"' >> .env
-            echo 'export GRAPHENEDB_URI='$GRAPHENEDB_URI'' >> .env
-            echo 'export GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD' >> .env
-            echo export GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD >> .env
-            cat .env 
-            # printenv
-            echo 'export GRAPHENEDB_URI=$GRAPHENEDB_URI' >> $BASH_ENV
-            source $BASH_ENV
+            # touch .env
+            # echo "$GRAPHENEDB_PASSWORD"
+            # echo "$GRAPHENEDB_URI"
+            # echo "$GRAPHENEDB_USERNAME"
+            # echo $GRAPHENEDB_URI
+            # echo $GRAPHENEDB_PASSWORD
+            # echo $GRAPHENEDB_USERNAME
+            # echo $BASH_ENV
+            # # cp $BASH_ENV .env &&
+            # echo 'export GRAPHENEDB_USERNAME="$GRAPHENEDB_USERNAME"' >> .env
+            # echo 'export GRAPHENEDB_URI='$GRAPHENEDB_URI'' >> .env
+            # echo 'export GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD' >> .env
+            # echo export GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD >> .env
+            # cat .env 
+            # # printenv
+            # echo 'export GRAPHENEDB_URI=$GRAPHENEDB_URI' >> $BASH_ENV
+            # source $BASH_ENV
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
-            "echo $BASH_ENV &&
-            printenv &&
-            echo $GRAPHENEDB_URI &&
-            echo $GRAPHENEDB_PASSWORD && 
-            echo $GRAPHENEDB_USERNAME &&
+            # "echo $BASH_ENV &&
+            # printenv &&
+            # echo $GRAPHENEDB_URI &&
+            # echo $GRAPHENEDB_PASSWORD && 
+            # echo $GRAPHENEDB_USERNAME &&
             wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
             chmod +x rebuild.sh &&
             ls &&
