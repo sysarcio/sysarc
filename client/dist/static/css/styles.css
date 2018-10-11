@@ -5,6 +5,7 @@
 body {
   margin: 0;
   padding: 0;
+  background: #BDCDE0
 }
 
 .canvases {
@@ -17,10 +18,12 @@ body {
 .canvas-thumbnail {
   height: 150px;
   width: 200px;
-  border: 1px solid black;
+  border: 2px solid #394256;
+  border-radius: 15px;
   margin: 20px;
   padding: 20px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .canvas-container {
@@ -88,4 +91,8 @@ body {
 
 .node {
   overflow: hidden;
+}
+
+.canvases {
+  background: #BDCDE0;
 }

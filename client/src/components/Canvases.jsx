@@ -69,14 +69,16 @@ class Canvases extends Component {
 
   render() {
     return (
-      <div>
-        <input
-          type="text"
-          placeholder="Canvas name..."
-          onChange={this.handleChange}
-          value={this.state.text}
-        />
-        <button onClick={this.createCanvas}>Create Canvas</button>
+      <div className='canvases'>
+        <form className='canvases-form'>
+          <input
+            type="text"
+            placeholder="Canvas name..."
+            onChange={this.handleChange}
+            value={this.state.text}
+          />
+          <button onClick={this.createCanvas}>Create Canvas</button>
+        </form>
         <div className="canvases">
           {this.state.canvases.map(c => {
             if (this.get(c, 'id')) {
