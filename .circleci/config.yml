@@ -81,6 +81,20 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
+            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
+            "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
+            chmod +x rebuild.sh &&
+            ls &&
+            ./rebuild.sh"
+          environment:
+            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+            GRAPHENEDB_URI: $GRAPHENEDB_URI
+            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
+            # "echo $BASH_ENV &&
+            # printenv &&
+            # echo $GRAPHENEDB_URI &&
+            # echo $GRAPHENEDB_PASSWORD && 
+            # echo $GRAPHENEDB_USERNAME &&
             # touch .env
             # echo "$GRAPHENEDB_PASSWORD"
             # echo "$GRAPHENEDB_URI"
@@ -98,20 +112,6 @@ jobs:
             # # printenv
             # echo 'export GRAPHENEDB_URI=$GRAPHENEDB_URI' >> $BASH_ENV
             # source $BASH_ENV
-            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
-            # "echo $BASH_ENV &&
-            # printenv &&
-            # echo $GRAPHENEDB_URI &&
-            # echo $GRAPHENEDB_PASSWORD && 
-            # echo $GRAPHENEDB_USERNAME &&
-            "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
-            chmod +x rebuild.sh &&
-            ls &&
-            ./rebuild.sh"
-          environment:
-            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
-            GRAPHENEDB_URI: $GRAPHENEDB_URI
-            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
             
       # - run:
       #     name: Start rebuild
