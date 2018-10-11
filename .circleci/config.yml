@@ -70,10 +70,12 @@ jobs:
       - run:
           name: Export env
           command: |
-            cat <<EOF > test.txt
-            $GRAPHENEDB_PASSWORD
+            cat <<EOF > .env
+            GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD
             EOF
-            cat test.txt
+            cat .env
+            ls
+            ls
             touch file
             cat file >> $GRAPHENEDB_PASSWORD
             cat $GRAPHENEDB_PASSWORD >> file
