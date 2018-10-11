@@ -81,7 +81,7 @@ jobs:
           command: |
             ls -all
             cat .env
-            scp -r .env ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com:/.env
+            scp .env ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com:/temp/.env
             ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
             "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
             chmod +x rebuild.sh &&
