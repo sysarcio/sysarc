@@ -82,7 +82,8 @@ jobs:
             ls &&
             ./rebuild.sh
             rm .env
-            exit"
+            exit
+            rm .env"
           environment:
             GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
             GRAPHENEDB_URI: $GRAPHENEDB_URI
