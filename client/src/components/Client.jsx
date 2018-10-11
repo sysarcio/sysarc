@@ -6,6 +6,8 @@ class Client extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isAddingRoute: false,
+      isOpen: false,
       parent: null,
       x: null,
       y: null
@@ -13,8 +15,8 @@ class Client extends Component {
 
     this.handleDragStart = this.handleDragStart.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
-    // this.toggleSize = this.toggleSize.bind(this);
-    // this.toggleAddRoute = this.toggleAddRoute.bind(this);
+    this.toggleSize = this.toggleSize.bind(this);
+    this.toggleAddRoute = this.toggleAddRoute.bind(this);
   }
 
   handleDragStart(e) {
@@ -39,6 +41,20 @@ class Client extends Component {
     };
 
     this.props.handleMovement(data);
+  }
+
+  toggleAddRoute() {
+    this.setState({
+      isAddingRoute:!this.state.isAddingRoute
+    });
+  }
+
+  toggleSize(e) {
+    if (e.target === e.currentTarget) {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
+    }
   }
 
   render() {
@@ -80,17 +96,17 @@ class Client extends Component {
                   :
                     null
                   }
-                  {this.props.get(node, 'routes').map(endpoint => (
+                  {node.routes.map(endpoint => (
                     <Endpoint
                       key={endpoint.properties.id}
-                      nodeID={this.props.get(node, 'id')}
+                      nodeID={node.id}
                       endpoint={endpoint}
                       handleRouteDelete={this.props.handleRouteDelete}
                       handleRouteUpdate={this.props.handleRouteUpdate}
                     />
                   ))}
                 </div>
-                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: this.props.get(node, 'id') })}>Delete</button>
+                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: node.id })}>Delete</button>
               </div>
             :
               null

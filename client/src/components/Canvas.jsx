@@ -27,6 +27,7 @@ class Canvas extends Component {
           x: this.get(n, 'x'),
           y: this.get(n, 'y'),
           type: this.get(n, 'type'),
+          routes: this.get(n, 'routes') || [],
           created_at: this.get(n, 'created_at')
         };
         return o;
@@ -41,6 +42,7 @@ class Canvas extends Component {
         x: this.get(node, 'x'),
         y: this.get(node, 'y'),
         type: this.get(node, 'type'),
+        routes: this.get(node, 'routes') || [],
         created_at: this.get(node, 'created_at')
       }
       this.addNode(node);
@@ -210,7 +212,7 @@ class Canvas extends Component {
 
   handleNewNodeRoute(data) {
     data.room = this.props.match.params.name;
-    this.uploadScreenshot();
+    // this.uploadScreenshot();
     console.log('about to send new route: ', data);
     this.socket.emit('add route', data);
   }
@@ -238,7 +240,7 @@ class Canvas extends Component {
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewRoute}
+            handleNewRoute={this.handleNewNodeRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
@@ -251,7 +253,7 @@ class Canvas extends Component {
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewRoute}
+            handleNewRoute={this.handleNewNodeRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
@@ -264,7 +266,7 @@ class Canvas extends Component {
             node={node}
             key={node.id}
             handleMovement={this.handleNodeMove}
-            handleNewRoute={this.handleNewRoute}
+            handleNewRoute={this.handleNewNodeRoute}
             handleRouteDelete={this.handleRouteDelete}
             handleRouteUpdate={this.handleRouteUpdate}
             handleDelete={this.handleNodeDelete}
