@@ -7,12 +7,15 @@ class Canvases extends Component {
     super(props);
     this.state = {
       canvases: [],
-      text: ''
+      text: '',
+      showForm: false
     }
 
     this.handleChange = this.handleChange.bind(this);
     this.createCanvas = this.createCanvas.bind(this);
     this.goToCanvas = this.goToCanvas.bind(this);
+    this.toggleShowForm = this.toggleShowForm.bind(this);
+
   }
 
   async componentDidMount() {
@@ -30,7 +33,7 @@ class Canvases extends Component {
     } catch(err) {
       console.log(err);
       // tell user they must be logged in
-      this.props.history.push('/login');
+      // this.props.history.push('/login');
     }
   }
 
@@ -52,6 +55,7 @@ class Canvases extends Component {
       data: {
         name: this.state.text
       }
+     
     };
 
     try {
@@ -61,29 +65,43 @@ class Canvases extends Component {
       // Actually let user know that something went wrong
       console.log(err);
     }
+
+    this.toggleShowForm();
   }
 
   goToCanvas(id) {
     this.props.history.push(`/canvas/${id}`);
   }
 
+  toggleShowForm() {
+    this.setState({ showForm: !this.state.showForm})
+  }
+
   render() {
+
+    const showForm = this.state.showForm ? 
+    
+    <form className='canvases-form'>
+      <input
+        type="text"
+        placeholder="Canvas name..."
+        onChange={this.handleChange}
+        value={this.state.text}
+      />
+      <button onClick={this.createCanvas}>Create Canvas</button>
+      </form> : <div className='canvases-form'><p className='canvas-p' onClick={this.toggleShowForm} >+</p></div>
+
     return (
-      <div className='canvases'>
-        <form className='canvases-form'>
-          <input
-            type="text"
-            placeholder="Canvas name..."
-            onChange={this.handleChange}
-            value={this.state.text}
-          />
-          <button onClick={this.createCanvas}>Create Canvas</button>
-        </form>
+      <div className='canvases '>
         <div className="canvases">
-          {this.state.canvases.map(c => {
+       
+          {showForm}
+
+          {this.state.canvases.map((c, i) => {
             if (this.get(c, 'id')) {
               return (
                 <CanvasThumbnail
+                  index={i}
                   get={this.get}
                   canvas={c}
                   goToCanvas={this.goToCanvas}

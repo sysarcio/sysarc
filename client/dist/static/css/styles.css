@@ -5,14 +5,17 @@
 body {
   margin: 0;
   padding: 0;
-  background: #BDCDE0
+  background: #BDCDE0;
+  background-image: linear-gradient(#BDCDE0, #394256);
 }
 
+/* --------------- Canvases--------------- */
 .canvases {
   display: flex;
   flex-wrap: wrap;
   width: 80%;
   margin: 0 auto;
+
 }
 
 .canvas-thumbnail {
@@ -24,19 +27,64 @@ body {
   padding: 20px;
   overflow: hidden;
   cursor: pointer;
+  opacity: 0.5;
+  background: #91CAC3;
+  
+  
+}
+
+.canvas-thumbnail:hover {
+  opacity: 1;
+  border: 2px solid #EED463;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1.15);
+  transform: scale(1.15);
 }
 
 .canvas-container {
   display: flex;
   height: 90vh;
-  padding: 10px;
+  padding: 5px;
 }
 
 .canvas {
   border: 1px solid rgb(221, 221, 221);
   width: 80%;
   background-color: #ccc;
+  border-radius: 15px;
 }
+
+.canvases-form {
+    height: 150px;
+    width: 200px;
+    border: 2px solid #394256;
+    border-radius: 15px;
+    margin: 20px;
+    padding: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.5;
+    background: #91CAC3;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.canvases-form:hover {
+  opacity: 1;
+  border: 2px solid #EED463;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1.15);
+  transform: scale(1.15);
+}
+
+.canvas-p {
+  margin: 5px;
+  /* padding: 5px; */
+  font-size: 75px;
+  vertical-align: middle;
+}
+
+
 
 .tool-bar {
   display: flex;
@@ -93,6 +141,3 @@ body {
   overflow: hidden;
 }
 
-.canvases {
-  background: #BDCDE0;
-}
