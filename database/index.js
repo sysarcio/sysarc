@@ -189,18 +189,26 @@ module.exports = {
     }
   },
 
-  async addConnection(data) {
-    console.log(data);
+  async addConnection({connector, connectee, handleX, handleY, room, id}) {
     try {
-      await session.run(
+      const results = await session.run(
         `
         MATCH (c:CANVAS {id: $room})-[:CONTAINS]->(n:NODE {id: $connector})
         WITH n, c
         MATCH (c)-[:CONTAINS]->(m:NODE {id: $connectee})
         WITH n, m
         CREATE (n)-[r:IS_CONNECTED {id: $id, handleX: $handleX, handleY: $handleY, connector: $connector, connectee: $connectee, description: '' }]->(m)
-        return r.id as id, r.handleX as handleX, r.handleY as handleY, r.connector as connector, r.connectee as connectee, r.description as description;`
-      )
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.description AS description;`,
+        {
+          connector,
+          connectee,
+          handleX,
+          handleY,
+          room,
+          id
+        }
+      );
+      return results.records[0];
     } catch(err) {
       return err;
     }

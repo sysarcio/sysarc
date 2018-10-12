@@ -101,9 +101,10 @@ class Canvas extends Component {
   }
 
   handleNewConnection(connection) {
-    console.log(connection);
+    const connections = JSON.parse(JSON.stringify(this.state.connections));
+    connections[connection.id] = connection;
     this.setState({
-      connections: [...this.state.connections, connection]
+      connections
     });
   }
 
