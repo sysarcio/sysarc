@@ -1,0 +1,105 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/sysarcio
+    docker:
+      - image: circleci/node:8
+    # branches:
+    #   only: feat/dockerinit
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: login-docker
+          command: docker login -u baybars1223 --password $DOCKER_PASS
+      - run:
+          name: docker-pull-last
+          command: docker pull baybars1223/sysarcio:latest
+      - run:
+          name: build-docker-image
+          command: 'docker build -t baybars1223/sysarcio .'
+          # command: docker login -u baybars1223 --password-stdin $DOCKER_PASS &&
+          # command: docker version && service docker start
+          # command: 'sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@5'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm-wee
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: push-docker-image
+          command: 'docker image push baybars1223/sysarcio:latest'
+      # - run:
+      #     name: test
+      #     command: npm test
+      # - run:
+      #     name: code-coverage
+      #     command: './node_modules/.bin/nyc report --reporter=text-lcov'
+      # - store_artifacts:
+      #     path: test-results.xml
+      #     prefix: tests
+      # - store_artifacts:
+      #     path: coverage
+      #     prefix: coverage
+      # - store_test_results:
+      #     path: test-results.xml
+
+  deploy:
+      machine:
+          enabled: true
+      working_directory: ~/sysarcio
+      steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "ba:f6:04:f4:29:26:29:1f:9c:f6:53:da:8f:6a:50:2c"
+      - run:
+          name: Export env
+          command: |
+            cat <<EOF > .env
+            GRAPHENEDB_PASSWORD=$GRAPHENEDB_PASSWORD
+            GRAPHENEDB_URI=$GRAPHENEDB_URI
+            GRAPHENEDB_USERNAME=$GRAPHENEDB_USERNAME
+            PORT=80
+            EOF
+            cat .env
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ls -all
+            cat .env
+            scp .env ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com:.env
+            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
+            "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
+            chmod +x rebuild.sh &&
+            ls &&
+            ./rebuild.sh
+            rm .env
+            exit
+            rm .env"
+          environment:
+            GRAPHENEDB_USERNAME: $GRAPHENEDB_USERNAME
+            GRAPHENEDB_URI: $GRAPHENEDB_URI
+            GRAPHENEDB_PASSWORD: $GRAPHENEDB_PASSWORD
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: feat/dockerinit
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: feat/dockerinit
