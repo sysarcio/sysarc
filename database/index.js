@@ -186,6 +186,25 @@ module.exports = {
     }
   },
 
+  async deleteConnection(id) {
+    try {
+      await session.run(
+        `
+        MATCH (n)-[r:IS_CONNECTED{id: $id}]->(m)
+        DETACH DELETE r
+        `,
+        {
+          id: id
+        }
+      );
+
+      session.close();
+      return
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
   async addConnection({connector, connectee, handleX, handleY, room, id}) {
     try {
       const results = await session.run(

@@ -90,6 +90,15 @@ io.on('connection', socket => {
       console.log(err);
     }
   });
+
+  socket.on('delete connection', async ({room, id}) => {
+    try {
+      await db.deleteConnection(id);
+      io.to(room).emit('connection deleted', id);
+    } catch(err) {
+      console.log(err);
+    }
+  })
   
   // socket.on('add node', async data => {
   //   data.nodeID = uuidv4();

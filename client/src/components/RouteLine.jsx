@@ -54,6 +54,7 @@ class RouteLine extends Component {
       <Group
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
+        onDblClick={() => this.props.handleDelete(this.props.id)}
       >
         <Line
           points={[

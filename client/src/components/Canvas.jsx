@@ -39,14 +39,20 @@ class Canvas extends Component {
       this.updateConnection(data);
     });
 
+    this.socket.on('connection deleted', id => {
+      this.handleDeleteConnection(id);
+    });
+
     this.moveNode = this.moveNode.bind(this);
     this.updateNode = this.updateNode.bind(this);
     this.placeNode = this.placeNode.bind(this);
     this.beginNewConnection = this.beginNewConnection.bind(this);
     this.handleNewConnection = this.handleNewConnection.bind(this);
+    this.deleteConnection = this.deleteConnection.bind(this);
     this.handleLineClick = this.handleLineClick.bind(this);
     this.handlePointDrag = this.handlePointDrag.bind(this);
     this.handleLineDrop = this.handleLineDrop.bind(this);
+    this.handleDeleteConnection = this.handleDeleteConnection.bind(this);
     this.updateConnection = this.updateConnection.bind(this);
   }
 
@@ -120,6 +126,14 @@ class Canvas extends Component {
     });
   }
 
+  deleteConnection(id) {
+    const data = {
+      room: this.roomID,
+      id
+    }
+    this.socket.emit('delete connection', data);
+  }
+
   handleLineDrop(data) {
     console.log(data);
     data.room = this.roomID;
@@ -127,12 +141,18 @@ class Canvas extends Component {
   }
 
   handleLineClick([x, y]) {
-    console.log(x, y);
+    //console.log(x, y);
   }
 
   handlePointDrag(data) {
     data.room = this.roomID;
     this.socket.emit('drag connection', data);
+  }
+
+  handleDeleteConnection(id) {
+    const connections = JSON.parse(JSON.stringify(this.state.connections));
+    delete connections[id];
+    this.setState({connections});
   }
 
   moveNode(data) {
@@ -190,6 +210,7 @@ class Canvas extends Component {
               handleLineClick={this.handleLineClick}
               handlePointDrag={this.handlePointDrag}
               handleLineDrop={this.handleLineDrop}
+              handleDelete={this.deleteConnection}
             />
           ))}
         </Layer>
