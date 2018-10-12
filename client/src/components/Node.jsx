@@ -33,7 +33,7 @@ class Node extends Component {
 
   handleDragEnd(e) {
     const {x, y} = e.target.attrs;
-    this.props.updateNode({
+    this.props.placeNode({
       x,
       y,
       id: this.props.id

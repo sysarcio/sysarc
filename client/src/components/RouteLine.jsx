@@ -12,6 +12,7 @@ class RouteLine extends Component {
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleLineDrag = this.handleLineDrag.bind(this);
+    this.handleLineDrop = this.handleLineDrop.bind(this);
   }
 
   handleLineDrag(e) {
@@ -34,6 +35,15 @@ class RouteLine extends Component {
     this.setState({
       isHovered: false
     })
+  }
+
+  handleLineDrop(e) {
+    this.props.handleLineDrop({
+      id: this.props.id,
+      handleX: e.evt.x,
+      handleY: e.evt.y,
+      description: this.props.connection.description
+    });
   }
 
   render() {
@@ -78,6 +88,7 @@ class RouteLine extends Component {
             fill="black"
             draggable={true}
             onDragMove={this.handleLineDrag}
+            onDragEnd={this.handleLineDrop}
           />
         :
           null

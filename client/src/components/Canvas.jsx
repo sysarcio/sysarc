@@ -41,10 +41,12 @@ class Canvas extends Component {
 
     this.moveNode = this.moveNode.bind(this);
     this.updateNode = this.updateNode.bind(this);
+    this.placeNode = this.placeNode.bind(this);
     this.beginNewConnection = this.beginNewConnection.bind(this);
     this.handleNewConnection = this.handleNewConnection.bind(this);
     this.handleLineClick = this.handleLineClick.bind(this);
     this.handlePointDrag = this.handlePointDrag.bind(this);
+    this.handleLineDrop = this.handleLineDrop.bind(this);
     this.updateConnection = this.updateConnection.bind(this);
   }
 
@@ -118,6 +120,12 @@ class Canvas extends Component {
     });
   }
 
+  handleLineDrop(data) {
+    console.log(data);
+    data.room = this.roomID;
+    this.socket.emit('place connection', data);
+  }
+
   handleLineClick([x, y]) {
     console.log(x, y);
   }
@@ -141,6 +149,11 @@ class Canvas extends Component {
     });
   }
 
+  placeNode(data) {
+    console.log(data);
+    this.socket.emit('place node', data);
+  }
+
   render() {
     return (
       <Stage
@@ -158,7 +171,7 @@ class Canvas extends Component {
               key={node.id}
               id={node.id}
               type={node.type}
-              updateNode={this.updateNode}
+              placeNode={this.placeNode}
               color="black"
               canvasWidth={this.state.width}
               canvasHeight={this.state.height}
@@ -176,6 +189,7 @@ class Canvas extends Component {
               nodes={this.state.nodes}
               handleLineClick={this.handleLineClick}
               handlePointDrag={this.handlePointDrag}
+              handleLineDrop={this.handleLineDrop}
             />
           ))}
         </Layer>

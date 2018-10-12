@@ -54,7 +54,17 @@ io.on('connection', socket => {
   });
 
   socket.on('move node', ({id, x, y, room}) => {
-    io.to(room).emit('node moved', {id, x, y,});
+    io.to(room).emit('node moved', {id, x, y});
+  });
+
+  socket.on('place node', async data => {
+    const {id, x, y, room} = data;
+    try {
+      await db.moveNode(data);
+      io.to(room).emit('node moved', {id, x, y});
+    } catch(err) {
+      console.log(err);
+    }
   });
 
   socket.on('make connection', async data => {
@@ -70,6 +80,15 @@ io.on('connection', socket => {
 
   socket.on('drag connection', data => {
     io.to(data.room).emit('connection dragged', data);
+  });
+
+  socket.on('place connection', async data => {
+    try {
+      await db.updateConnection(data);
+      io.to(data.room).emit('connection dragged', data);
+    } catch(err) {
+      console.log(err);
+    }
   });
   
   // socket.on('add node', async data => {

@@ -152,10 +152,7 @@ module.exports = {
         `
         MATCH (n:NODE {id: $nodeID})
         SET n.x = $x, n.y = $y
-        WITH n  
-        MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        RETURN n`,
         {
           canvasID: room,
           nodeID: id,
@@ -202,6 +199,27 @@ module.exports = {
         {
           connector,
           connectee,
+          handleX,
+          handleY,
+          room,
+          id
+        }
+      );
+      return results.records[0];
+    } catch(err) {
+      return err;
+    }
+  },
+
+  async updateConnection({handleX, handleY, room, id}) {
+    try {
+      const results = await session.run(
+        `
+        MATCH (a)-[r:IS_CONNECTED {id: $id}]->(b)
+        WITH r
+        SET r.handleX = $handleX, r.handleY = $handleY
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.description AS description;`,
+        {
           handleX,
           handleY,
           room,
