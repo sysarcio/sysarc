@@ -2,9 +2,8 @@ import React from 'react';
 import DeletePop from './DeletePop.jsx'
 
 
-const CanvasThumbnail = ({ toggleShowDelete, showDelete, canvas, get, goToCanvas, deleteCanvas}) => {
+const CanvasThumbnail = ({ canvas, get, goToCanvas, deleteCanvas}) => {
 
-  console.log('showDelete', showDelete)
   return (     
       <div
         className="canvas-thumbnail"

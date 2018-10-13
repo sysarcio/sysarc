@@ -88,11 +88,11 @@ deleteCanvas(id) {
   console.log('got request to delete this-->', id)
   axios.delete(`/api/canvas/${id}`)
     .then(response => {
-
+      console.log('deletion complete-->', response)
       const canvasesCopy = this.state.canvases.slice();
      
       const canvasesAfterDelete = canvasesCopy.filter(canvas => {
-        return this.get(canvas, 'id');
+        return this.get(canvas, 'id') !== id;
       })
 
       this.setState({
@@ -137,8 +137,6 @@ deleteCanvas(id) {
        
           {showCreateNewCanvas}
 
-          
-         
           {this.state.canvases.map(c => {
             if (this.get(c, 'id')) {
               return (

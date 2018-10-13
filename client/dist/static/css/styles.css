@@ -145,7 +145,7 @@ span {
 
 }
 
-span:after {
+/* span:after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -159,11 +159,11 @@ span:after {
   -moz-transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
-}
+} */
 
 .canvas-delete-btn {
-  float:left;
-  position:relative;
+  /* float:left;
+  position:relative; */
   cursor:pointer;
 }
 
