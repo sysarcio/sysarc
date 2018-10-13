@@ -93,13 +93,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: feat/dockerinit
+      - build
       - deploy:
           requires:
             - build
-          filters:
-            branches:
-              only: feat/dockerinit
