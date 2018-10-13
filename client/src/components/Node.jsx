@@ -21,14 +21,20 @@ class Node extends Component {
     this.handleDragBounds = this.handleDragBounds.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleCircleClick = this.handleCircleClick.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
   handleCircleClick() {
     this.props.beginNewConnection(this.props.id);
   }
 
-  trackMouse(e) {
-    console.log(e);
+  handleMouseEnter(e) {
+    document.body.style.cursor = 'move';
+  }
+
+  handleMouseLeave(e) {
+    document.body.style.cursor = 'default';
   }
 
   handleDragEnd(e) {
@@ -74,16 +80,21 @@ class Node extends Component {
         x={this.props.x}
         y={this.props.y}
       >
-        <NodeShape
-          color={this.props.color}
-        />
+        <Group
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        >
+          <NodeShape
+            color={this.props.color}
+          />
+          <NodeText
+            text={this.props.type}
+          />
+        </Group>
         <NodeRouteTarget
           x={nodeProperties.width}
           y={nodeProperties.height / 2}
           handleCircleClick={this.handleCircleClick}
-        />
-        <NodeText
-          text={this.props.type}
         />
       </Group>
     );
