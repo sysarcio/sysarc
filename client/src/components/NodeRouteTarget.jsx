@@ -43,7 +43,7 @@ class NodeRouteTarget extends Component {
         strokeWidth={1}
         x={this.props.x}
         y={this.props.y}
-        fill="transparent"
+        fill="black"
         onClick={this.props.handleCircleClick}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
