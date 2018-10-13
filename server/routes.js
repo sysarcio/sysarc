@@ -107,4 +107,46 @@ router.get('/canvases', async (req, res) => {
   }
 });
 
+router.delete('/canvas/:id', async (req, res) => {
+  try {
+    db.deleteCanvas(req.params.id);
+    res.end();
+  } catch(err) {
+    res.sendStatus(500);
+  }
+});
+
+router.get('/getRoomData/:id', async (req, res) => {
+  try {
+    const records = await db.getCanvas(req.params.id);
+    const [nodes, connections] = records.reduce((output, r) => {
+      if (r.get('id') === null) return output;
+      
+      output[0][r.get('id')] = {
+        id: r.get('id'),
+        type: r.get('type'),
+        x: r.get('x'),
+        y: r.get('y')
+      }
+
+      r.get('connections').forEach(c => { 
+        const {description, handleY, handleX, connectee, connector, id} = c.properties;
+        output[1][id] = {
+          description,
+          handleX,
+          handleY,
+          connectee,
+          connector,
+          id
+        }
+      });
+      return output;
+    }, [{},{}]);
+    
+    res.send({nodes, connections});
+  } catch(err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
