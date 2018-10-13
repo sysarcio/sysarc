@@ -57,11 +57,24 @@ body {
 .canvases-form {
     height: 150px;
     width: 200px;
+    border: 2px solid #EED463;
+    border-radius: 15px;
+    margin: 20px;
+    padding: 20px;
+    cursor: pointer;
+    padding: 30px 25px;
+    background: #394256;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.canvases-plus {
+    height: 150px;
+    width: 200px;
     border: 2px solid #394256;
     border-radius: 15px;
     margin: 20px;
     padding: 20px;
-    overflow: hidden;
     cursor: pointer;
     opacity: 0.5;
     background: #91CAC3;
@@ -69,19 +82,50 @@ body {
     vertical-align: middle;
 }
 
-.canvases-form:hover {
-  opacity: 1;
-  border: 2px solid #EED463;
-  -webkit-transform: scale(1);
-  -ms-transform: scale(1.15);
-  transform: scale(1.15);
+
+.form-input {
+  appearance: none;
+  background-color: none;
+  border: 1px solid #EED463;
+  line-height: 0; 
+  font-size: 17px;
+  width: 100%; 
+  display: block; 
+  box-sizing: border-box; 
+  padding: 5px px; 
+  border-radius: 50px;
+  outline: none;
 }
 
-.canvas-p {
-  margin: 5px;
-  /* padding: 5px; */
-  font-size: 75px;
-  vertical-align: middle;
+.form-button {
+  display: block;
+  text-align: center;
+  background: none;
+  cursor: pointer;
+  background: #91CAC3;
+  padding: 5px px;
+  border-radius: 50px;
+  width: 100%;
+  
+}
+
+.canvas-button {
+ text-align: center;
+ vertical-align: middle;
+ line-height: 95px;
+ padding: 0;
+ border: none;
+ background: none;
+ font-size: 90px;
+ 
+}
+
+.canvases-plus:hover {
+   opacity: 1;
+   border: 2px solid #EED463;
+   -webkit-transform: scale(1);
+   -ms-transform: scale(1.15);
+   transform: scale(1.15);
 }
 
 

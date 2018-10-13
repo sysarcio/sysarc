@@ -10,11 +10,12 @@ class Canvases extends Component {
       text: '',
       showForm: false
     }
-
+    this.get = this.get.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.createCanvas = this.createCanvas.bind(this);
     this.goToCanvas = this.goToCanvas.bind(this);
     this.toggleShowForm = this.toggleShowForm.bind(this);
+    this.deleteCanvas = this.deleteCanvas.bind(this);
 
   }
 
@@ -26,10 +27,11 @@ class Canvases extends Component {
 
     try {
       const {data: canvases} = await axios(options);
-      console.log(canvases);
+      console.log('canvases from axios', canvases);
       this.setState({
         canvases
       });
+      
     } catch(err) {
       console.log(err);
       // tell user they must be logged in
@@ -48,7 +50,8 @@ class Canvases extends Component {
     });
   }
 
-  async createCanvas() {
+  async createCanvas(e) {
+    e.preventDefault();
     const options = {
       method: 'POST',
       url: '/api/canvas/add',
@@ -60,6 +63,7 @@ class Canvases extends Component {
 
     try {
       const {data: {id, name}} = await axios(options);
+      console.log('id-->', id)
       this.props.history.push(`/canvas/${id}`);
     } catch(err) {
       // Actually let user know that something went wrong
@@ -77,19 +81,46 @@ class Canvases extends Component {
     this.setState({ showForm: !this.state.showForm})
   }
 
+deleteCanvas(id) {
+  axios.delete(`/api/canvas/${id}`)
+    .then(response => {
+
+      const canvasesCopy = this.state.canvases.slice();
+     
+      const canvasesAfterDelete = canvasesCopy.filter(canvas => {
+        return this.get(canvas, 'id');
+      })
+
+      this.setState({
+        canvases: canvasesAfterDelete 
+      });
+    })
+    .catch(err => {
+      console.log('unable to delete canvas ', err);
+    })
+  }
+
   render() {
 
     const showForm = this.state.showForm ? 
-    
-    <form className='canvases-form'>
-      <input
-        type="text"
-        placeholder="Canvas name..."
-        onChange={this.handleChange}
-        value={this.state.text}
-      />
-      <button onClick={this.createCanvas}>Create Canvas</button>
-      </form> : <div className='canvases-form'><p className='canvas-p' onClick={this.toggleShowForm} >+</p></div>
+      <div >
+      <form className='canvases-form' >
+        <input
+          type="text"
+          placeholder="Canvas name..."
+          onChange={this.handleChange}
+          value={this.state.text}
+          className='form-input'
+        />
+          <button className='form-button' onClick={this.createCanvas}>+</button>
+        </form> 
+    </div> : 
+      
+      <div  className='canvases-plus'>
+        <button className='canvas-button' onClick={this.toggleShowForm} >
+          <strong>+</strong>
+        </button>
+      </div>
 
     return (
       <div className='canvases '>
@@ -97,11 +128,11 @@ class Canvases extends Component {
        
           {showForm}
 
-          {this.state.canvases.map((c, i) => {
+          {this.state.canvases.map(c => {
             if (this.get(c, 'id')) {
               return (
                 <CanvasThumbnail
-                  index={i}
+                  deleteCanvas={this.deleteCanvas}
                   get={this.get}
                   canvas={c}
                   goToCanvas={this.goToCanvas}
