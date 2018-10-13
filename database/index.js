@@ -168,19 +168,23 @@ module.exports = {
     }
   },
 
-  async deleteNode({ room, id }) {
+  async deleteNode(id) {
     try {
-      await session.run(
+      const result = await session.run(
         `
-        MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c:NODE {id: $nodeID})
-        DETACH DELETE c, r`,
+        MATCH (c:NODE {id: $nodeID})
+        WITH c
+        OPTIONAL MATCH (c)-[r:IS_CONNECTED]-(q)
+        WITH c, r, collect(r.id) AS id
+        DETACH DELETE c, r
+        RETURN id`,
         {
-          canvasID: room,
           nodeID: id
         }
       );
 
       session.close();
+      return result.records;
     } catch (err) {
       console.log(err);
     }

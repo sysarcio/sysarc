@@ -98,6 +98,16 @@ io.on('connection', socket => {
     } catch(err) {
       console.log(err);
     }
+  });
+  
+  socket.on('delete node', async ({room, id}) => {
+    try {
+      let connections = await db.deleteNode(id);
+      connections = connections.map(c => c.get('id'));
+      io.to(room).emit('node deleted', {id, connections});
+    } catch(err) {
+      console.log(err);
+    }
   })
   
   // socket.on('add node', async data => {

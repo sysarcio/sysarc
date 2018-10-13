@@ -12,7 +12,7 @@ class Canvas extends Component {
     super(props);
     this.state = {
       width: window.innerWidth,
-      height: 800,
+      height: window.innerHeight,
       connections: {},
       connector: null,
       nodes: {}
@@ -29,6 +29,10 @@ class Canvas extends Component {
 
     this.socket.on('node moved', data => {
       this.updateNode(data);
+    });
+
+    this.socket.on('node deleted', data => {
+      this.handleDeleteNode(data);
     });
 
     this.socket.on('connection made', data => {
@@ -54,6 +58,7 @@ class Canvas extends Component {
     this.handleLineDrop = this.handleLineDrop.bind(this);
     this.handleDeleteConnection = this.handleDeleteConnection.bind(this);
     this.updateConnection = this.updateConnection.bind(this);
+    this.emitDeleteNode = this.emitDeleteNode.bind(this);
   }
 
   componentDidMount() {
@@ -73,7 +78,7 @@ class Canvas extends Component {
 
     try {
       const {data} = await axios(options);
-      const {nodes, connections} = data
+      const {nodes, connections} = data;
       this.setState({
         nodes,
         connections
@@ -156,7 +161,7 @@ class Canvas extends Component {
   }
 
   moveNode(data) {
-    data.room = this.props.match.params.name;
+    data.room = this.roomID;
     this.socket.emit('move node', data);
   }
 
@@ -170,8 +175,31 @@ class Canvas extends Component {
   }
 
   placeNode(data) {
-    console.log(data);
     this.socket.emit('place node', data);
+  }
+
+  emitDeleteNode(id) {
+    const data = {
+      id,
+      room: this.roomID
+    }
+    this.socket.emit('delete node', data)
+  }
+
+  handleDeleteNode(data) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    const connections = JSON.parse(JSON.stringify(this.state.connections));
+
+    delete nodes[data.id];
+
+    data.connections.forEach(c => {
+      delete connections[c];
+    });
+
+    this.setState({
+      nodes,
+      connections
+    });
   }
 
   render() {
@@ -195,9 +223,10 @@ class Canvas extends Component {
               color="black"
               canvasWidth={this.state.width}
               canvasHeight={this.state.height}
-              beginNewConnection={this.beginNewConnection}
               x={node.x}
               y={node.y}
+              beginNewConnection={this.beginNewConnection}
+              emitDeleteNode={this.emitDeleteNode}
               moveNode={this.moveNode}
             />
           ))}

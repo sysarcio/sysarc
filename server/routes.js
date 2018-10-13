@@ -113,6 +113,8 @@ router.get('/getRoomData/:id', async (req, res) => {
   try {
     const records = await db.getCanvas(req.params.id);
     const [nodes, connections] = records.reduce((output, r) => {
+      if (r.get('id') === null) return output;
+      
       output[0][r.get('id')] = {
         id: r.get('id'),
         type: r.get('type'),
@@ -132,7 +134,8 @@ router.get('/getRoomData/:id', async (req, res) => {
         }
       });
       return output;
-    }, [{},{}])
+    }, [{},{}]);
+    
     res.send({nodes, connections});
   } catch(err) {
     console.log(err);
