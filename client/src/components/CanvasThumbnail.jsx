@@ -1,34 +1,36 @@
 import React from 'react';
+import DeletePop from './DeletePop.jsx'
 
 
+const CanvasThumbnail = ({ toggleShowDelete, showDelete, canvas, get, goToCanvas, deleteCanvas}) => {
 
-const CanvasThumbnail = ({ canvas, get, goToCanvas, deleteCanvas}) => {
-
-
-
-  return (
-    <div>
-      <button onClick={() => deleteCanvas(get(canvas, 'id'))}> Delete </button>
+  console.log('showDelete', showDelete)
+  return (     
       <div
         className="canvas-thumbnail"
-        onClick={() => goToCanvas(get(canvas, 'id'))}
         id={get(canvas, 'id')}>
-
-        <h3>{get(canvas, 'name')}</h3>
+      <button className='canvas-delete-btn' onClick={() => deleteCanvas(get(canvas, 'id'))}>
+        <span>Delete Canvas</span>
+        X
+        </button>
+       <div>
+        <h3 onClick={() => goToCanvas(get(canvas, 'id'))}>{get(canvas, 'name')}</h3>
+       
         <img
+          onClick={() => goToCanvas(get(canvas, 'id'))}
           src={get(canvas, 'image')}
           height="40"
           width="160"
           alt={get(canvas, 'name')}
         />
         <pre>{get(canvas, 'id')}</pre>
+      </div>; 
       </div>
-    </div>
+
     
   );
 
 }
   
-
 
 export default CanvasThumbnail;

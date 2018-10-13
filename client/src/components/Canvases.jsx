@@ -8,14 +8,17 @@ class Canvases extends Component {
     this.state = {
       canvases: [],
       text: '',
-      showForm: false
+      showForm: false,
+      showDelete: false
     }
+
     this.get = this.get.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.createCanvas = this.createCanvas.bind(this);
     this.goToCanvas = this.goToCanvas.bind(this);
     this.toggleShowForm = this.toggleShowForm.bind(this);
     this.deleteCanvas = this.deleteCanvas.bind(this);
+    this.toggleShowDelete = this.toggleShowDelete.bind(this)
 
   }
 
@@ -82,6 +85,7 @@ class Canvases extends Component {
   }
 
 deleteCanvas(id) {
+  console.log('got request to delete this-->', id)
   axios.delete(`/api/canvas/${id}`)
     .then(response => {
 
@@ -100,9 +104,15 @@ deleteCanvas(id) {
     })
   }
 
+  toggleShowDelete() {
+    this.setState({
+      showDelete: !this.showDelete
+    })
+  }
+
   render() {
 
-    const showForm = this.state.showForm ? 
+    const showCreateNewCanvas = this.state.showForm ? 
       <div >
       <form className='canvases-form' >
         <input
@@ -124,14 +134,17 @@ deleteCanvas(id) {
 
     return (
       <div className='canvases '>
-        <div className="canvases">
        
-          {showForm}
+          {showCreateNewCanvas}
 
+          
+         
           {this.state.canvases.map(c => {
             if (this.get(c, 'id')) {
               return (
                 <CanvasThumbnail
+                  showDelete={this.state.showDelete}
+                  toggleShowDelete={this.toggleShowDelete}
                   deleteCanvas={this.deleteCanvas}
                   get={this.get}
                   canvas={c}
@@ -141,7 +154,8 @@ deleteCanvas(id) {
               )
             }
           })}
-        </div>
+
+   
       </div>
     )
   }
