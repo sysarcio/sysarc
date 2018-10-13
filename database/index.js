@@ -5,7 +5,8 @@ const driver = neo4j.driver(
   neo4j.auth.basic(
     process.env.GRAPHENEDB_USERNAME,
     process.env.GRAPHENEDB_PASSWORD
-  )
+  ),
+  {disableLosslessIntegers: true}
 );
 
 const session = driver.session();
@@ -78,6 +79,25 @@ module.exports = {
     }
   },
 
+  async deleteCanvas(canvasID) {
+    try {
+      await session.run(
+        `
+        MATCH (n:CANVAS {id: $canvasID})
+        DETACH DELETE n;`,
+        {
+          canvasID: canvasID
+        }
+      );
+
+      session.close();
+
+      return;
+    } catch(err) {
+      return err;
+    }
+  },
+
   async getCanvas(canvasID) {
     try {
       const result = await session.run(
@@ -86,8 +106,8 @@ module.exports = {
         WITH n
         OPTIONAL MATCH (n)-[:CONTAINS]->(m)
         WITH m
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS connections;`,
         {
           canvasID: canvasID
         }
@@ -122,46 +142,39 @@ module.exports = {
   },
 
   async addNode(data) {
-    const { x, y } = data.position;
+    const { x, y, type, room, id } = data;
     try {
       const result = await session.run(
         `
-        MATCH (n:CANVAS {id: $canvasID})
-        CREATE (n)-[:CONTAINS]->(c:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
-        WITH n
-        MATCH (n)-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        MATCH (c:CANVAS {id: $room})
+        CREATE (c)-[:CONTAINS]->(n:NODE {id: $id, x: $x, y: $y, created_at: timestamp(), type: $type})
+        RETURN n.x AS x, n.y AS y, n.id AS id, n.type AS type`,
         {
-          canvasID: data.room,
-          nodeID: data.nodeID,
-          x: x,
-          y: y,
-          type: data.type
+          x,
+          y,
+          type,
+          room,
+          id
         }
       );
 
       session.close();
-      return result.records;
+      return result.records[0];
     } catch (err) {
       console.log(err);
     }
   },
 
-  async moveNode(data) {
-    const { x, y } = data.position;
+  async moveNode({ x, y, room, id }) {
     try {
       const result = await session.run(
         `
         MATCH (n:NODE {id: $nodeID})
         SET n.x = $x, n.y = $y
-        WITH n  
-        MATCH (c:CANVAS {id: $canvasID })-[r:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        RETURN n`,
         {
-          canvasID: data.room,
-          nodeID: data.id,
+          canvasID: room,
+          nodeID: id,
           x: x,
           y: y
         }
@@ -174,18 +187,17 @@ module.exports = {
     }
   },
 
-  async deleteNode({ room, id }) {
+  async deleteNode(id) {
     try {
       const result = await session.run(
         `
-        MATCH (n:CANVAS {id: $canvasID})-[r:CONTAINS]->(c:NODE {id: $nodeID})
+        MATCH (c:NODE {id: $nodeID})
+        WITH c
+        OPTIONAL MATCH (c)-[r:IS_CONNECTED]-(q)
+        WITH c, r, collect(r.id) AS id
         DETACH DELETE c, r
-        WITH n  
-        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        RETURN id`,
         {
-          canvasID: room,
           nodeID: id
         }
       );
@@ -197,87 +209,152 @@ module.exports = {
     }
   },
 
-  async addRoute(data) {
+  async deleteConnection(id) {
     try {
-      console.log('addRoute input data: ', data)
-      const result = await session.run(
+      await session.run(
         `
-        MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })
-        CREATE (o)-[r:CONTAINS]->(n:ROUTE {id: $routeID, url: $url, method: $method})
-        WITH o,n  
-        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        MATCH (n)-[r:IS_CONNECTED{id: $id}]->(m)
+        DETACH DELETE r
+        `,
         {
-          canvasID: data.room,
-          nodeID: data.id,
-          url: data.url,
-          method: data.method,
-          routeID: data.routeID
+          id: id
         }
       );
 
       session.close();
-      return result.records;
+      return
     } catch (err) {
       console.log(err);
     }
   },
 
-  async updateRoute(data) {
+  async addConnection({connector, connectee, handleX, handleY, room, id}) {
     try {
-      console.log('updateRoute input data: ', data);
-      const result = await session.run(
+      const results = await session.run(
         `
-        MATCH (n:ROUTE {id: $routeID})
-        SET n.url = $url, n.method = $method
-        WITH n
-        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        MATCH (c:CANVAS {id: $room})-[:CONTAINS]->(n:NODE {id: $connector})
+        WITH n, c
+        MATCH (c)-[:CONTAINS]->(m:NODE {id: $connectee})
+        WITH n, m
+        CREATE (n)-[r:IS_CONNECTED {id: $id, handleX: $handleX, handleY: $handleY, connector: $connector, connectee: $connectee, description: '' }]->(m)
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.description AS description;`,
         {
-          canvasID: data.room,
-          url: data.url,
-          method: data.method,
-          routeID: data.routeID
+          connector,
+          connectee,
+          handleX,
+          handleY,
+          room,
+          id
         }
       );
-
-      session.close();
-      console.log('query result: ', result.records);
-      return result.records;
-    } catch (err) {
-      console.log(err);
+      return results.records[0];
+    } catch(err) {
+      return err;
     }
   },
 
-  async deleteRoute(data) {
+  async updateConnection({handleX, handleY, room, id}) {
     try {
-      console.log('deleteRoute input data: ', data);
-      const result = await session.run(
+      const results = await session.run(
         `
-        MATCH (o:NODE {id:$nodeID })-[b:CONTAINS]->(n:ROUTE {id: $routeID})
-        DETACH DELETE b,n
-        WITH o
-        MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-        OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+        MATCH (a)-[r:IS_CONNECTED {id: $id}]->(b)
+        WITH r
+        SET r.handleX = $handleX, r.handleY = $handleY
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.description AS description;`,
         {
-          canvasID: data.room,
-          nodeID: data.nodeID,
-          url: data.url,
-          method: data.method,
-          routeID: data.routeID
+          handleX,
+          handleY,
+          room,
+          id
         }
       );
-
-      session.close();
-      console.log('query result: ', result.records);
-      return result.records;
-    } catch (err) {
-      console.log(err);
+      return results.records[0];
+    } catch(err) {
+      return err;
     }
   },
+
+  // async addRoute(data) {
+  //   try {
+  //     console.log('addRoute input data: ', data)
+  //     const result = await session.run(
+  //       `
+  //       MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })
+  //       CREATE (o)-[r:CONTAINS]->(n:ROUTE {id: $routeID, url: $url, method: $method})
+  //       WITH o,n  
+  //       MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+  //       OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+  //       RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+  //       {
+  //         canvasID: data.room,
+  //         nodeID: data.id,
+  //         url: data.url,
+  //         method: data.method,
+  //         routeID: data.routeID
+  //       }
+  //     );
+
+  //     session.close();
+  //     return result.records;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // },
+
+  // async updateRoute(data) {
+  //   try {
+  //     console.log('updateRoute input data: ', data);
+  //     const result = await session.run(
+  //       `
+  //       MATCH (n:ROUTE {id: $routeID})
+  //       SET n.url = $url, n.method = $method
+  //       WITH n
+  //       MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+  //       OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+  //       RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+  //       {
+  //         canvasID: data.room,
+  //         url: data.url,
+  //         method: data.method,
+  //         routeID: data.routeID
+  //       }
+  //     );
+
+  //     session.close();
+  //     console.log('query result: ', result.records);
+  //     return result.records;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // },
+
+  // async deleteRoute(data) {
+  //   try {
+  //     console.log('deleteRoute input data: ', data);
+  //     const result = await session.run(
+  //       `
+  //       MATCH (o:NODE {id:$nodeID })-[b:CONTAINS]->(n:ROUTE {id: $routeID})
+  //       DETACH DELETE b,n
+  //       WITH o
+  //       MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
+  //       OPTIONAL MATCH (m)-[:CONTAINS]->(p)
+  //       RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
+  //       {
+  //         canvasID: data.room,
+  //         nodeID: data.nodeID,
+  //         url: data.url,
+  //         method: data.method,
+  //         routeID: data.routeID
+  //       }
+  //     );
+
+  //     session.close();
+  //     console.log('query result: ', result.records);
+  //     return result.records;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // },
 
   async addImage(data) {
     try {

@@ -179,8 +179,9 @@ span:after {
    transform: scale(1.15);
 }
 
-
-
+.node-name:hover {
+  cursor: move;
+}
 
 .tool-bar {
   display: flex;
@@ -234,6 +235,7 @@ span:after {
 }
 
 .node {
+  /* position: absolute; */
   overflow: hidden;
 }
 

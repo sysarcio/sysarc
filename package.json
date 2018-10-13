@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "8.9.3"
+    "node": "8.11.1"
   },
   "scripts": {
     "start": "webpack -d && node server/index.js",
+    "watch": "webpack -d && nodemon server/index.js -w",
     "react-dev": "webpack -d --watch",
     "server-dev": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -32,10 +33,12 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "ioredis": "^4.0.0",
+    "konva": "^2.4.2",
     "neo4j-driver": "^1.6.3",
     "path": "^0.12.7",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
+    "react-konva": "^16.5.2",
     "react-pose": "^3.3.6",
     "react-router-dom": "^4.3.1",
     "socket.io": "^2.1.1",

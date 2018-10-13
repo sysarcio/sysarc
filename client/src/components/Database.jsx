@@ -6,11 +6,11 @@ class Database extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isAddingRoute: false,
       isOpen: false,
       parent: null,
       x: null,
-      y: null,
-      isAddingRoute: false
+      y: null
     };
 
     this.handleDragStart = this.handleDragStart.bind(this);
@@ -37,46 +37,46 @@ class Database extends Component {
         x: e.clientX - this.state.x,
         y: e.clientY - this.state.y
       },
-      id: this.props.get(this.props.node, 'id')
+      id: this.props.node.id
     };
 
     this.props.handleMovement(data);
   }
-
+  
   toggleAddRoute() {
-    this.setState({
-      isAddingRoute:!this.state.isAddingRoute
-    });
-  }
-
-  toggleSize(e) {
-    if (e.target === e.currentTarget) {
-      this.setState({
-        isOpen: !this.state.isOpen
-      });
-    }
-  }
+     this.setState({
+       isAddingRoute:!this.state.isAddingRoute
+     });
+   }
+ 
+   toggleSize(e) {
+     if (e.target === e.currentTarget) {
+       this.setState({
+         isOpen: !this.state.isOpen
+       });
+     }
+   }        
 
   render() {
     const {node} = this.props;
+    console.log(`rendering db ${node.id}`);
 
     return (
       <g>
         <foreignObject
-          x={this.props.get(node, 'x')}
-          y={this.props.get(node, 'y')}
+          x={node.x}
+          y={node.y}
           width={this.state.isOpen ? "350px" : "100px"}
           height={this.state.isOpen ? "250px" : "100px"}
           className="node-container"
         >
           <div
-            id={this.props.get(node, 'id')}
+            id={node.id}
             style={{background: 'gray', width: '100%', height: '100%', border: '1px solid #ccc', borderRadius: '5px'}}
             draggable="true"
             className="node"
             onDragStart={this.handleDragStart}
             onDragEnd={this.handleDragEnd}
-            onClick={this.toggleSize}
           >
             <p style={{textAlign: 'center'}} onClick={this.toggleSize}>DATABASE</p>
             {this.state.isOpen ? 
@@ -89,24 +89,24 @@ class Database extends Component {
                 <div className="endpoints">
                   {this.state.isAddingRoute && this.state.isOpen ? 
                     <NewEndpoint
-                      nodeID={this.props.get(node, 'id')}
+                      nodeID={node.id}
                       handleNewRoute={this.props.handleNewRoute}
                       toggleAddRoute={this.toggleAddRoute}
                     />
                   :
                     null
                   }
-                  {this.props.get(node, 'routes').map(endpoint => (
+                  {node.routes.map(endpoint => (
                     <Endpoint
                       key={endpoint.properties.id}
-                      nodeID={this.props.get(node, 'id')}
+                      nodeID={node.id}
                       endpoint={endpoint}
                       handleRouteDelete={this.props.handleRouteDelete}
                       handleRouteUpdate={this.props.handleRouteUpdate}
                     />
                   ))}
                 </div>
-                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: this.props.get(node, 'id') })}>Delete</button>
+                <button type="button" className="delete-node" onClick={() => this.props.handleDelete({ id: node.id })}>Delete</button>
               </div>
             :
               null
