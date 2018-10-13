@@ -4,6 +4,7 @@ import { Stage, Layer, Rect } from 'react-konva';
 import Konva from 'konva';
 import axios from 'axios';
 
+import Toolbar from './Toolbar.jsx';
 import Node from './Node.jsx';
 import RouteLine from './RouteLine.jsx';
 
@@ -13,6 +14,7 @@ class Canvas extends Component {
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
+      nodeToAdd: null,
       connections: {},
       connector: null,
       nodes: {}
@@ -25,6 +27,10 @@ class Canvas extends Component {
       console.log('socket connected client side');
       this.socket.emit('join room', this.roomID);
       this.getRoomData();
+    });
+
+    this.socket.on('node added', node => {
+      this.handleNewNode(node);
     });
 
     this.socket.on('node moved', data => {
@@ -59,6 +65,9 @@ class Canvas extends Component {
     this.handleDeleteConnection = this.handleDeleteConnection.bind(this);
     this.updateConnection = this.updateConnection.bind(this);
     this.emitDeleteNode = this.emitDeleteNode.bind(this);
+    this.prepNewNode = this.prepNewNode.bind(this);
+    this.emitNewNode = this.emitNewNode.bind(this);
+    this.handleNewNode = this.handleNewNode.bind(this);
   }
 
   componentDidMount() {
@@ -160,6 +169,41 @@ class Canvas extends Component {
     this.setState({connections});
   }
 
+  prepNewNode(type) {
+    this.setState({
+      nodeToAdd: type
+    }, () => {
+      document.body.style.cursor = 'crosshair';
+    });
+  }
+
+  emitNewNode(e) {
+    if (this.state.nodeToAdd) {
+      const data = {
+        x: e.evt.x,
+        y: e.evt.y,
+        type: this.state.nodeToAdd,
+        room: this.roomID
+      };
+      this.socket.emit('add node', data);
+
+      this.setState({
+        nodeToAdd: null
+      }, () => {
+        document.body.style.cursor = 'default';
+      });
+    }
+  }
+
+  handleNewNode(node) {
+    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
+    nodes[node.id] = node;
+
+    this.setState({
+      nodes
+    });
+  }
+
   moveNode(data) {
     data.room = this.roomID;
     this.socket.emit('move node', data);
@@ -213,6 +257,7 @@ class Canvas extends Component {
           width={this.state.width}
           height={this.state.height}
           fill={'rgba(0, 20, 155, 0.5)'}
+          onMouseDown={this.emitNewNode}
         />
         {Object.values(this.state.nodes).map(node => (
             <Node
@@ -242,6 +287,11 @@ class Canvas extends Component {
               handleDelete={this.deleteConnection}
             />
           ))}
+          <Toolbar 
+            canvasHeight={this.state.height}
+            canvasWidth={this.state.width}
+            prepNewNode={this.prepNewNode}
+          />
         </Layer>
       </Stage>
     );

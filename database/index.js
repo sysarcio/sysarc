@@ -142,19 +142,19 @@ module.exports = {
   },
 
   async addNode(data) {
-    const { x, y } = data.position;
+    const { x, y, type, room, id } = data;
     try {
       const result = await session.run(
         `
-        MATCH (c:CANVAS {id: $canvasID})
-        CREATE (c)-[:CONTAINS]->(n:NODE {id: $nodeID, x: $x, y: $y, created_at: timestamp(), type: $type})
+        MATCH (c:CANVAS {id: $room})
+        CREATE (c)-[:CONTAINS]->(n:NODE {id: $id, x: $x, y: $y, created_at: timestamp(), type: $type})
         RETURN n.x AS x, n.y AS y, n.id AS id, n.type AS type`,
         {
-          canvasID: data.room,
-          nodeID: data.nodeID,
-          x: x,
-          y: y,
-          type: data.type
+          x,
+          y,
+          type,
+          room,
+          id
         }
       );
 

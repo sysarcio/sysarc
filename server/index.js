@@ -53,6 +53,23 @@ io.on('connection', socket => {
     socket.join(roomID);
   });
 
+  socket.on('add node', async data => {
+    data.id = uuidv4();
+    
+    try {
+      await db.addNode(data);
+      const node = {
+        x: data.x,
+        y: data.y,
+        type: data.type,
+        id: data.id
+      }
+      io.to(data.room).emit('node added', node);
+    } catch(err) {
+      console.log(err);
+    }
+  });
+
   socket.on('move node', ({id, x, y, room}) => {
     io.to(room).emit('node moved', {id, x, y});
   });
@@ -108,7 +125,7 @@ io.on('connection', socket => {
     } catch(err) {
       console.log(err);
     }
-  })
+  });
   
   // socket.on('add node', async data => {
   //   data.nodeID = uuidv4();
