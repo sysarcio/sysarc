@@ -79,6 +79,25 @@ module.exports = {
     }
   },
 
+  async deleteCanvas(canvasID) {
+    try {
+      await session.run(
+        `
+        MATCH (n:CANVAS {id: $canvasID})
+        DETACH DELETE n;`,
+        {
+          canvasID: canvasID
+        }
+      );
+
+      session.close();
+
+      return;
+    } catch(err) {
+      return err;
+    }
+  },
+
   async getCanvas(canvasID) {
     try {
       const result = await session.run(

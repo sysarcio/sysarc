@@ -107,7 +107,14 @@ router.get('/canvases', async (req, res) => {
   }
 });
 
-
+router.delete('/canvas/:id', async (req, res) => {
+  try {
+    db.deleteCanvas(req.params.id);
+    res.end();
+  } catch(err) {
+    res.sendStatus(500);
+  }
+});
 
 router.get('/getRoomData/:id', async (req, res) => {
   try {
