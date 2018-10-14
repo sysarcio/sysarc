@@ -86,7 +86,6 @@ io.on('connection', socket => {
 
   socket.on('make connection', async data => {
     data.id = uuidv4();
-    
     try {
       await db.addConnection(data);
       io.to(data.room).emit('connection made', data);
@@ -126,69 +125,17 @@ io.on('connection', socket => {
       console.log(err);
     }
   });
-  
-  // socket.on('add node', async data => {
-  //   data.nodeID = uuidv4();
 
-  //   try {
-  //     const node = await db.addNode(data);
-  //     // io.to(data.room).emit('room data', nodes);
-  //     io.to(data.room).emit('node added', node);
-  //   } catch(err) {
-  //     console.log(err);
-  //   }
-  // });
-
-  // socket.on('delete node', async data => {
-  //   try {
-  //     await db.deleteNode(data);
-  //     // io.to(data.room).emit('room data', nodes);
-  //     io.to(data.room).emit('node deleted', data.id);
-  //   } catch(err) {
-  //     console.log(err);
-  //   }
-  // });
-
-  // socket.on('add route', async data => {
-  //   data.routeID = uuidv4();
-
-  //   try {
-  //     console.log('add route data: ', data);
-  //     const nodes = await db.addRoute(data);
-  //     io.to(data.room).emit('room data', nodes);
-  //     // io.to(data.room).emit('route added', nodes);
-  //   } catch(err) {
-  //     console.log(err);
-  //   }
-  // });
-
-  // socket.on('update route', async data => {
-
-  //   try {
-  //     console.log('update route data: ', data);
-  //     const nodes = await db.updateRoute(data);
-  //     console.log('server data: ', nodes);
-  //     io.to(data.room).emit('room data', nodes);
-  //     // io.to(data.room).emit('route updated', nodes);
-  //   } catch(err) {
-  //     console.log(err);
-  //   }
-  // });
-
-  // socket.on('delete route', async data => {
-
-  //   try {
-  //     console.log('delete route data: ', data);
-  //     const nodes = await db.deleteRoute(data);
-  //     console.log('server data: ', nodes);
-  //     io.to(data.room).emit('room data', nodes);
-  //     // io.to(data.room).emit('route deleted', nodes);
-  //   } catch(err) {
-  //     console.log(err);
-  //   }
-  // });
+  socket.on('update connection data', async connection => {
+    const {room} = connection;
+    try {
+      await db.updateConnection(connection);
+      io.to(room).emit('connection updated', connection);
+    } catch(err) {
+      console.log(err);
+    }
+  });
 });
-
 
 app.get('/*', (_, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));

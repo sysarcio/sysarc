@@ -7,6 +7,7 @@ import axios from 'axios';
 import Toolbar from './Toolbar.jsx';
 import Node from './Node.jsx';
 import RouteLine from './RouteLine.jsx';
+import RouteForm from './RouteForm.jsx';
 
 class Canvas extends Component {
   constructor(props) {
@@ -14,9 +15,10 @@ class Canvas extends Component {
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
+      openConnection: null,
       nodeToAdd: null,
-      connections: {},
       connector: null,
+      connections: {},
       nodes: {}
     };
 
@@ -53,6 +55,10 @@ class Canvas extends Component {
       this.handleDeleteConnection(id);
     });
 
+    this.socket.on('connection updated', data => {
+      this.handleConnectionUpdated(data);
+    });
+
     this.moveNode = this.moveNode.bind(this);
     this.updateNode = this.updateNode.bind(this);
     this.placeNode = this.placeNode.bind(this);
@@ -68,6 +74,8 @@ class Canvas extends Component {
     this.prepNewNode = this.prepNewNode.bind(this);
     this.emitNewNode = this.emitNewNode.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
+    this.toggleOpenConnection = this.toggleOpenConnection.bind(this);
+    this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
   }
 
   componentDidMount() {
@@ -76,6 +84,16 @@ class Canvas extends Component {
         width: window.innerWidth,
         height: window.innerHeight
       })
+    });
+
+    window.addEventListener('keyup', e => {
+      if (e.keyCode === 27) {
+        this.setState({
+          openConnection: null,
+          nodeToAdd: null,
+          connector: null
+        });
+      }
     });
   }
 
@@ -91,7 +109,9 @@ class Canvas extends Component {
       this.setState({
         nodes,
         connections
-      })
+      });
+
+      console.log(connections);
     } catch(err) {
       console.log(err);
     }
@@ -105,7 +125,8 @@ class Canvas extends Component {
           connector: connector,
           connectee: connectee,
           handleX: nodes[connector].x + 150 + 75,
-          handleY: ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75
+          handleY: ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75,
+          data: JSON.stringify({})
         }
 
         data.room = this.roomID;
@@ -140,6 +161,15 @@ class Canvas extends Component {
     });
   }
 
+  handleConnectionUpdated(connection) {
+    const connections = JSON.parse(JSON.stringify(this.state.connections));
+    connections[connection.id] = connection;
+
+    this.setState({
+      connections
+    });
+  }
+
   deleteConnection(id) {
     const data = {
       room: this.roomID,
@@ -149,7 +179,6 @@ class Canvas extends Component {
   }
 
   handleLineDrop(data) {
-    console.log(data);
     data.room = this.roomID;
     this.socket.emit('place connection', data);
   }
@@ -246,54 +275,89 @@ class Canvas extends Component {
     });
   }
 
+  toggleOpenConnection(connection = null) {
+    this.setState({
+      openConnection: null
+    });
+
+    if (connection) {
+      this.setState({
+        openConnection: connection
+      });
+    }
+  }
+
+  emitUpdateConnectionData(data) {
+    data.room = this.roomID;
+    this.socket.emit('update connection data', data);
+  }
+
   render() {
     return (
-      <Stage
-        width={this.state.width}
-        height={this.state.height}
-      >
-        <Layer>
-        <Rect
-          width={this.state.width}
-          height={this.state.height}
-          fill={'rgba(0, 20, 155, 0.5)'}
-          onMouseDown={this.emitNewNode}
-        />
-        {Object.values(this.state.nodes).map(node => (
-            <Node
-              key={node.id}
-              id={node.id}
-              type={node.type}
-              placeNode={this.placeNode}
-              color="black"
-              canvasWidth={this.state.width}
-              canvasHeight={this.state.height}
-              x={node.x}
-              y={node.y}
-              beginNewConnection={this.beginNewConnection}
-              emitDeleteNode={this.emitDeleteNode}
-              moveNode={this.moveNode}
+      <div>
+        <div
+          id="canvas"
+        >
+          <Stage
+            width={this.state.width}
+            height={this.state.height}
+          >
+            <Layer
+              className="canvas"
+            >
+            <Rect
+              width={this.state.width}
+              height={this.state.height}
+              fill={'rgba(0, 20, 155, 0.5)'}
+              onMouseDown={this.emitNewNode}
             />
-          ))}
-          {Object.keys(this.state.connections).map(id => (
-            <RouteLine
-              key={id}
-              id={id}
-              connection={this.state.connections[id]}
-              nodes={this.state.nodes}
-              handleLineClick={this.handleLineClick}
-              handlePointDrag={this.handlePointDrag}
-              handleLineDrop={this.handleLineDrop}
-              handleDelete={this.deleteConnection}
-            />
-          ))}
-          <Toolbar 
-            canvasHeight={this.state.height}
-            canvasWidth={this.state.width}
-            prepNewNode={this.prepNewNode}
+            {Object.values(this.state.nodes).map(node => (
+                <Node
+                  key={node.id}
+                  id={node.id}
+                  type={node.type}
+                  placeNode={this.placeNode}
+                  color="black"
+                  canvasWidth={this.state.width}
+                  canvasHeight={this.state.height}
+                  x={node.x}
+                  y={node.y}
+                  beginNewConnection={this.beginNewConnection}
+                  emitDeleteNode={this.emitDeleteNode}
+                  moveNode={this.moveNode}
+                />
+              ))}
+              {Object.keys(this.state.connections).map(id => (
+                <RouteLine
+                  key={id}
+                  id={id}
+                  connection={this.state.connections[id]}
+                  nodes={this.state.nodes}
+                  handleLineClick={this.handleLineClick}
+                  handlePointDrag={this.handlePointDrag}
+                  handleLineDrop={this.handleLineDrop}
+                  handleDelete={this.deleteConnection}
+                  toggleOpenConnection={this.toggleOpenConnection}
+                />
+              ))}
+              <Toolbar 
+                canvasHeight={this.state.height}
+                canvasWidth={this.state.width}
+                prepNewNode={this.prepNewNode}
+              />
+            </Layer>
+          </Stage>
+        </div>
+        {this.state.openConnection ?
+          <RouteForm
+            connection={this.state.openConnection}
+            toggleOpenConnection={this.toggleOpenConnection}
+            emitUpdateConnectionData={this.emitUpdateConnectionData}
           />
-        </Layer>
-      </Stage>
+        :
+          null
+        }
+      </div>
     );
   }
 }

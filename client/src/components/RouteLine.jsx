@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
 
+import RouteForm from './RouteForm.jsx';
+
 class RouteLine extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isHovered: false,
+      isHovered: false
     };
 
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
@@ -33,8 +35,9 @@ class RouteLine extends Component {
   handleMouseLeave() {
     document.body.style.cursor = 'default';
     this.setState({
-      isHovered: false
-    })
+      isHovered: false,
+      formIsOpen: false
+    });
   }
 
   handleLineDrop(e) {
@@ -55,6 +58,7 @@ class RouteLine extends Component {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         onDblClick={() => this.props.handleDelete(this.props.id)}
+        onClick={() => this.props.toggleOpenConnection(this.props.connection)}
       >
         <Line
           points={[
