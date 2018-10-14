@@ -120,14 +120,16 @@ class Canvas extends Component {
   beginNewConnection(connectee, location) {
     const {connector, nodes, connectorLocation} = this.state;
     if (connector !== connectee) {
+      const addToConnectorX = connectorLocation === 'left' ? -25 : 150;
+      const addToConnecteeX = location === 'left' ? -25 : 150;
       if (connector) {
         const data = {
           connector,
           connectee,
           connectorLocation,
           connecteeLocation: location,
-          handleX: nodes[connector].x + 150 + 75,
-          handleY: ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75,
+          handleX: (nodes[connector].x + addToConnectorX + nodes[connectee].x + addToConnecteeX) / 2,
+          handleY: (nodes[connector].y + nodes[connectee].y) / 2,
           data: {}
         }
 
