@@ -86,7 +86,6 @@ io.on('connection', socket => {
 
   socket.on('make connection', async data => {
     data.id = uuidv4();
-
     try {
       await db.addConnection(data);
       io.to(data.room).emit('connection made', data);
