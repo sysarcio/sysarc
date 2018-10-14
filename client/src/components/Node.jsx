@@ -14,9 +14,6 @@ const nodeProperties = {
 class Node extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      
-    };
 
     this.handleDragBounds = this.handleDragBounds.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
@@ -25,8 +22,8 @@ class Node extends Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
-  handleCircleClick() {
-    this.props.beginNewConnection(this.props.id);
+  handleCircleClick(target) {
+    this.props.beginNewConnection(this.props.id, target);
   }
 
   handleMouseEnter(e) {
@@ -71,6 +68,25 @@ class Node extends Component {
   }
 
   render() {
+    const nodeRouteTargets = {
+      // top: {
+      //   x: nodeProperties.width / 2,
+      //   y: 0
+      // },
+      right: {
+        x: nodeProperties.width,
+        y: nodeProperties.height / 2
+      },
+      // bottom: {
+      //   x: nodeProperties.width / 2,
+      //   y: nodeProperties.height
+      // },
+      left: {
+        x: 0,
+        y: nodeProperties.height / 2
+      }
+    };
+
     return (
       <Group
         onDragEnd={this.handleDragEnd}
@@ -91,11 +107,14 @@ class Node extends Component {
             text={this.props.type}
           />
         </Group>
-        <NodeRouteTarget
-          x={nodeProperties.width}
-          y={nodeProperties.height / 2}
-          handleCircleClick={this.handleCircleClick}
-        />
+        {Object.keys(nodeRouteTargets).map((target, i) => (
+          <NodeRouteTarget
+            key={i}
+            x={nodeRouteTargets[target].x}
+            y={nodeRouteTargets[target].y}
+            handleCircleClick={() => this.handleCircleClick(target)}
+          />
+        ))}
       </Group>
     );
   }
