@@ -130,14 +130,15 @@ router.get('/getRoomData/:id', async (req, res) => {
       }
 
       r.get('connections').forEach(c => { 
-        const {description, handleY, handleX, connectee, connector, id} = c.properties;
+        const {description, handleY, handleX, connectee, connector, id, data} = c.properties;
         output[1][id] = {
           description,
           handleX,
           handleY,
           connectee,
           connector,
-          id
+          id,
+          data: JSON.parse(data)
         }
       });
       return output;

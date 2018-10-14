@@ -75,7 +75,7 @@ module.exports = {
 
       return canvas;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
@@ -94,7 +94,7 @@ module.exports = {
 
       return;
     } catch(err) {
-      return err;
+      throw err;
     }
   },
 
@@ -117,7 +117,7 @@ module.exports = {
 
       return result.records;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
@@ -137,12 +137,11 @@ module.exports = {
 
       return result.records;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
-  async addNode(data) {
-    const { x, y, type, room, id } = data;
+  async addNode({ x, y, type, room, id }) {
     try {
       const result = await session.run(
         `
@@ -161,7 +160,7 @@ module.exports = {
       session.close();
       return result.records[0];
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
@@ -183,7 +182,7 @@ module.exports = {
       session.close();
       return result.records;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
@@ -205,7 +204,7 @@ module.exports = {
       session.close();
       return result.records;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
@@ -224,11 +223,11 @@ module.exports = {
       session.close();
       return
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   },
 
-  async addConnection({connector, connectee, handleX, handleY, room, id}) {
+  async addConnection({connector, connectee, handleX, handleY, room, id, data}) {
     try {
       const results = await session.run(
         `
@@ -236,125 +235,46 @@ module.exports = {
         WITH n, c
         MATCH (c)-[:CONTAINS]->(m:NODE {id: $connectee})
         WITH n, m
-        CREATE (n)-[r:IS_CONNECTED {id: $id, handleX: $handleX, handleY: $handleY, connector: $connector, connectee: $connectee, description: '' }]->(m)
-        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.description AS description;`,
+        CREATE (n)-[r:IS_CONNECTED {id: $id, handleX: $handleX, handleY: $handleY, connector: $connector, connectee: $connectee, data: $data}]->(m)
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data;`,
         {
           connector,
           connectee,
           handleX,
           handleY,
           room,
-          id
+          id,
+          data
         }
       );
+
       return results.records[0];
     } catch(err) {
-      return err;
+      throw err;
     }
   },
 
-  async updateConnection({handleX, handleY, room, id}) {
+  async updateConnection({data, handleX, handleY, id}) {
+    data = JSON.stringify(data);
     try {
       const results = await session.run(
         `
         MATCH (a)-[r:IS_CONNECTED {id: $id}]->(b)
         WITH r
-        SET r.handleX = $handleX, r.handleY = $handleY
-        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.description AS description;`,
+        SET r.handleX = $handleX, r.handleY = $handleY, r.data = $data
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data;`,
         {
           handleX,
           handleY,
-          room,
-          id
+          id,
+          data
         }
       );
       return results.records[0];
     } catch(err) {
-      return err;
+      throw err;
     }
   },
-
-  // async addRoute(data) {
-  //   try {
-  //     console.log('addRoute input data: ', data)
-  //     const result = await session.run(
-  //       `
-  //       MATCH (c:CANVAS {id:$canvasID})-[:CONTAINS]->(o:NODE {id:$nodeID })
-  //       CREATE (o)-[r:CONTAINS]->(n:ROUTE {id: $routeID, url: $url, method: $method})
-  //       WITH o,n  
-  //       MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-  //       OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-  //       RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
-  //       {
-  //         canvasID: data.room,
-  //         nodeID: data.id,
-  //         url: data.url,
-  //         method: data.method,
-  //         routeID: data.routeID
-  //       }
-  //     );
-
-  //     session.close();
-  //     return result.records;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // },
-
-  // async updateRoute(data) {
-  //   try {
-  //     console.log('updateRoute input data: ', data);
-  //     const result = await session.run(
-  //       `
-  //       MATCH (n:ROUTE {id: $routeID})
-  //       SET n.url = $url, n.method = $method
-  //       WITH n
-  //       MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-  //       OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-  //       RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
-  //       {
-  //         canvasID: data.room,
-  //         url: data.url,
-  //         method: data.method,
-  //         routeID: data.routeID
-  //       }
-  //     );
-
-  //     session.close();
-  //     console.log('query result: ', result.records);
-  //     return result.records;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // },
-
-  // async deleteRoute(data) {
-  //   try {
-  //     console.log('deleteRoute input data: ', data);
-  //     const result = await session.run(
-  //       `
-  //       MATCH (o:NODE {id:$nodeID })-[b:CONTAINS]->(n:ROUTE {id: $routeID})
-  //       DETACH DELETE b,n
-  //       WITH o
-  //       MATCH (c:CANVAS {id: $canvasID })-[:CONTAINS]->(m)
-  //       OPTIONAL MATCH (m)-[:CONTAINS]->(p)
-  //       RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS routes;`,
-  //       {
-  //         canvasID: data.room,
-  //         nodeID: data.nodeID,
-  //         url: data.url,
-  //         method: data.method,
-  //         routeID: data.routeID
-  //       }
-  //     );
-
-  //     session.close();
-  //     console.log('query result: ', result.records);
-  //     return result.records;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // },
 
   async addImage(data) {
     try {
@@ -371,7 +291,7 @@ module.exports = {
       session.close();
       return result;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 };
