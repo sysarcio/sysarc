@@ -74,6 +74,7 @@ class Canvas extends Component {
     this.prepNewNode = this.prepNewNode.bind(this);
     this.emitNewNode = this.emitNewNode.bind(this);
     this.handleNewNode = this.handleNewNode.bind(this);
+    this.processScreenshot = this.processScreenshot.bind(this);
     this.toggleOpenConnection = this.toggleOpenConnection.bind(this);
     this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
   }
@@ -83,7 +84,7 @@ class Canvas extends Component {
       this.setState({
         width: window.innerWidth,
         height: window.innerHeight
-      })
+      });
     });
 
     window.addEventListener('keyup', e => {
@@ -104,13 +105,12 @@ class Canvas extends Component {
     };
 
     try {
-      const {data} = await axios(options);
-      const {nodes, connections} = data;
+      const { data } = await axios(options);
+      const { nodes, connections } = data;
       this.setState({
         nodes,
         connections
       });
-
       console.log(connections);
     } catch(err) {
       console.log(err);
@@ -118,20 +118,21 @@ class Canvas extends Component {
   }
 
   beginNewConnection(connectee) {
-    const {connector, nodes} = this.state;
+    const { connector, nodes } = this.state;
     if (connector !== connectee) {
       if (connector) {
         const data = {
           connector: connector,
           connectee: connectee,
           handleX: nodes[connector].x + 150 + 75,
+
           handleY: ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75,
           data: JSON.stringify({})
         }
 
         data.room = this.roomID;
         this.socket.emit('make connection', data);
-  
+
         this.setState({
           connector: null
         });
@@ -151,7 +152,7 @@ class Canvas extends Component {
     });
   }
 
-  updateConnection({id, handleX, handleY}) {
+  updateConnection({ id, handleX, handleY }) {
     const connections = JSON.parse(JSON.stringify(this.state.connections));
     connections[id].handleX = handleX;
     connections[id].handleY = handleY;
@@ -174,7 +175,7 @@ class Canvas extends Component {
     const data = {
       room: this.roomID,
       id
-    }
+    };
     this.socket.emit('delete connection', data);
   }
 
@@ -195,15 +196,18 @@ class Canvas extends Component {
   handleDeleteConnection(id) {
     const connections = JSON.parse(JSON.stringify(this.state.connections));
     delete connections[id];
-    this.setState({connections});
+    this.setState({ connections });
   }
 
   prepNewNode(type) {
-    this.setState({
-      nodeToAdd: type
-    }, () => {
-      document.body.style.cursor = 'crosshair';
-    });
+    this.setState(
+      {
+        nodeToAdd: type
+      },
+      () => {
+        document.body.style.cursor = 'crosshair';
+      }
+    );
   }
 
   emitNewNode(e) {
@@ -216,11 +220,14 @@ class Canvas extends Component {
       };
       this.socket.emit('add node', data);
 
-      this.setState({
-        nodeToAdd: null
-      }, () => {
-        document.body.style.cursor = 'default';
-      });
+      this.setState(
+        {
+          nodeToAdd: null
+        },
+        () => {
+          document.body.style.cursor = 'default';
+        }
+      );
     }
   }
 
@@ -255,8 +262,8 @@ class Canvas extends Component {
     const data = {
       id,
       room: this.roomID
-    }
-    this.socket.emit('delete node', data)
+    };
+    this.socket.emit('delete node', data);
   }
 
   handleDeleteNode(data) {
@@ -273,6 +280,45 @@ class Canvas extends Component {
       nodes,
       connections
     });
+  }
+  processScreenshot(type) {
+    // //make a URL to point to the PNG recreation of the canvas
+    let screenshotURL = document
+      .getElementsByTagName('canvas')[0]
+      .toDataURL('image/png');
+
+    if (type === 'DOWNLOAD') {
+      var a = window.document.createElement('a');
+      //set the href to your url, and give it the PNG type.
+      (a.href = screenshotURL), { type: 'image/png' };
+      //set the filename
+      a.download = 'canvas.png';
+      //append download to body
+      document.body.appendChild(a);
+      //execute click event on element
+      a.click();
+      // Remove anchor from body
+      document.body.removeChild(a);
+    }
+    if (type === 'UPLOAD') {
+      const options = {
+        method: 'POST',
+        url: '/api/uploadScreenshot',
+        data: {
+          canvasID: window.location.href.split('/canvas/')[1],
+          image: screenshotURL
+        }
+      };
+
+      axios(options)
+        .then(data => {
+          console.log('uploaded screenshot');
+        })
+        .catch(err => {
+          // Actually show user what went wrong
+          console.log(err);
+        });
+    }
   }
 
   toggleOpenConnection(connection = null) {
@@ -344,6 +390,7 @@ class Canvas extends Component {
                 canvasHeight={this.state.height}
                 canvasWidth={this.state.width}
                 prepNewNode={this.prepNewNode}
+                processScreenshot={this.processScreenshot}
               />
             </Layer>
           </Stage>

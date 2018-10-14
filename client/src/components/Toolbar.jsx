@@ -6,52 +6,49 @@ const toolbarProperties = {
   width: 150,
   height: 150,
   strokeWidth: 1,
-  fill: "rgba(255, 255, 255, 0.2)"
-}
+  fill: 'rgba(255, 255, 255, 0.2)'
+};
 
 const textProperties = {
   width: 150,
   height: 100,
-  fill: "#fff",
-  align: "center",
+  fill: '#fff',
+  align: 'center',
   y: 20
-}
+};
 
 const nodeTypes = ['CLIENT', 'SERVER', 'DATABASE', 'SERVICES'];
+const screenshotTypes = ['DOWNLOAD', 'UPLOAD'];
 
 class Toolbar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
 
     this.handleDragBounds = this.handleDragBounds.bind(this);
   }
 
   handleDragBounds(pos) {
-    let {x, y} = pos
+    let { x, y } = pos;
 
     if (x < 0) {
-      x = 0
+      x = 0;
     } else if (x + toolbarProperties.width > window.innerWidth) {
-      x = this.props.canvasWidth - toolbarProperties.width
+      x = this.props.canvasWidth - toolbarProperties.width;
     }
 
     if (y < 0) {
       y = 0;
     } else if (y + toolbarProperties.height > window.innerHeight) {
-      y = this.props.canvasHeight - toolbarProperties.height
+      y = this.props.canvasHeight - toolbarProperties.height;
     }
 
-    return {x, y};
+    return { x, y };
   }
 
   render() {
     return (
-      <Group
-        draggable={true}
-        dragBoundFunc={this.handleDragBounds}
-      >
+      <Group draggable={true} dragBoundFunc={this.handleDragBounds}>
         <Rect
           width={toolbarProperties.width}
           height={toolbarProperties.height}
@@ -68,6 +65,19 @@ class Toolbar extends Component {
             align={textProperties.align}
             fontSize={16}
             y={textProperties.y * (i + 1)}
+          />
+        ))}
+
+        {screenshotTypes.map((type, i) => (
+          <Text
+            key={i}
+            onClick={() => this.props.processScreenshot(type)}
+            text={`+ ${type}`}
+            fill={textProperties.fill}
+            width={textProperties.width}
+            align={textProperties.align}
+            fontSize={16}
+            y={textProperties.y * (i + 5)}
           />
         ))}
       </Group>
