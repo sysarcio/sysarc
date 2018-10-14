@@ -126,8 +126,8 @@ deleteCanvas(id) {
         </form> 
     </div> : 
       
-      <div  className='canvases-plus'>
-        <button className='canvas-button' onClick={this.toggleShowForm} >
+      <div className='canvases-plus' onClick={this.toggleShowForm}>
+        <button className='canvas-button'  >
           <strong>+</strong>
         </button>
       </div>

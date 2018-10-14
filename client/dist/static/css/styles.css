@@ -7,9 +7,8 @@ body {
   padding: 0;
   background: #BDCDE0;
   background-image: linear-gradient(#BDCDE0, #394256);
+  min-height: 100vh;
 }
-
-
 
 
 
