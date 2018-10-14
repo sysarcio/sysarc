@@ -18,6 +18,7 @@ class Canvas extends Component {
       openConnection: null,
       nodeToAdd: null,
       connector: null,
+      connectorLocation: null,
       connections: {},
       nodes: {}
     };
@@ -65,7 +66,6 @@ class Canvas extends Component {
     this.beginNewConnection = this.beginNewConnection.bind(this);
     this.handleNewConnection = this.handleNewConnection.bind(this);
     this.deleteConnection = this.deleteConnection.bind(this);
-    this.handleLineClick = this.handleLineClick.bind(this);
     this.handlePointDrag = this.handlePointDrag.bind(this);
     this.handleLineDrop = this.handleLineDrop.bind(this);
     this.handleDeleteConnection = this.handleDeleteConnection.bind(this);
@@ -117,16 +117,18 @@ class Canvas extends Component {
     }
   }
 
-  beginNewConnection(connectee) {
-    const {connector, nodes} = this.state;
+  beginNewConnection(connectee, location) {
+    const {connector, nodes, connectorLocation} = this.state;
     if (connector !== connectee) {
       if (connector) {
         const data = {
-          connector: connector,
-          connectee: connectee,
+          connector,
+          connectee,
+          connectorLocation,
+          connecteeLocation: location,
           handleX: nodes[connector].x + 150 + 75,
           handleY: ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75,
-          data: JSON.stringify({})
+          data: {}
         }
 
         data.room = this.roomID;
@@ -137,7 +139,8 @@ class Canvas extends Component {
         });
       } else {
         this.setState({
-          connector: connectee
+          connector: connectee,
+          connectorLocation: location
         });
       }
     }
@@ -179,12 +182,9 @@ class Canvas extends Component {
   }
 
   handleLineDrop(data) {
+    console.log(data);
     data.room = this.roomID;
     this.socket.emit('place connection', data);
-  }
-
-  handleLineClick([x, y]) {
-    //console.log(x, y);
   }
 
   handlePointDrag(data) {
@@ -333,7 +333,6 @@ class Canvas extends Component {
                   id={id}
                   connection={this.state.connections[id]}
                   nodes={this.state.nodes}
-                  handleLineClick={this.handleLineClick}
                   handlePointDrag={this.handlePointDrag}
                   handleLineDrop={this.handleLineDrop}
                   handleDelete={this.deleteConnection}
