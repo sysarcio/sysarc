@@ -39,11 +39,14 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const user = await db.getUser(req.body);
-    const valid = await bcrypt.compare(
-      req.body.password,
-      user.get('u.password')
-    );
-
+    if (!user.get('u.email')) {
+      throw {
+        message: 'No user exists with this email',
+        code: 401
+      }
+    }
+    
+    const valid = await bcrypt.compare(req.body.password, user.get('u.password'));
     if (!valid) {
       throw {
         message: 'Incorrect password',
@@ -51,9 +54,7 @@ router.post('/login', async (req, res) => {
       };
     }
 
-    req.session.userID = user.get('u.id');
-
-    res.end();
+    res.send(user.get('u.id'));
   } catch (err) {
     res.statusMessage = err.message;
     res.sendStatus(err.code);

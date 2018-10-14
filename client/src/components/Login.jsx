@@ -43,7 +43,8 @@ class Login extends Component {
       };
 
       try {
-        await axios(options);
+        const {data} = await axios(options);
+        localStorage.userID = data;
         this.props.history.push('/');
       } catch(err) {
         // Actually show user what went wrong
