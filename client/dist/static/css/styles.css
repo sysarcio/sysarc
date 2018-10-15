@@ -164,6 +164,7 @@ span {
   /* float:left;
   position:relative; */
   cursor:pointer;
+  
 }
 
 .canvas-delete-btn:hover span {
