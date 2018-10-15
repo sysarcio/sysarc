@@ -221,9 +221,11 @@ class Canvas extends Component {
 
   emitNewNode(e) {
     if (this.state.nodeToAdd) {
+      const x = e.evt.x / this.state.width;
+      const y = e.evt.y / this.state.height;
       const data = {
-        x: e.evt.x,
-        y: e.evt.y,
+        x,
+        y,
         type: this.state.nodeToAdd,
         room: this.roomID
       };
@@ -409,6 +411,8 @@ class Canvas extends Component {
                   handleLineDrop={this.handleLineDrop}
                   handleDelete={this.deleteConnection}
                   toggleOpenConnection={this.toggleOpenConnection}
+                  canvasHeight={this.state.height}
+                  canvasWidth={this.state.width}
                 />
               ))}
               <Toolbar 
