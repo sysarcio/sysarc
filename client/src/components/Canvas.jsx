@@ -121,7 +121,6 @@ class Canvas extends Component {
         nodes,
         connections
       });
-      console.log(connections);
     } catch(err) {
       console.log(err);
     }
