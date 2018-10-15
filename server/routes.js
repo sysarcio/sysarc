@@ -26,9 +26,8 @@ router.post('/signup', async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
     req.body.password = password;
     const user = await db.addUser(req.body);
-
-    req.session.userID = user.get('u.id');
-    res.end();
+    console.log(user);
+    // res.send(user.get('u.id'));
   } catch (err) {
     console.log(err);
     res.statusMessage = 'That email address is already in use';
@@ -61,48 +60,40 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.end();
-  });
-});
-
 router.post('/canvas/add', async (req, res) => {
   const canvasID = uuidv4();
 
   try {
-    if (!req.session.userID) {
+    if (!req.body.userID) {
       throw {
         message: 'User not logged in',
         code: 401
       };
     }
     const canvas = await db.addCanvas({
-      userID: req.session.userID,
+      userID: req.body.userID,
       canvasID,
       canvasName: req.body.name
     });
     res.send({ id: canvas.get('c.id'), name: canvas.get('c.name') });
   } catch (err) {
-    console.log(err);
     res.statusMessage = err.message;
     res.sendStatus(err.code);
   }
 });
 
-router.get('/canvases', async (req, res) => {
+router.get('/canvases/:userID', async (req, res) => {
   try {
-    if (!req.session.userID) {
+    if (!req.params.userID) {
       throw {
         message: 'User not logged in',
         code: 401
-      };
+      }
     }
 
-    const canvases = await db.getUserCanvases(req.session.userID);
+    const canvases = await db.getUserCanvases(req.params.userID);
     res.send(canvases);
   } catch (err) {
-    console.log(err);
     res.statusMessage = err.message;
     res.sendStatus(err.code);
   }
