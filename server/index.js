@@ -38,14 +38,14 @@ server.listen(port, () => {
 
 io.on('connection', socket => {
   console.log('socket connected server side');
-  
+
   socket.on('join room', roomID => {
     socket.join(roomID);
   });
 
   socket.on('add node', async data => {
     data.id = uuidv4();
-    
+
     try {
       await db.addNode(data);
       const node = {
@@ -53,23 +53,26 @@ io.on('connection', socket => {
         y: data.y,
         type: data.type,
         id: data.id
-      }
+      };
       io.to(data.room).emit('node added', node);
-    } catch(err) {
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });
 
-  socket.on('move node', ({id, x, y, room}) => {
-    io.to(room).emit('node moved', {id, x, y});
+  socket.on('move node', ({ id, x, y, room }) => {
+    io.to(room).emit('node moved', { id, x, y });
+    // socket.emit('request screenshot');
   });
 
   socket.on('place node', async data => {
-    const {id, x, y, room} = data;
+    const { id, x, y, room } = data;
     try {
       await db.moveNode(data);
-      io.to(room).emit('node moved', {id, x, y});
-    } catch(err) {
+      io.to(room).emit('node moved', { id, x, y });
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });
@@ -79,7 +82,8 @@ io.on('connection', socket => {
     try {
       await db.addConnection(data);
       io.to(data.room).emit('connection made', data);
-    } catch(err) {
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });
@@ -92,36 +96,40 @@ io.on('connection', socket => {
     try {
       await db.updateConnection(data);
       io.to(data.room).emit('connection dragged', data);
-    } catch(err) {
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });
 
-  socket.on('delete connection', async ({room, id}) => {
+  socket.on('delete connection', async ({ room, id }) => {
     try {
       await db.deleteConnection(id);
       io.to(room).emit('connection deleted', id);
-    } catch(err) {
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });
-  
-  socket.on('delete node', async ({room, id}) => {
+
+  socket.on('delete node', async ({ room, id }) => {
     try {
       let connections = await db.deleteNode(id);
       connections = connections.map(c => c.get('id'));
-      io.to(room).emit('node deleted', {id, connections});
-    } catch(err) {
+      io.to(room).emit('node deleted', { id, connections });
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });
 
   socket.on('update connection data', async connection => {
-    const {room} = connection;
+    const { room } = connection;
     try {
       await db.updateConnection(connection);
       io.to(room).emit('connection updated', connection);
-    } catch(err) {
+      socket.emit('request screenshot');
+    } catch (err) {
       console.log(err);
     }
   });

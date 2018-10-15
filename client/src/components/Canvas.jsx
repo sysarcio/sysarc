@@ -20,7 +20,8 @@ class Canvas extends Component {
       connector: null,
       connectorLocation: null,
       connections: {},
-      nodes: {}
+      nodes: {},
+      showMenu: true
     };
 
     this.roomID = this.props.match.params.name;
@@ -37,6 +38,7 @@ class Canvas extends Component {
     });
 
     this.socket.on('node moved', data => {
+      console.log('node moved');
       this.updateNode(data);
     });
 
@@ -58,6 +60,12 @@ class Canvas extends Component {
 
     this.socket.on('connection updated', data => {
       this.handleConnectionUpdated(data);
+    });
+
+    this.socket.on('request screenshot', data => {
+      // this.handleConnectionUpdated(data);
+      console.log('the server has requested your screenshot m8.');
+      console.log(data);
     });
 
     this.moveNode = this.moveNode.bind(this);
@@ -122,13 +130,13 @@ class Canvas extends Component {
         connections
       });
       console.log(connections);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   }
 
   beginNewConnection(connectee, location) {
-    const {connector, nodes, connectorLocation} = this.state;
+    const { connector, nodes, connectorLocation } = this.state;
     if (connector !== connectee) {
       const addToConnectorX = connectorLocation === 'left' ? -25 : 150;
       const addToConnecteeX = location === 'left' ? -25 : 150;
@@ -138,10 +146,15 @@ class Canvas extends Component {
           connectee,
           connectorLocation,
           connecteeLocation: location,
-          handleX: (nodes[connector].x + addToConnectorX + nodes[connectee].x + addToConnecteeX) / 2,
+          handleX:
+            (nodes[connector].x +
+              addToConnectorX +
+              nodes[connectee].x +
+              addToConnecteeX) /
+            2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
           data: {}
-        }
+        };
 
         data.room = this.roomID;
         this.socket.emit('make connection', data);
@@ -291,44 +304,56 @@ class Canvas extends Component {
       connections
     });
   }
+
   processScreenshot(type) {
-    // //make a URL to point to the PNG recreation of the canvas
-    let screenshotURL = document
-      .getElementsByTagName('canvas')[0]
-      .toDataURL('image/png');
+    this.setState(
+      {
+        showMenu: false
+      },
+      () => {
+        alert();
+        // //make a URL to point to the PNG recreation of the canvas
+        let screenshotURL = document
+          .getElementsByTagName('canvas')[0]
+          .toDataURL('image/png');
 
-    if (type === 'DOWNLOAD') {
-      var a = window.document.createElement('a');
-      //set the href to your url, and give it the PNG type.
-      (a.href = screenshotURL), { type: 'image/png' };
-      //set the filename
-      a.download = 'canvas.png';
-      //append download to body
-      document.body.appendChild(a);
-      //execute click event on element
-      a.click();
-      // Remove anchor from body
-      document.body.removeChild(a);
-    }
-    if (type === 'UPLOAD') {
-      const options = {
-        method: 'POST',
-        url: '/api/uploadScreenshot',
-        data: {
-          canvasID: window.location.href.split('/canvas/')[1],
-          image: screenshotURL
+        if (type === 'DOWNLOAD') {
+          var a = window.document.createElement('a');
+          //set the href to your url, and give it the PNG type.
+          (a.href = screenshotURL), { type: 'image/png' };
+          //set the filename
+          a.download = 'canvas.png';
+          //append download to body
+          document.body.appendChild(a);
+          //execute click event on element
+          a.click();
+          // Remove anchor from body
+          document.body.removeChild(a);
         }
-      };
+        if (type === 'UPLOAD') {
+          const options = {
+            method: 'POST',
+            url: '/api/uploadScreenshot',
+            data: {
+              canvasID: window.location.href.split('/canvas/')[1],
+              image: screenshotURL
+            }
+          };
 
-      axios(options)
-        .then(data => {
-          console.log('uploaded screenshot');
-        })
-        .catch(err => {
-          // Actually show user what went wrong
-          console.log(err);
+          axios(options)
+            .then(data => {
+              console.log('uploaded screenshot');
+            })
+            .catch(err => {
+              // Actually show user what went wrong
+              console.log(err);
+            });
+        }
+        this.setState({
+          showMenu: true
         });
-    }
+      }
+    );
   }
 
   toggleOpenConnection(connection = null) {
@@ -363,28 +388,24 @@ class Canvas extends Component {
   emitUpdateConnectionData(data) {
     data.room = this.roomID;
     this.socket.emit('update connection data', data);
+  }
+  componentDidUpdate() {
+    console.log(1);
   }
 
   render() {
     return (
       <div>
-        <div
-          id="canvas"
-        >
-          <Stage
-            width={this.state.width}
-            height={this.state.height}
-          >
-            <Layer
-              className="canvas"
-            >
-            <Rect
-              width={this.state.width}
-              height={this.state.height}
-              fill={'rgba(0, 20, 155, 0.5)'}
-              onMouseDown={this.emitNewNode}
-            />
-            {Object.values(this.state.nodes).map(node => (
+        <div id="canvas">
+          <Stage width={this.state.width} height={this.state.height}>
+            <Layer className="canvas">
+              <Rect
+                width={this.state.width}
+                height={this.state.height}
+                fill={'rgba(0, 20, 155, 0.5)'}
+                onMouseDown={this.emitNewNode}
+              />
+              {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}
                   id={node.id}
@@ -412,24 +433,24 @@ class Canvas extends Component {
                   toggleOpenConnection={this.toggleOpenConnection}
                 />
               ))}
-              <Toolbar 
-                canvasHeight={this.state.height}
-                canvasWidth={this.state.width}
-                prepNewNode={this.prepNewNode}
-                processScreenshot={this.processScreenshot}
-              />
+              {this.state.showMenu ? (
+                <Toolbar
+                  canvasHeight={this.state.height}
+                  canvasWidth={this.state.width}
+                  prepNewNode={this.prepNewNode}
+                  processScreenshot={this.processScreenshot}
+                />
+              ) : null}
             </Layer>
           </Stage>
         </div>
-        {this.state.openConnection ?
+        {this.state.openConnection ? (
           <RouteForm
             connection={this.state.openConnection}
             toggleOpenConnection={this.toggleOpenConnection}
             emitUpdateConnectionData={this.emitUpdateConnectionData}
           />
-        :
-          null
-        }
+        ) : null}
       </div>
     );
   }
