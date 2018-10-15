@@ -49,7 +49,7 @@ module.exports = {
           code: 401
         };
       }
-
+      
       return user.records[0];
     } catch (err) {
       throw err;

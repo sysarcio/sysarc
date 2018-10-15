@@ -23,22 +23,25 @@ class Canvases extends Component {
   }
 
   async componentDidMount() {
-    const options = {
-      method: 'GET',
-      url: '/api/canvases'
-    };
-
-    try {
-      const {data: canvases} = await axios(options);
-      console.log('canvases from axios', canvases);
-      this.setState({
-        canvases
-      });
-      
-    } catch(err) {
-      console.log(err);
+    if (!localStorage.userID) {
       // tell user they must be logged in
-      // this.props.history.push('/login');
+      this.props.history.push('/login');
+    } else {
+      const options = {
+        method: 'GET',
+        url: `/api/canvases/${localStorage.userID}`
+      };
+  
+      try {
+        const {data: canvases} = await axios(options);
+        console.log('canvases from axios', canvases);
+        this.setState({
+          canvases
+        });
+        
+      } catch(err) {
+        console.log(err);
+      }
     }
   }
 
@@ -59,9 +62,9 @@ class Canvases extends Component {
       method: 'POST',
       url: '/api/canvas/add',
       data: {
-        name: this.state.text
+        name: this.state.text,
+        userID: localStorage.userID
       }
-     
     };
 
     try {
