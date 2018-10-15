@@ -19,7 +19,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <NavBar />
+        {/* <NavBar /> */}
         <Route
           exact path='/'
           component={Canvases}
