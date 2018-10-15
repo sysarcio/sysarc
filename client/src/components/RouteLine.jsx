@@ -45,13 +45,30 @@ class RouteLine extends Component {
       id: this.props.id,
       handleX: e.evt.x,
       handleY: e.evt.y,
-      description: this.props.connection.description
+      data: this.props.connection.data
     });
   }
 
   render() {
     const {nodes} = this.props;
-    const {connectee, connector, handleX, handleY} = this.props.connection;
+    const {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    const positions = {
+      connectorRight: [
+        nodes[connector].x + 150, nodes[connector].y + 75
+      ],
+      connectorLeft: [
+        nodes[connector].x, nodes[connector].y + 75
+      ],
+      connecteeRight: [
+        nodes[connectee].x + 150, nodes[connectee].y + 75
+      ],
+      connecteeLeft: [
+        nodes[connectee].x, nodes[connectee].y + 75
+      ]
+    };
+
+    const connectorPoints = connectorLocation === 'left' ? positions.connectorLeft : positions.connectorRight;
+    const connecteePoints = connecteeLocation === 'left' ? positions.connecteeLeft : positions.connecteeRight;
 
     return (
       <Group
@@ -62,21 +79,20 @@ class RouteLine extends Component {
       >
         <Line
           points={[
-            nodes[connector].x + 157, nodes[connector].y + 75,
+            ...connectorPoints,
             handleX, handleY,
-            nodes[connectee].x + 157, nodes[connectee].y + 75
+            ...connecteePoints
           ]}
           stroke='transparent'
           strokeWidth={20}
           tension={1}
-          onClick={() => this.props.handleLineClick([nodes[connector].x + 150 + 75, ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75])}
           bezier
         />
         <Line
           points={[
-            nodes[connector].x + 150, nodes[connector].y + 75,
+            ...connectorPoints,
             handleX, handleY,
-            nodes[connectee].x + 150, nodes[connectee].y + 75,
+            ...connecteePoints
           ]}
           stroke={this.state.isHovered ? 'yellow' : 'black'}
           strokeWidth={1}

@@ -18,6 +18,7 @@ class Canvas extends Component {
       openConnection: null,
       nodeToAdd: null,
       connector: null,
+      connectorLocation: null,
       connections: {},
       nodes: {}
     };
@@ -65,7 +66,6 @@ class Canvas extends Component {
     this.beginNewConnection = this.beginNewConnection.bind(this);
     this.handleNewConnection = this.handleNewConnection.bind(this);
     this.deleteConnection = this.deleteConnection.bind(this);
-    this.handleLineClick = this.handleLineClick.bind(this);
     this.handlePointDrag = this.handlePointDrag.bind(this);
     this.handleLineDrop = this.handleLineDrop.bind(this);
     this.handleDeleteConnection = this.handleDeleteConnection.bind(this);
@@ -85,6 +85,16 @@ class Canvas extends Component {
         width: window.innerWidth,
         height: window.innerHeight
       });
+    });
+
+    window.addEventListener('keyup', e => {
+      if (e.keyCode === 27) {
+        this.setState({
+          openConnection: null,
+          nodeToAdd: null,
+          connector: null
+        });
+      }
     });
 
     window.addEventListener('keyup', e => {
@@ -117,17 +127,20 @@ class Canvas extends Component {
     }
   }
 
-  beginNewConnection(connectee) {
-    const { connector, nodes } = this.state;
+  beginNewConnection(connectee, location) {
+    const {connector, nodes, connectorLocation} = this.state;
     if (connector !== connectee) {
+      const addToConnectorX = connectorLocation === 'left' ? -25 : 150;
+      const addToConnecteeX = location === 'left' ? -25 : 150;
       if (connector) {
         const data = {
-          connector: connector,
-          connectee: connectee,
-          handleX: nodes[connector].x + 150 + 75,
-
-          handleY: ((nodes[connector].y + 75 + nodes[connectee].y + 75) / 2) + 75,
-          data: JSON.stringify({})
+          connector,
+          connectee,
+          connectorLocation,
+          connecteeLocation: location,
+          handleX: (nodes[connector].x + addToConnectorX + nodes[connectee].x + addToConnecteeX) / 2,
+          handleY: (nodes[connector].y + nodes[connectee].y) / 2,
+          data: {}
         }
 
         data.room = this.roomID;
@@ -138,7 +151,8 @@ class Canvas extends Component {
         });
       } else {
         this.setState({
-          connector: connectee
+          connector: connectee,
+          connectorLocation: location
         });
       }
     }
@@ -182,10 +196,6 @@ class Canvas extends Component {
   handleLineDrop(data) {
     data.room = this.roomID;
     this.socket.emit('place connection', data);
-  }
-
-  handleLineClick([x, y]) {
-    //console.log(x, y);
   }
 
   handlePointDrag(data) {
@@ -338,6 +348,23 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
 
+  toggleOpenConnection(connection = null) {
+    this.setState({
+      openConnection: null
+    });
+
+    if (connection) {
+      this.setState({
+        openConnection: connection
+      });
+    }
+  }
+
+  emitUpdateConnectionData(data) {
+    data.room = this.roomID;
+    this.socket.emit('update connection data', data);
+  }
+
   render() {
     return (
       <div>
@@ -379,7 +406,6 @@ class Canvas extends Component {
                   id={id}
                   connection={this.state.connections[id]}
                   nodes={this.state.nodes}
-                  handleLineClick={this.handleLineClick}
                   handlePointDrag={this.handlePointDrag}
                   handleLineDrop={this.handleLineDrop}
                   handleDelete={this.deleteConnection}

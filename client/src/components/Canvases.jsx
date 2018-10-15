@@ -2,45 +2,6 @@ import React, { Component } from 'react';
 import CanvasThumbnail from './CanvasThumbnail.jsx';
 import axios from 'axios';
 
-
-
-// class Canvases extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.handleModalShowClick = this.handleModalShowClick.bind(this);
-//     this.handleModalCloseClick = this.handleModalCloseClick.bind(this);
-//     this.state = {
-//       showModal: false,
-//     }
-//   }
-
-//   handleModalShowClick(e) {
-//     e.preventDefault();
-//     this.setState({
-//       showModal: true
-//     })
-//   }
-
-//   handleModalCloseClick() {
-//     this.setState({
-//       showModal: false
-//     })
-//   }
-
-//   render() {
-//     console.log(this.state)
-//     const { showModal } = this.state;
-//     return (
-//       <div className="container">
-//         <div className="row">
-//           <div className="col text-center"><button type="button" className="btn btn-primary" onClick={this.handleModalShowClick}>Show Modal</button></div>
-//           {showModal ? (<Modal handleModalCloseClick={this.handleModalCloseClick} />) : null}
-//         </div>
-//       </div>
-//     );
-//   }
-// }
-
 class Canvases extends Component {
   constructor(props) {
     super(props);
@@ -60,22 +21,25 @@ class Canvases extends Component {
   }
 
   async componentDidMount() {
-    const options = {
-      method: 'GET',
-      url: '/api/canvases'
-    };
-
-    try {
-      const {data: canvases} = await axios(options);
-      console.log('canvases from axios', canvases);
-      this.setState({
-        canvases
-      });
-      
-    } catch(err) {
-      console.log(err);
+    if (!localStorage.userID) {
       // tell user they must be logged in
-      // this.props.history.push('/login');
+      this.props.history.push('/login');
+    } else {
+      const options = {
+        method: 'GET',
+        url: `/api/canvases/${localStorage.userID}`
+      };
+  
+      try {
+        const {data: canvases} = await axios(options);
+        console.log('canvases from axios', canvases);
+        this.setState({
+          canvases
+        });
+        
+      } catch(err) {
+        console.log(err);
+      }
     }
   }
 
@@ -96,9 +60,9 @@ class Canvases extends Component {
       method: 'POST',
       url: '/api/canvas/add',
       data: {
-        name: this.state.text
+        name: this.state.text,
+        userID: localStorage.userID
       }
-     
     };
 
     try {

@@ -49,7 +49,7 @@ module.exports = {
           code: 401
         };
       }
-
+      
       return user.records[0];
     } catch (err) {
       throw err;
@@ -227,7 +227,8 @@ module.exports = {
     }
   },
 
-  async addConnection({connector, connectee, handleX, handleY, room, id, data}) {
+  async addConnection({connector, connectee, handleX, connectorLocation, connecteeLocation, handleY, room, id, data}) {
+    data = JSON.stringify(data);
     try {
       const results = await session.run(
         `
@@ -235,11 +236,22 @@ module.exports = {
         WITH n, c
         MATCH (c)-[:CONTAINS]->(m:NODE {id: $connectee})
         WITH n, m
-        CREATE (n)-[r:IS_CONNECTED {id: $id, handleX: $handleX, handleY: $handleY, connector: $connector, connectee: $connectee, data: $data}]->(m)
-        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data;`,
+        CREATE (n)-[r:IS_CONNECTED {
+          id: $id,
+          handleX: $handleX,
+          handleY: $handleY,
+          connector: $connector,
+          connectee: $connectee,
+          data: $data,
+          connectorLocation: $connectorLocation,
+          connecteeLocation: $connecteeLocation
+        }]->(m)
+        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data, r.connectorLocation AS connectorLocation, r.connecteeLocation AS connecteeLocation;`,
         {
           connector,
           connectee,
+          connectorLocation,
+          connecteeLocation,
           handleX,
           handleY,
           room,
