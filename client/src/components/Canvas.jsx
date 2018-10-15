@@ -38,7 +38,6 @@ class Canvas extends Component {
     });
 
     this.socket.on('node moved', data => {
-      console.log('node moved');
       this.updateNode(data);
     });
 
@@ -63,9 +62,7 @@ class Canvas extends Component {
     });
 
     this.socket.on('request screenshot', data => {
-      // this.handleConnectionUpdated(data);
-      console.log('the server has requested your screenshot m8.');
-      console.log(data);
+      this.processScreenshot('UPLOAD');
     });
 
     this.moveNode = this.moveNode.bind(this);
@@ -311,7 +308,6 @@ class Canvas extends Component {
         showMenu: false
       },
       () => {
-        alert();
         // //make a URL to point to the PNG recreation of the canvas
         let screenshotURL = document
           .getElementsByTagName('canvas')[0]
@@ -342,11 +338,11 @@ class Canvas extends Component {
 
           axios(options)
             .then(data => {
-              console.log('uploaded screenshot');
+              // console.log('uploaded screenshot');
             })
             .catch(err => {
               // Actually show user what went wrong
-              console.log(err);
+              // console.log(err);
             });
         }
         this.setState({
@@ -388,9 +384,6 @@ class Canvas extends Component {
   emitUpdateConnectionData(data) {
     data.room = this.roomID;
     this.socket.emit('update connection data', data);
-  }
-  componentDidUpdate() {
-    console.log(1);
   }
 
   render() {

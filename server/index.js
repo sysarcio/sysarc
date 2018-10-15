@@ -7,6 +7,7 @@ const uuidv4 = require('uuid/v4');
 
 const routes = require('./routes');
 const app = express();
+app.use(express.json({ limit: '500kb' }));
 
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
