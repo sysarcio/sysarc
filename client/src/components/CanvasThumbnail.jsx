@@ -32,7 +32,7 @@ class CanvasThumbnail extends React.Component {
 
     const showModal = this.state.showModal;
     const showDeleteOption = <button className='canvas-delete-btn' onClick={this.handleModalShowClick}>X</button>
-    const showConfirmation = <div> Delete Canvas? <button onClick={() => this.props.deleteCanvas(this.props.get(this.props.canvas, 'id'))}> Delete </button> <button onClick={this.handleModalCloseClick}> Cancel </button></div>
+    const showConfirmation = <div className='canvas-delete-confirm'> Delete Canvas? <button onClick={() => this.props.deleteCanvas(this.props.get(this.props.canvas, 'id'))}> Y </button> <button onClick={this.handleModalCloseClick}> N </button></div>
 
     return (
       <div
@@ -40,11 +40,11 @@ class CanvasThumbnail extends React.Component {
         id={this.props.get(this.props.canvas, 'id')}>
         
         {showModal ? showConfirmation : showDeleteOption }
-        <div>
-          <h3 onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas, 'id'))}>{this.props.get(this.props.canvas, 'name')}</h3>
+        <div onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas, 'id'))}>
+          <h3 >{this.props.get(this.props.canvas, 'name')}</h3>
 
           <img
-            onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas,  'id'))}
+           
             src={this.props.get(this.props.canvas, 'image')}
             height="40"
             width="160"

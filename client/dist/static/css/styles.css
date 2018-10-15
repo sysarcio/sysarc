@@ -126,6 +126,19 @@ body {
  font-size: 90px;
  
 }
+
+.canvas-delete-confirm {
+  transition: width 1s linear;
+  outline: none;
+  border: 2px solid #394256;
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 10px;
+  /* width: 40px; */
+  background-color: #dddddd;
+  display: flex;
+}
+
 span {
   background: #F8F8F8;
   border: 5px solid #DFDFDF;

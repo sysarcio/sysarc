@@ -114,6 +114,7 @@ class Canvases extends Component {
   }
 
   goToCanvas(id) {
+  
     this.props.history.push(`/canvas/${id}`);
   }
 
