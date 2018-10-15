@@ -18,10 +18,13 @@ class RouteLine extends Component {
   }
 
   handleLineDrag(e) {
+    let {x, y} = e.evt;
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
     this.props.handlePointDrag({
       id: this.props.id,
-      handleX: e.evt.x,
-      handleY: e.evt.y
+      handleX: x,
+      handleY: y
     });
   }
 
@@ -41,29 +44,34 @@ class RouteLine extends Component {
   }
 
   handleLineDrop(e) {
+    let {x, y} = e.evt;
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
     this.props.handleLineDrop({
       id: this.props.id,
-      handleX: e.evt.x,
-      handleY: e.evt.y,
+      handleX: x,
+      handleY: y,
       data: this.props.connection.data
     });
   }
 
   render() {
-    const {nodes} = this.props;
-    const {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    const {nodes, canvasWidth, canvasHeight} = this.props;
+    let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    handleX = handleX * this.props.canvasWidth;
+    handleY = handleY * this.props.canvasHeight;
     const positions = {
       connectorRight: [
-        nodes[connector].x + 150, nodes[connector].y + 75
+        (nodes[connector].x * canvasWidth) + 150, (nodes[connector].y * canvasHeight)  + 75
       ],
       connectorLeft: [
-        nodes[connector].x, nodes[connector].y + 75
+        (nodes[connector].x * canvasWidth), (nodes[connector].y * canvasHeight) + 75
       ],
       connecteeRight: [
-        nodes[connectee].x + 150, nodes[connectee].y + 75
+        (nodes[connectee].x * canvasWidth + 150), (nodes[connectee].y * canvasHeight) + 75
       ],
       connecteeLeft: [
-        nodes[connectee].x, nodes[connectee].y + 75
+        (nodes[connectee].x * canvasWidth), (nodes[connectee].y * canvasHeight) + 75
       ]
     };
 

@@ -83,8 +83,8 @@ class RouteForm extends Component {
   render() {
     const formContainer = {
       position: 'absolute',
-      top: Math.max(this.props.connection.handleY - 200, 0),
-      left: this.props.connection.handleX + 3.5 - 100,
+      top: Math.max((this.props.connection.handleY * this.props.canvasHeight) - 200, 0),
+      left: (this.props.connection.handleX * this.props.canvasWidth) + 3.5 - 100,
       background: 'rgba(255,255,255,0.8)',
       height: '200px',
       width: '200px',
