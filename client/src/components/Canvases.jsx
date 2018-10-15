@@ -8,8 +8,7 @@ class Canvases extends Component {
     this.state = {
       canvases: [],
       text: '',
-      showForm: false,
-      showDelete: false
+      showForm: false,   
     }
 
     this.get = this.get.bind(this);
@@ -18,8 +17,7 @@ class Canvases extends Component {
     this.goToCanvas = this.goToCanvas.bind(this);
     this.toggleShowForm = this.toggleShowForm.bind(this);
     this.deleteCanvas = this.deleteCanvas.bind(this);
-    this.toggleShowDelete = this.toggleShowDelete.bind(this)
-
+  
   }
 
   async componentDidMount() {
@@ -80,6 +78,7 @@ class Canvases extends Component {
   }
 
   goToCanvas(id) {
+  
     this.props.history.push(`/canvas/${id}`);
   }
 
@@ -87,30 +86,20 @@ class Canvases extends Component {
     this.setState({ showForm: !this.state.showForm})
   }
 
-deleteCanvas(id) {
-  console.log('got request to delete this-->', id)
-  axios.delete(`/api/canvas/${id}`)
-    .then(response => {
-      console.log('deletion complete-->', response)
-      const canvasesCopy = this.state.canvases.slice();
-     
-      const canvasesAfterDelete = canvasesCopy.filter(canvas => {
-        return this.get(canvas, 'id') !== id;
+  deleteCanvas(id) {
+    axios.delete(`/api/canvas/${id}`)
+      .then(response => {
+        const canvasesCopy = this.state.canvases.slice();
+        const canvasesAfterDelete = canvasesCopy.filter(canvas => {
+          return this.get(canvas, 'id') !== id;
       })
-
-      this.setState({
-        canvases: canvasesAfterDelete 
-      });
-    })
-    .catch(err => {
-      console.log('unable to delete canvas ', err);
-    })
-  }
-
-  toggleShowDelete() {
-    this.setState({
-      showDelete: !this.showDelete
-    })
+        this.setState({
+          canvases: canvasesAfterDelete 
+        });
+      })
+      .catch(err => {
+        console.log('unable to delete canvas ', err);
+      })
   }
 
   render() {
@@ -129,8 +118,8 @@ deleteCanvas(id) {
         </form> 
     </div> : 
       
-      <div  className='canvases-plus'>
-        <button className='canvas-button' onClick={this.toggleShowForm} >
+      <div className='canvases-plus' onClick={this.toggleShowForm}>
+        <button className='canvas-button'  >
           <strong>+</strong>
         </button>
       </div>
@@ -144,8 +133,7 @@ deleteCanvas(id) {
             if (this.get(c, 'id')) {
               return (
                 <CanvasThumbnail
-                  showDelete={this.state.showDelete}
-                  toggleShowDelete={this.toggleShowDelete}
+               
                   deleteCanvas={this.deleteCanvas}
                   get={this.get}
                   canvas={c}
