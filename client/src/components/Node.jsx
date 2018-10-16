@@ -14,11 +14,14 @@ import NodeText from './NodeText.jsx';
 class Node extends Component {
   constructor(props) {
     super(props);
+<<<<<<< HEAD
 
     this.state = {
       dragX: null,
       dragY: null
     };
+=======
+>>>>>>> dev
 
     this.handleDragBounds = this.handleDragBounds.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
@@ -96,8 +99,13 @@ class Node extends Component {
       //   y: 0
       // },
       right: {
+<<<<<<< HEAD
         x: this.props.scale,
         y: this.props.scale / 2
+=======
+        x: nodeProperties.width,
+        y: nodeProperties.height / 2
+>>>>>>> dev
       },
       // bottom: {
       //   x: nodeProperties.width / 2,
@@ -105,6 +113,7 @@ class Node extends Component {
       // },
       left: {
         x: 0,
+<<<<<<< HEAD
         y: this.props.scale / 2
       }
     };
@@ -112,6 +121,12 @@ class Node extends Component {
     let x = this.dragX ? this.dragX : this.props.x * this.props.canvasWidth;
     let y = this.dragY ? this.dragY : this.props.y * this.props.canvasHeight;
 
+=======
+        y: nodeProperties.height / 2
+      }
+    };
+
+>>>>>>> dev
     return (
       <Group
         onDragEnd={this.handleDragEnd}
