@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer, Rect, Group } from 'react-konva';
 import Konva from 'konva';
 import axios from 'axios';
 
@@ -121,7 +121,6 @@ class Canvas extends Component {
         nodes,
         connections
       });
-      console.log(connections);
     } catch(err) {
       console.log(err);
     }
@@ -130,15 +129,15 @@ class Canvas extends Component {
   beginNewConnection(connectee, location) {
     const {connector, nodes, connectorLocation} = this.state;
     if (connector !== connectee) {
-      const addToConnectorX = connectorLocation === 'left' ? -25 : 150;
-      const addToConnecteeX = location === 'left' ? -25 : 150;
+      // const addToConnectorX = connectorLocation === 'left' ? -25 / this.width : 150 / this.width;
+      // const addToConnecteeX = location === 'left' ? -25 / this.width : 150 / this.width;
       if (connector) {
         const data = {
           connector,
           connectee,
           connectorLocation,
           connecteeLocation: location,
-          handleX: (nodes[connector].x + addToConnectorX + nodes[connectee].x + addToConnecteeX) / 2,
+          handleX: (nodes[connector].x + nodes[connectee].x) / 2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
           data: {}
         }
@@ -222,9 +221,11 @@ class Canvas extends Component {
 
   emitNewNode(e) {
     if (this.state.nodeToAdd) {
+      const x = e.evt.x / this.state.width;
+      const y = e.evt.y / this.state.height;
       const data = {
-        x: e.evt.x,
-        y: e.evt.y,
+        x,
+        y,
         type: this.state.nodeToAdd,
         room: this.roomID
       };
@@ -384,7 +385,8 @@ class Canvas extends Component {
               fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
-            {Object.values(this.state.nodes).map(node => (
+            <Group>
+              {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}
                   id={node.id}
@@ -393,6 +395,7 @@ class Canvas extends Component {
                   color="black"
                   canvasWidth={this.state.width}
                   canvasHeight={this.state.height}
+                  scale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
                   x={node.x}
                   y={node.y}
                   beginNewConnection={this.beginNewConnection}
@@ -410,8 +413,12 @@ class Canvas extends Component {
                   handleLineDrop={this.handleLineDrop}
                   handleDelete={this.deleteConnection}
                   toggleOpenConnection={this.toggleOpenConnection}
+                  nodeScale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
+                  canvasHeight={this.state.height}
+                  canvasWidth={this.state.width}
                 />
               ))}
+            </Group>
               <Toolbar 
                 canvasHeight={this.state.height}
                 canvasWidth={this.state.width}
@@ -426,6 +433,8 @@ class Canvas extends Component {
             connection={this.state.openConnection}
             toggleOpenConnection={this.toggleOpenConnection}
             emitUpdateConnectionData={this.emitUpdateConnectionData}
+            canvasHeight={this.state.height}
+            canvasWidth={this.state.width}
           />
         :
           null
