@@ -95,7 +95,7 @@ class RouteLine extends Component {
           points={[
             ...transparentConnectorPoints,
             handleX, handleY,
-            ...transparentConnectorPoints
+            ...transparentConnecteePoints
           ]}
           stroke='transparent'
           strokeWidth={20}
