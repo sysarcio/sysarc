@@ -60,21 +60,29 @@ class RouteLine extends Component {
     handleY = handleY * canvasHeight;
     const positions = {
       connectorRight: [
-        nodes[connector].x * canvasWidth + nodeScale + 7, nodes[connector].y * canvasHeight + (nodeScale / 2)
+        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connectorLeft: [
-        nodes[connector].x * canvasWidth-7, nodes[connector].y * canvasHeight + (nodeScale / 2)
+        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeRight: [
-        nodes[connectee].x * canvasWidth + nodeScale + 7, nodes[connectee].y * canvasHeight + (nodeScale / 2)
+        nodes[connectee].x * canvasWidth + nodeScale, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeLeft: [
-        nodes[connectee].x * canvasWidth - 7, nodes[connectee].y * canvasHeight + (nodeScale / 2)
+        nodes[connectee].x * canvasWidth, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ]
+      
     };
+    positions.transparentConnectorRight = [positions.connectorRight[0] + 7, positions.connectorRight[1]];
+    positions.transparentConnectorLeft = [positions.connectorLeft[0] - 7, positions.connectorLeft[1]];
+    positions.transparentConnecteeRight = [positions.connecteeRight[0] + 7, positions.connecteeRight[1]];
+    positions.transparentConnecteeLeft = [positions.connecteeLeft[0] - 7, positions.connecteeLeft[1]];
+
 
     const connectorPoints = connectorLocation === 'left' ? positions.connectorLeft : positions.connectorRight;
     const connecteePoints = connecteeLocation === 'left' ? positions.connecteeLeft : positions.connecteeRight;
+    const transparentConnectorPoints = connectorLocation === 'left' ? positions.transparentConnectorLeft : positions.transparentConnectorRight;
+    const transparentConnecteePoints = connecteeLocation === 'left' ? positions.transparentConnecteeLeft : positions.transparentConnecteeRight;
 
     return (
       <Group
@@ -85,9 +93,9 @@ class RouteLine extends Component {
       >
         <Line
           points={[
-            ...connectorPoints,
+            ...transparentConnectorPoints,
             handleX, handleY,
-            ...connecteePoints
+            ...transparentConnectorPoints
           ]}
           stroke='transparent'
           strokeWidth={20}
