@@ -6,10 +6,10 @@ import NodeShape from './NodeShape.jsx';
 import NodeRouteTarget from './NodeRouteTarget.jsx';
 import NodeText from './NodeText.jsx';
 
-const nodeProperties = {
-  width: 150,
-  height: 150
-}
+// const nodeProperties = {
+//   width: 150,
+//   height: 150
+// }
 
 class Node extends Component {
   constructor(props) {
@@ -67,14 +67,14 @@ class Node extends Component {
   handleDragBounds({x, y}) {
     if (x < 0) {
       x = 0;
-    } else if (x + nodeProperties.width > window.innerWidth) {
-      x = this.props.canvasWidth - nodeProperties.width
+    } else if (x + this.props.scale > this.props.canvasWidth) {
+      x = this.props.canvasWidth - this.props.scale;
     }
 
     if (y < 0) {
       y = 0;
-    } else if (y + nodeProperties.height > window.innerHeight) {
-      y = this.props.canvasHeight - nodeProperties.height
+    } else if (y + this.props.scale > this.props.canvasHeight) {
+      y = this.props.canvasHeight - this.props.scale
     }
 
     x = x / this.props.canvasWidth;
@@ -96,8 +96,8 @@ class Node extends Component {
       //   y: 0
       // },
       right: {
-        x: nodeProperties.width,
-        y: nodeProperties.height / 2
+        x: this.props.scale,
+        y: this.props.scale / 2
       },
       // bottom: {
       //   x: nodeProperties.width / 2,
@@ -105,7 +105,7 @@ class Node extends Component {
       // },
       left: {
         x: 0,
-        y: nodeProperties.height / 2
+        y: this.props.scale / 2
       }
     };
 
@@ -127,9 +127,12 @@ class Node extends Component {
           onMouseLeave={this.handleMouseLeave}
         >
           <NodeShape
+            nodeWidth={this.props.scale}
+            nodeHeight={this.props.scale}
             color={this.props.color}
           />
           <NodeText
+            scale={this.props.scale}
             text={this.props.type}
           />
         </Group>

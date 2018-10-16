@@ -19,8 +19,8 @@ class NodeShape extends Component {
   render() {
     return (
       <Rect
-        width={nodeProperties.width}
-        height={nodeProperties.height}
+        width={this.props.nodeWidth}
+        height={this.props.nodeHeight}
         fill={nodeProperties.fill}
         stroke={this.props.color}
         strokeWidth={nodeProperties.strokeWidth}

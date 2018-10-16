@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer, Rect, Group } from 'react-konva';
 import Konva from 'konva';
 import axios from 'axios';
 
@@ -385,7 +385,8 @@ class Canvas extends Component {
               fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
-            {Object.values(this.state.nodes).map(node => (
+            <Group>
+              {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}
                   id={node.id}
@@ -394,6 +395,7 @@ class Canvas extends Component {
                   color="black"
                   canvasWidth={this.state.width}
                   canvasHeight={this.state.height}
+                  scale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
                   x={node.x}
                   y={node.y}
                   beginNewConnection={this.beginNewConnection}
@@ -411,10 +413,12 @@ class Canvas extends Component {
                   handleLineDrop={this.handleLineDrop}
                   handleDelete={this.deleteConnection}
                   toggleOpenConnection={this.toggleOpenConnection}
+                  nodeScale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
                   canvasHeight={this.state.height}
                   canvasWidth={this.state.width}
                 />
               ))}
+            </Group>
               <Toolbar 
                 canvasHeight={this.state.height}
                 canvasWidth={this.state.width}

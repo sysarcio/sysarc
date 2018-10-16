@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
 
-import RouteForm from './RouteForm.jsx';
-
 class RouteLine extends Component {
   constructor(props) {
     super(props);
@@ -56,22 +54,22 @@ class RouteLine extends Component {
   }
 
   render() {
-    const {nodes, canvasWidth, canvasHeight} = this.props;
+    const {nodes, canvasWidth, canvasHeight, nodeScale} = this.props;
     let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
-    handleX = handleX * this.props.canvasWidth;
-    handleY = handleY * this.props.canvasHeight;
+    handleX = handleX * canvasWidth;
+    handleY = handleY * canvasHeight;
     const positions = {
       connectorRight: [
-        (nodes[connector].x * canvasWidth) + 150, (nodes[connector].y * canvasHeight)  + 75
+        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connectorLeft: [
-        (nodes[connector].x * canvasWidth), (nodes[connector].y * canvasHeight) + 75
+        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeRight: [
-        (nodes[connectee].x * canvasWidth + 150), (nodes[connectee].y * canvasHeight) + 75
+        nodes[connectee].x * canvasWidth + nodeScale, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeLeft: [
-        (nodes[connectee].x * canvasWidth), (nodes[connectee].y * canvasHeight) + 75
+        nodes[connectee].x * canvasWidth, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ]
     };
 
