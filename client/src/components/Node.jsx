@@ -109,6 +109,9 @@ class Node extends Component {
       }
     };
 
+    let x = this.dragX ? this.dragX : this.props.x * this.props.canvasWidth;
+    let y = this.dragY ? this.dragY : this.props.y * this.props.canvasHeight;
+
     return (
       <Group
         onDragEnd={this.handleDragEnd}
@@ -116,8 +119,8 @@ class Node extends Component {
         draggable={true}
         onDragMove={this.handleDragState}
         dragBoundFunc={this.handleDragBounds}
-        x={this.dragX ? this.dragX : this.props.x * this.props.canvasWidth}
-        y={this.dragY ? this.dragY : this.props.y * this.props.canvasHeight}
+        x={x}
+        y={y}
       >
         <Group
           onMouseEnter={this.handleMouseEnter}
