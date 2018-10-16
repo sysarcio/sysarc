@@ -43,7 +43,7 @@ class RouteForm extends Component {
     this.selectMethod = this.selectMethod.bind(this);
     this.cloneMethod = this.cloneMethod.bind(this);
     this.handlePropertyEdit = this.handlePropertyEdit.bind(this);
-    this.handleAddParameter = this.handleAddResponse.bind(this);
+    this.handleAddParameter = this.handleAddParameter.bind(this);
     this.handleAddResponse = this.handleAddResponse.bind(this);
   }
 
@@ -67,12 +67,8 @@ class RouteForm extends Component {
 
 
   handlePathChange(e) {
-    const data = JSON.parse(JSON.stringify(this.state.data));
-    data[e.target.value] = undefined
-
     this.setState({
-      currPath: e.target.value,
-      data
+      pathName: e.target.value,
     });
   }
 
@@ -184,7 +180,7 @@ class RouteForm extends Component {
         responses: clone.responses
       })
     }), () => {
-      console.log('method after adding parameter: ', this.state[methodName]);
+      console.log('method after adding response: ', this.state[methodName]);
     })
         
   }
