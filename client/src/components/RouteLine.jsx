@@ -29,7 +29,7 @@ class RouteLine extends Component {
     document.body.style.cursor = 'pointer';
     this.setState({
       isHovered: true
-    })
+    });
   }
 
   handleMouseLeave() {
@@ -50,25 +50,30 @@ class RouteLine extends Component {
   }
 
   render() {
-    const {nodes} = this.props;
-    const {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    const { nodes } = this.props;
+    const {
+      connectee,
+      connector,
+      connecteeLocation,
+      connectorLocation,
+      handleX,
+      handleY
+    } = this.props.connection;
     const positions = {
-      connectorRight: [
-        nodes[connector].x + 150, nodes[connector].y + 75
-      ],
-      connectorLeft: [
-        nodes[connector].x, nodes[connector].y + 75
-      ],
-      connecteeRight: [
-        nodes[connectee].x + 150, nodes[connectee].y + 75
-      ],
-      connecteeLeft: [
-        nodes[connectee].x, nodes[connectee].y + 75
-      ]
+      connectorRight: [nodes[connector].x + 157, nodes[connector].y + 75],
+      connectorLeft: [nodes[connector].x - 7, nodes[connector].y + 75],
+      connecteeRight: [nodes[connectee].x + 157, nodes[connectee].y + 75],
+      connecteeLeft: [nodes[connectee].x - 7, nodes[connectee].y + 75]
     };
 
-    const connectorPoints = connectorLocation === 'left' ? positions.connectorLeft : positions.connectorRight;
-    const connecteePoints = connecteeLocation === 'left' ? positions.connecteeLeft : positions.connecteeRight;
+    const connectorPoints =
+      connectorLocation === 'left'
+        ? positions.connectorLeft
+        : positions.connectorRight;
+    const connecteePoints =
+      connecteeLocation === 'left'
+        ? positions.connecteeLeft
+        : positions.connecteeRight;
 
     return (
       <Group
@@ -78,31 +83,23 @@ class RouteLine extends Component {
         onClick={() => this.props.toggleOpenConnection(this.props.connection)}
       >
         <Line
-          points={[
-            ...connectorPoints,
-            handleX, handleY,
-            ...connecteePoints
-          ]}
-          stroke='transparent'
+          points={[...connectorPoints, handleX, handleY, ...connecteePoints]}
+          stroke="transparent"
           strokeWidth={20}
           tension={1}
           bezier
         />
         <Line
-          points={[
-            ...connectorPoints,
-            handleX, handleY,
-            ...connecteePoints
-          ]}
+          points={[...connectorPoints, handleX, handleY, ...connecteePoints]}
           stroke={this.state.isHovered ? 'yellow' : 'black'}
           strokeWidth={1}
           tension={1}
           bezier
         />
-        {this.state.isHovered ? 
+        {this.state.isHovered ? (
           <Circle
             radius={7}
-            stroke={"yellow"}
+            stroke={'yellow'}
             strokeWidth={1}
             x={handleX}
             y={handleY}
@@ -111,9 +108,7 @@ class RouteLine extends Component {
             onDragMove={this.handleLineDrag}
             onDragEnd={this.handleLineDrop}
           />
-        :
-          null
-        }
+        ) : null}
       </Group>
     );
   }
