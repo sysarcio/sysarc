@@ -60,16 +60,16 @@ class RouteLine extends Component {
     handleY = handleY * canvasHeight;
     const positions = {
       connectorRight: [
-        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2)
+        nodes[connector].x * canvasWidth + nodeScale + 7, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connectorLeft: [
-        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2)
+        nodes[connector].x * canvasWidth-7, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeRight: [
-        nodes[connectee].x * canvasWidth + nodeScale, nodes[connectee].y * canvasHeight + (nodeScale / 2)
+        nodes[connectee].x * canvasWidth + nodeScale + 7, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeLeft: [
-        nodes[connectee].x * canvasWidth, nodes[connectee].y * canvasHeight + (nodeScale / 2)
+        nodes[connectee].x * canvasWidth - 7, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ]
     };
 
