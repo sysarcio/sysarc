@@ -357,53 +357,6 @@ class Canvas extends Component {
 
   toggleOpenConnection(connection = null) {
     this.setState({
-      takingPicture: !this.state.takingPicture
-    }, (type) => {
-
-      let screenshotURL = document
-        .getElementsByTagName('canvas')[0]
-        .toDataURL('image/png');
-  
-      if (type === 'DOWNLOAD') {
-        var a = window.document.createElement('a');
-        //set the href to your url, and give it the PNG type.
-        (a.href = screenshotURL), { type: 'image/png' };
-        //set the filename
-        a.download = 'canvas.png';
-        //append download to body
-        document.body.appendChild(a);
-        //execute click event on element
-        a.click();
-        // Remove anchor from body
-        document.body.removeChild(a);
-      }
-      if (type === 'UPLOAD') {
-        const options = {
-          method: 'POST',
-          url: '/api/uploadScreenshot',
-          data: {
-            canvasID: window.location.href.split('/canvas/')[1],
-            image: screenshotURL
-          }
-        };
-  
-        axios(options)
-          .then(data => {
-            console.log('uploaded screenshot');
-          })
-          .catch(err => {
-            // Actually show user what went wrong
-            console.log(err);
-          });
-      }
-      this.setState({
-        takingPicture: !this.state.takingPicture
-      })
-    })
-  }
-
-  toggleOpenConnection(connection = null) {
-    this.setState({
       openConnection: null
     });
 

@@ -232,11 +232,11 @@ class RouteForm extends Component {
   render() {
     const formContainer = {
       position: 'absolute',
-      top: Math.max(this.props.connection.handleY - 200, 0),
-      left: this.props.connection.handleX + 3.5 - 100,
+      top: Math.max((this.props.connection.handleY * this.props.canvasHeight) - 200, 0),
+      left: (this.props.connection.handleX * this.props.canvasWidth) + 3.5 - 100,
       background: 'rgba(255,255,255,0.8)',
-      height: '400px',
-      width: '400px',
+      height: '200px',
+      width: '200px',
       borderRadius: '5px',
       display: 'flex',
       flexWrap: 'wrap',
@@ -247,7 +247,7 @@ class RouteForm extends Component {
 
     const formStyle = {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column'
     }
 
     const saveStyle = {
