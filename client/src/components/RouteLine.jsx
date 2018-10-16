@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
 
-import RouteForm from './RouteForm.jsx';
-
 class RouteLine extends Component {
   constructor(props) {
     super(props);
@@ -18,10 +16,13 @@ class RouteLine extends Component {
   }
 
   handleLineDrag(e) {
+    let {x, y} = e.evt;
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
     this.props.handlePointDrag({
       id: this.props.id,
-      handleX: e.evt.x,
-      handleY: e.evt.y
+      handleX: x,
+      handleY: y
     });
   }
 
@@ -41,29 +42,34 @@ class RouteLine extends Component {
   }
 
   handleLineDrop(e) {
+    let {x, y} = e.evt;
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
     this.props.handleLineDrop({
       id: this.props.id,
-      handleX: e.evt.x,
-      handleY: e.evt.y,
+      handleX: x,
+      handleY: y,
       data: this.props.connection.data
     });
   }
 
   render() {
-    const {nodes} = this.props;
-    const {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    const {nodes, canvasWidth, canvasHeight, nodeScale} = this.props;
+    let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    handleX = handleX * canvasWidth;
+    handleY = handleY * canvasHeight;
     const positions = {
       connectorRight: [
-        nodes[connector].x + 150, nodes[connector].y + 75
+        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connectorLeft: [
-        nodes[connector].x, nodes[connector].y + 75
+        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeRight: [
-        nodes[connectee].x + 150, nodes[connectee].y + 75
+        nodes[connectee].x * canvasWidth + nodeScale, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeLeft: [
-        nodes[connectee].x, nodes[connectee].y + 75
+        nodes[connectee].x * canvasWidth, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ]
     };
 
