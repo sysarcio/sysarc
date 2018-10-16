@@ -8,6 +8,7 @@ import Toolbar from './Toolbar.jsx';
 import Node from './Node.jsx';
 import RouteLine from './RouteLine.jsx';
 import RouteForm from './RouteForm.jsx';
+import dummyData from './dummyDataForReact.jsx';
 
 class Canvas extends Component {
   constructor(props) {
@@ -145,8 +146,13 @@ class Canvas extends Component {
           connecteeLocation: location,
           handleX: (nodes[connector].x + nodes[connectee].x) / 2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
-          data: {}
-        };
+          data: {'': {
+            get: {},
+            post: {},
+            put: {},
+            delete: {}
+          }}
+        }
 
         data.room = this.roomID;
         this.socket.emit('make connection', data);
@@ -351,19 +357,49 @@ class Canvas extends Component {
 
   toggleOpenConnection(connection = null) {
     this.setState({
-      openConnection: null
-    });
+      takingPicture: !this.state.takingPicture
+    }, (type) => {
 
-    if (connection) {
+      let screenshotURL = document
+        .getElementsByTagName('canvas')[0]
+        .toDataURL('image/png');
+  
+      if (type === 'DOWNLOAD') {
+        var a = window.document.createElement('a');
+        //set the href to your url, and give it the PNG type.
+        (a.href = screenshotURL), { type: 'image/png' };
+        //set the filename
+        a.download = 'canvas.png';
+        //append download to body
+        document.body.appendChild(a);
+        //execute click event on element
+        a.click();
+        // Remove anchor from body
+        document.body.removeChild(a);
+      }
+      if (type === 'UPLOAD') {
+        const options = {
+          method: 'POST',
+          url: '/api/uploadScreenshot',
+          data: {
+            canvasID: window.location.href.split('/canvas/')[1],
+            image: screenshotURL
+          }
+        };
+  
+        axios(options)
+          .then(data => {
+            console.log('uploaded screenshot');
+          })
+          .catch(err => {
+            // Actually show user what went wrong
+            console.log(err);
+          });
+      }
       this.setState({
-        openConnection: connection
-      });
-    }
-  }
-
-  emitUpdateConnectionData(data) {
-    data.room = this.roomID;
-    this.socket.emit('update connection data', data);
+        takingPicture: !this.state.takingPicture
+      })
+    })
   }
 
   toggleOpenConnection(connection = null) {
@@ -382,7 +418,7 @@ class Canvas extends Component {
     data.room = this.roomID;
     this.socket.emit('update connection data', data);
   }
-
+  
   render() {
     return (
       <div>
@@ -444,13 +480,16 @@ class Canvas extends Component {
                   processScreenshot={this.processScreenshot}
                 />
               ) : null}
- 
             </Layer>
           </Stage>
         </div>
         {this.state.openConnection ? (
           <RouteForm
             connection={this.state.openConnection}
+            // data={dummyData}
+            data={Object.keys(this.state.openConnection.data)[0] ? this.state.openConnection.data : {'':{}}}
+            // pathName={Object.keys(dummyData)[0]}
+            pathName={Object.keys(this.state.openConnection.data)[0]}
             toggleOpenConnection={this.toggleOpenConnection}
             emitUpdateConnectionData={this.emitUpdateConnectionData}
             canvasHeight={this.state.height}
