@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
 
-import RouteForm from './RouteForm.jsx';
-
 class RouteLine extends Component {
   constructor(props) {
     super(props);
@@ -15,21 +13,37 @@ class RouteLine extends Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleLineDrag = this.handleLineDrag.bind(this);
     this.handleLineDrop = this.handleLineDrop.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete() {
+    const data = {
+      room: this.props.room,
+      id: this.props.id
+    };
+    this.props.socket.emit('delete connection', data);
   }
 
   handleLineDrag(e) {
-    this.props.handlePointDrag({
+    let {x, y} = e.evt;
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
+
+    const data = {
       id: this.props.id,
-      handleX: e.evt.x,
-      handleY: e.evt.y
-    });
+      handleX: x,
+      handleY: y,
+      room: this.props.room
+    }
+
+    this.props.socket.emit('drag connection', data);
   }
 
   handleMouseEnter() {
     document.body.style.cursor = 'pointer';
     this.setState({
       isHovered: true
-    })
+    });
   }
 
   handleMouseLeave() {
@@ -41,47 +55,64 @@ class RouteLine extends Component {
   }
 
   handleLineDrop(e) {
-    this.props.handleLineDrop({
+    let {x, y} = e.evt;
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
+
+    const data = {
       id: this.props.id,
-      handleX: e.evt.x,
-      handleY: e.evt.y,
-      data: this.props.connection.data
-    });
+      handleX: x,
+      handleY: y,
+      data: this.props.connection.data,
+      room: this.props.room
+    }
+
+    this.props.socket.emit('place connection', data);
   }
 
   render() {
-    const {nodes} = this.props;
-    const {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    const {nodes, canvasWidth, canvasHeight, nodeScale} = this.props;
+    let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
+    handleX = handleX * canvasWidth;
+    handleY = handleY * canvasHeight;
     const positions = {
       connectorRight: [
-        nodes[connector].x + 150, nodes[connector].y + 75
+        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connectorLeft: [
-        nodes[connector].x, nodes[connector].y + 75
+        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeRight: [
-        nodes[connectee].x + 150, nodes[connectee].y + 75
+        nodes[connectee].x * canvasWidth + nodeScale, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeLeft: [
-        nodes[connectee].x, nodes[connectee].y + 75
+        nodes[connectee].x * canvasWidth, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ]
+      
     };
+    positions.transparentConnectorRight = [positions.connectorRight[0] + 7, positions.connectorRight[1]];
+    positions.transparentConnectorLeft = [positions.connectorLeft[0] - 7, positions.connectorLeft[1]];
+    positions.transparentConnecteeRight = [positions.connecteeRight[0] + 7, positions.connecteeRight[1]];
+    positions.transparentConnecteeLeft = [positions.connecteeLeft[0] - 7, positions.connecteeLeft[1]];
+
 
     const connectorPoints = connectorLocation === 'left' ? positions.connectorLeft : positions.connectorRight;
     const connecteePoints = connecteeLocation === 'left' ? positions.connecteeLeft : positions.connecteeRight;
+    const transparentConnectorPoints = connectorLocation === 'left' ? positions.transparentConnectorLeft : positions.transparentConnectorRight;
+    const transparentConnecteePoints = connecteeLocation === 'left' ? positions.transparentConnecteeLeft : positions.transparentConnecteeRight;
 
     return (
       <Group
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        onDblClick={() => this.props.handleDelete(this.props.id)}
+        onDblClick={this.handleDelete}
         onClick={() => this.props.toggleOpenConnection(this.props.connection)}
       >
         <Line
           points={[
-            ...connectorPoints,
+            ...transparentConnectorPoints,
             handleX, handleY,
-            ...connecteePoints
+            ...transparentConnecteePoints
           ]}
           stroke='transparent'
           strokeWidth={20}

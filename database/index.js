@@ -42,6 +42,8 @@ module.exports = {
         }
       );
 
+      console.log(user);
+
       session.close();
       if (!user.records.length) {
         throw {

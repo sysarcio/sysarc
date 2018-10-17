@@ -5,6 +5,7 @@ import Login from './Login.jsx';
 import Signup from './Signup.jsx';
 import Canvases from './Canvases.jsx';
 import Landing from './Landing.jsx';
+import NavBar from './NavBar.jsx'
 
 class App extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        {/* <NavBar /> */}
         <Route
           exact path='/'
           component={Landing}

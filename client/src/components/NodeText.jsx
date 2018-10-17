@@ -3,8 +3,6 @@ import { Rect, Text, Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
 
 const textProperties = {
-  width: 150,
-  height: 100,
   fill: "#fff",
   align: "center",
   y: 15
@@ -23,9 +21,9 @@ class NodeText extends Component {
       <Text
         text={this.props.text}
         fill={textProperties.fill}
-        width={textProperties.width}
+        width={this.props.scale}
         align={textProperties.align}
-        fontSize={16}
+        fontSize={this.props.scale * 0.13}
         y={textProperties.y}
       />
     );

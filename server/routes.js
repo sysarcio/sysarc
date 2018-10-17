@@ -78,7 +78,7 @@ router.post('/canvas/add', async (req, res) => {
     res.send({ id: canvas.get('c.id'), name: canvas.get('c.name') });
   } catch (err) {
     res.statusMessage = err.message;
-    res.sendStatus(err.code);
+    res.sendStatus(err.code || 500);
   }
 });
 
