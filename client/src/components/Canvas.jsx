@@ -326,18 +326,6 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
 
-  toggleOpenConnection(connection = null) {
-    this.setState({
-      openConnection: null
-    });
-
-    if (connection) {
-      this.setState({
-        openConnection: connection
-      });
-    }
-  }
-
   render() {
     return (
       <div>

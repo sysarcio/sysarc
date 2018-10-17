@@ -6,11 +6,6 @@ import NodeShape from './NodeShape.jsx';
 import NodeRouteTarget from './NodeRouteTarget.jsx';
 import NodeText from './NodeText.jsx';
 
-// const nodeProperties = {
-//   width: 150,
-//   height: 150
-// }
-
 class Node extends Component {
   constructor(props) {
     super(props);
