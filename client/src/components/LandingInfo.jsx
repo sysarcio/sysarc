@@ -13,6 +13,7 @@ import StarIcon from '@material-ui/icons/StarBorder';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import Typist from 'react-typist';
 
 const styles = theme => ({
   '@global': {
@@ -132,8 +133,12 @@ function Landing(
         {/* Hero unit */}
         <div className={classes.heroContent}>
         
+         
+
           <Typography style={appBenefit} variant="h6" align="center" color="textSecondary" component="p">
             We take the tedious design process out of the equation so you can focus on building your system architecture quickly and accurately
+        
+           
           </Typography>
         </div>
         {/* End hero unit */}

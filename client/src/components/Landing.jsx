@@ -6,7 +6,7 @@ import Login from './Login.jsx';
 import LandingInfo from './LandingInfo.jsx';
 import Logo from './Logo.jsx'
 import SignUp from './Signup.jsx';
-import { Wave1, Wave2, Random1, Random2 } from './Logo.jsx';
+
 
 
 
@@ -22,14 +22,15 @@ class Landing extends Component {
 
     return(
 
-      <div className='landing-page'>
-        <button>Login</button>
-        <button>Signup</button>
-        {/* <Logo /> */}
-       <h1 className='logo'>Sketchpad Ninja</h1>
-       {/* <Logo className='logo'/> */}
+      <div>
+        <button className='login-btn'>Login</button>
+        <button className='signin-btn'>Signup</button>
+       
+       {/* <h1 className='logo'>Sketchpad Ninja</h1> */}
+ 
+       <Logo />
        <LandingInfo />
-       <SignUp />
+       
       </div>
     );
   }
