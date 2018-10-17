@@ -4,6 +4,7 @@ import Konva from 'konva';
 
 import NodeShape from './NodeShape.jsx';
 import NodeRouteTarget from './NodeRouteTarget.jsx';
+import NodeDeleteTarget from './NodeDeleteTarget.jsx';
 import NodeText from './NodeText.jsx';
 
 class Node extends Component {
@@ -24,7 +25,7 @@ class Node extends Component {
   }
 
   handleDragState(e) {
-    const {x, y} = e.target.attrs;
+    const { x, y } = e.target.attrs;
     this.setState({
       dragX: x,
       dragY: y
@@ -37,14 +38,16 @@ class Node extends Component {
 
   handleMouseEnter(e) {
     document.body.style.cursor = 'move';
+    this.setState({ isHovered: true });
   }
 
   handleMouseLeave(e) {
     document.body.style.cursor = 'default';
+    this.setState({ isHovered: false });
   }
 
   handleDragEnd(e) {
-    let {x, y} = e.target.attrs;
+    let { x, y } = e.target.attrs;
     x = x / this.props.canvasWidth;
     y = y / this.props.canvasHeight;
 
@@ -63,7 +66,7 @@ class Node extends Component {
     });
   }
 
-  handleDragBounds({x, y}) {
+  handleDragBounds({ x, y }) {
     if (x < 0) {
       x = 0;
     } else if (x + this.props.scale > this.props.canvasWidth) {
@@ -73,7 +76,7 @@ class Node extends Component {
     if (y < 0) {
       y = 0;
     } else if (y + this.props.scale > this.props.canvasHeight) {
-      y = this.props.canvasHeight - this.props.scale
+      y = this.props.canvasHeight - this.props.scale;
     }
 
     x = x / this.props.canvasWidth;
@@ -88,11 +91,11 @@ class Node extends Component {
 
     this.props.socket.emit('move node', data);
 
-    return {x, y};
+    return { x, y };
   }
 
   render() {
-    let {id, type, x, y} = this.props.node;
+    let { id, type, x, y } = this.props.node;
 
     const nodeRouteTargets = {
       right: {
@@ -111,7 +114,6 @@ class Node extends Component {
     return (
       <Group
         onDragEnd={this.handleDragEnd}
-        onDblClick={() => this.props.emitDeleteNode(id)}
         draggable={true}
         onDragMove={this.handleDragState}
         dragBoundFunc={this.handleDragBounds}
@@ -127,10 +129,7 @@ class Node extends Component {
             nodeHeight={this.props.scale}
             color={this.props.color}
           />
-          <NodeText
-            scale={this.props.scale}
-            text={type}
-          />
+          <NodeText scale={this.props.scale} text={type} />
         </Group>
         {Object.keys(nodeRouteTargets).map((target, i) => (
           <NodeRouteTarget
@@ -140,6 +139,10 @@ class Node extends Component {
             handleCircleClick={() => this.handleCircleClick(target)}
           />
         ))}
+        <NodeDeleteTarget
+          parentHovered={this.state.isHovered}
+          emitDeleteNode={() => this.props.emitDeleteNode(id)}
+        />
       </Group>
     );
   }
