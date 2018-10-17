@@ -23,7 +23,7 @@ class NodeText extends Component {
         fill={textProperties.fill}
         width={this.props.scale}
         align={textProperties.align}
-        fontSize={16}
+        fontSize={this.props.scale * 0.13}
         y={textProperties.y}
       />
     );

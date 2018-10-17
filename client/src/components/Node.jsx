@@ -6,11 +6,6 @@ import NodeShape from './NodeShape.jsx';
 import NodeRouteTarget from './NodeRouteTarget.jsx';
 import NodeText from './NodeText.jsx';
 
-// const nodeProperties = {
-//   width: 150,
-//   height: 150
-// }
-
 class Node extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +32,7 @@ class Node extends Component {
   }
 
   handleCircleClick(target) {
-    this.props.beginNewConnection(this.props.id, target);
+    this.props.beginNewConnection(this.props.node.id, target);
   }
 
   handleMouseEnter(e) {
@@ -52,11 +47,15 @@ class Node extends Component {
     let {x, y} = e.target.attrs;
     x = x / this.props.canvasWidth;
     y = y / this.props.canvasHeight;
-    this.props.placeNode({
+
+    const data = {
       x,
       y,
-      id: this.props.id
-    });
+      id: this.props.node.id,
+      room: this.props.room
+    };
+
+    this.props.socket.emit('place node', data);
 
     this.setState({
       dragX: null,
@@ -80,42 +79,39 @@ class Node extends Component {
     x = x / this.props.canvasWidth;
     y = y / this.props.canvasHeight;
 
-    this.props.moveNode({
+    const data = {
       x,
       y,
-      id: this.props.id
-    });
+      id: this.props.node.id,
+      room: this.props.room
+    };
+
+    this.props.socket.emit('move node', data);
 
     return {x, y};
   }
 
   render() {
+    let {id, type, x, y} = this.props.node;
+
     const nodeRouteTargets = {
-      // top: {
-      //   x: nodeProperties.width / 2,
-      //   y: 0
-      // },
       right: {
         x: this.props.scale,
         y: this.props.scale / 2
       },
-      // bottom: {
-      //   x: nodeProperties.width / 2,
-      //   y: nodeProperties.height
-      // },
       left: {
         x: 0,
         y: this.props.scale / 2
       }
     };
 
-    let x = this.dragX ? this.dragX : this.props.x * this.props.canvasWidth;
-    let y = this.dragY ? this.dragY : this.props.y * this.props.canvasHeight;
+    x = this.dragX ? this.dragX : x * this.props.canvasWidth;
+    y = this.dragY ? this.dragY : y * this.props.canvasHeight;
 
     return (
       <Group
         onDragEnd={this.handleDragEnd}
-        onDblClick={() => this.props.emitDeleteNode(this.props.id)}
+        onDblClick={() => this.props.emitDeleteNode(id)}
         draggable={true}
         onDragMove={this.handleDragState}
         dragBoundFunc={this.handleDragBounds}
@@ -133,7 +129,7 @@ class Node extends Component {
           />
           <NodeText
             scale={this.props.scale}
-            text={this.props.type}
+            text={type}
           />
         </Group>
         {Object.keys(nodeRouteTargets).map((target, i) => (

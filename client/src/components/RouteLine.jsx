@@ -13,24 +13,37 @@ class RouteLine extends Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleLineDrag = this.handleLineDrag.bind(this);
     this.handleLineDrop = this.handleLineDrop.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete() {
+    const data = {
+      room: this.props.room,
+      id: this.props.id
+    };
+    this.props.socket.emit('delete connection', data);
   }
 
   handleLineDrag(e) {
     let {x, y} = e.evt;
     x = x / this.props.canvasWidth;
     y = y / this.props.canvasHeight;
-    this.props.handlePointDrag({
+
+    const data = {
       id: this.props.id,
       handleX: x,
-      handleY: y
-    });
+      handleY: y,
+      room: this.props.room
+    }
+
+    this.props.socket.emit('drag connection', data);
   }
 
   handleMouseEnter() {
     document.body.style.cursor = 'pointer';
     this.setState({
       isHovered: true
-    })
+    });
   }
 
   handleMouseLeave() {
@@ -45,12 +58,16 @@ class RouteLine extends Component {
     let {x, y} = e.evt;
     x = x / this.props.canvasWidth;
     y = y / this.props.canvasHeight;
-    this.props.handleLineDrop({
+
+    const data = {
       id: this.props.id,
       handleX: x,
       handleY: y,
-      data: this.props.connection.data
-    });
+      data: this.props.connection.data,
+      room: this.props.room
+    }
+
+    this.props.socket.emit('place connection', data);
   }
 
   render() {
@@ -88,7 +105,7 @@ class RouteLine extends Component {
       <Group
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        onDblClick={() => this.props.handleDelete(this.props.id)}
+        onDblClick={this.handleDelete}
         onClick={() => this.props.toggleOpenConnection(this.props.connection)}
       >
         <Line
