@@ -9,6 +9,15 @@ module.exports = {
     path: DIST_DIR
   },
   module : {
+    loaders : [
+      
+       {
+         test: /\.(png|jpg)$/,
+         loader: 'url-loader?limit=8192'
+       }
+        
+      
+    ],
     rules : [
       {
         test : /\.jsx?/,

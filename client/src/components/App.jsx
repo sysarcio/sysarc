@@ -4,6 +4,7 @@ import Canvas from './Canvas.jsx';
 import Login from './Login.jsx';
 import Signup from './Signup.jsx';
 import Canvases from './Canvases.jsx';
+import Landing from './Landing.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +21,10 @@ class App extends Component {
       <div>
         <Route
           exact path='/'
+          component={Landing}
+        />
+        <Route
+          path='/canvases'
           component={Canvases}
         />
         <Route

@@ -155,8 +155,6 @@ deleteCanvas(id) {
               )
             }
           })}
-
-   
       </div>
     )
   }

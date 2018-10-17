@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+
+
 class Signup extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +47,7 @@ class Signup extends Component {
       try {
         const data = await axios(options);
         console.log(data);
-        this.props.history.push('/');
+        this.props.history.push('/canvases');
       } catch(err) {
         console.log(err);
       }
@@ -54,30 +56,71 @@ class Signup extends Component {
 
   render() {
     return (
-      <div className='signup'>
-        <form id="signup-form">
-          <input 
-            type="email"
-            placeholder='Email'
-            required
-            title="Must be a valid email address"
-            value={this.state.email}
-            onChange={this.handleEmail}
-          />
-          <input
-            type="password"
-            placeholder='Password'
-            required
-            value={this.state.password}
-            onChange={this.handlePassword}
-          />
-          <input
-            type="submit"
-            onClick={this.handleSignup}
-            value="Signup"
-          />
-        </form>
+
+
+      <div className='form-page__wrapper'>
+        <div className='form-page__form-wrapper'>
+          <div className='form-page__form-header'>
+            <h2 className='form-page__form-heading'>Login</h2>
+          </div>
+          <form id="signup-form">
+            <input
+              type="email"
+              placeholder='Email'
+              required
+              title="Must be a valid email address"
+              value={this.state.email}
+              onChange={this.handleEmail}
+              className='signin-input'
+            />
+            <input
+              type="password"
+              placeholder='Password'
+              required
+              value={this.state.password}
+              onChange={this.handlePassword}
+              className='signin-input'
+            />
+            <input
+              type="submit"
+              onClick={this.handleSignup}
+              value="Signup"
+              className='signin-input'
+            />
+          </form>
+        </div>
+       
       </div>
+
+
+
+
+
+
+      // <div className='signup'>
+      //   <form id="signup-form">
+      //     <input 
+      //       type="email"
+      //       placeholder='Email'
+      //       required
+      //       title="Must be a valid email address"
+      //       value={this.state.email}
+      //       onChange={this.handleEmail}
+      //     />
+      //     <input
+      //       type="password"
+      //       placeholder='Password'
+      //       required
+      //       value={this.state.password}
+      //       onChange={this.handlePassword}
+      //     />
+      //     <input
+      //       type="submit"
+      //       onClick={this.handleSignup}
+      //       value="Signup"
+      //     />
+      //   </form>
+      // </div>
     );
   }
 }
