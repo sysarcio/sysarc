@@ -8,8 +8,8 @@ class Canvases extends Component {
     this.state = {
       canvases: [],
       text: '',
-      showForm: false,   
-    }
+      showForm: false
+    };
 
     this.get = this.get.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -17,7 +17,6 @@ class Canvases extends Component {
     this.goToCanvas = this.goToCanvas.bind(this);
     this.toggleShowForm = this.toggleShowForm.bind(this);
     this.deleteCanvas = this.deleteCanvas.bind(this);
-  
   }
 
   async componentDidMount() {
@@ -29,15 +28,14 @@ class Canvases extends Component {
         method: 'GET',
         url: `/api/canvases/${localStorage.userID}`
       };
-  
+
       try {
-        const {data: canvases} = await axios(options);
+        const { data: canvases } = await axios(options);
         console.log('canvases from axios', canvases);
         this.setState({
           canvases
         });
-        
-      } catch(err) {
+      } catch (err) {
         console.log(err);
       }
     }
@@ -49,6 +47,7 @@ class Canvases extends Component {
   }
 
   handleChange(e) {
+    console.log('set state in HandleChange');
     this.setState({
       text: e.target.value
     });
@@ -66,87 +65,88 @@ class Canvases extends Component {
     };
 
     try {
-      const {data: {id, name}} = await axios(options);
-      console.log('id-->', id)
+      const {
+        data: { id, name }
+      } = await axios(options);
+      console.log('id-->', id);
+      this.toggleShowForm();
       this.props.history.push(`/canvas/${id}`);
-    } catch(err) {
+    } catch (err) {
       // Actually let user know that something went wrong
       console.log(err);
     }
-
-    this.toggleShowForm();
   }
 
   goToCanvas(id) {
-  
     this.props.history.push(`/canvas/${id}`);
   }
 
   toggleShowForm() {
-    this.setState({ showForm: !this.state.showForm})
+    console.log('set state in toggleShowForm');
+    this.setState({ showForm: !this.state.showForm });
   }
 
   deleteCanvas(id) {
-    axios.delete(`/api/canvas/${id}`)
+    axios
+      .delete(`/api/canvas/${id}`)
       .then(response => {
         const canvasesCopy = this.state.canvases.slice();
         const canvasesAfterDelete = canvasesCopy.filter(canvas => {
           return this.get(canvas, 'id') !== id;
-      })
+        });
+        console.log('set state in deleteCanvas');
         this.setState({
-          canvases: canvasesAfterDelete 
+          canvases: canvasesAfterDelete
         });
       })
       .catch(err => {
         console.log('unable to delete canvas ', err);
-      })
+      });
   }
 
   render() {
-
-    const showCreateNewCanvas = this.state.showForm ? 
-      <div >
-      <form className='canvases-form' >
-        <input
-          type="text"
-          placeholder="Canvas name..."
-          onChange={this.handleChange}
-          value={this.state.text}
-          className='form-input'
-        />
-          <button className='form-button' onClick={this.createCanvas}>+</button>
-        </form> 
-    </div> : 
-      
-      <div className='canvases-plus' onClick={this.toggleShowForm}>
-        <button className='canvas-button'  >
+    const showCreateNewCanvas = this.state.showForm ? (
+      <div>
+        <form className="canvases-form">
+          <input
+            type="text"
+            placeholder="Canvas name..."
+            onChange={this.handleChange}
+            value={this.state.text}
+            className="form-input"
+          />
+          <button className="form-button" onClick={this.createCanvas}>
+            +
+          </button>
+        </form>
+      </div>
+    ) : (
+      <div className="canvases-plus" onClick={this.toggleShowForm}>
+        <button className="canvas-button">
           <strong>+</strong>
         </button>
       </div>
+    );
 
     return (
-      <div className='canvases '>
-       
-          {showCreateNewCanvas}
+      <div className="canvases ">
+        {showCreateNewCanvas}
 
-          {this.state.canvases.map(c => {
-            if (this.get(c, 'id')) {
-              return (
-                <CanvasThumbnail
-               
-                  deleteCanvas={this.deleteCanvas}
-                  get={this.get}
-                  canvas={c}
-                  goToCanvas={this.goToCanvas}
-                  key={this.get(c, 'id')}
-                />
-              )
-            }
-          })}
-
-   
+        {this.state.canvases.map(c => {
+          if (this.get(c, 'id')) {
+            return (
+              <CanvasThumbnail
+                deleteCanvas={this.deleteCanvas}
+                get={this.get}
+                canvas={c}
+                goToCanvas={this.goToCanvas}
+                key={this.get(c, 'id')}
+              />
+            );
+          }
+        })}
       </div>
-    )
+    );
   }
 }
 
