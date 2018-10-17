@@ -114,7 +114,6 @@ class Node extends Component {
     return (
       <Group
         onDragEnd={this.handleDragEnd}
-        onDblClick={() => this.props.emitDeleteNode(id)}
         draggable={true}
         onDragMove={this.handleDragState}
         dragBoundFunc={this.handleDragBounds}
