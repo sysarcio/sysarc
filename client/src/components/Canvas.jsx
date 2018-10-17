@@ -65,14 +65,9 @@ class Canvas extends Component {
       this.processScreenshot('UPLOAD');
     });
 
-    this.moveNode = this.moveNode.bind(this);
     this.updateNode = this.updateNode.bind(this);
-    this.placeNode = this.placeNode.bind(this);
     this.beginNewConnection = this.beginNewConnection.bind(this);
     this.handleNewConnection = this.handleNewConnection.bind(this);
-    this.deleteConnection = this.deleteConnection.bind(this);
-    this.handlePointDrag = this.handlePointDrag.bind(this);
-    this.handleLineDrop = this.handleLineDrop.bind(this);
     this.handleDeleteConnection = this.handleDeleteConnection.bind(this);
     this.updateConnection = this.updateConnection.bind(this);
     this.emitDeleteNode = this.emitDeleteNode.bind(this);
@@ -190,24 +185,6 @@ class Canvas extends Component {
     });
   }
 
-  deleteConnection(id) {
-    const data = {
-      room: this.roomID,
-      id
-    };
-    this.socket.emit('delete connection', data);
-  }
-
-  handleLineDrop(data) {
-    data.room = this.roomID;
-    this.socket.emit('place connection', data);
-  }
-
-  handlePointDrag(data) {
-    data.room = this.roomID;
-    this.socket.emit('drag connection', data);
-  }
-
   handleDeleteConnection(id) {
     const connections = JSON.parse(JSON.stringify(this.state.connections));
     delete connections[id];
@@ -238,12 +215,8 @@ class Canvas extends Component {
       this.socket.emit('add node', data);
 
       this.setState(
-        {
-          nodeToAdd: null
-        },
-        () => {
-          document.body.style.cursor = 'default';
-        }
+        {nodeToAdd: null},
+        () => document.body.style.cursor = 'default'
       );
     }
   }
@@ -252,27 +225,14 @@ class Canvas extends Component {
     const nodes = JSON.parse(JSON.stringify(this.state.nodes));
     nodes[node.id] = node;
 
-    this.setState({
-      nodes
-    });
-  }
-
-  moveNode(data) {
-    data.room = this.roomID;
-    this.socket.emit('move node', data);
+    this.setState({nodes});
   }
 
   updateNode(data) {
     const newNodes = JSON.parse(JSON.stringify(this.state.nodes));
     newNodes[data.id].x = data.x;
     newNodes[data.id].y = data.y;
-    this.setState({
-      nodes: newNodes
-    });
-  }
-
-  placeNode(data) {
-    this.socket.emit('place node', data);
+    this.setState({nodes: newNodes});
   }
 
   emitDeleteNode(id) {
@@ -378,15 +338,9 @@ class Canvas extends Component {
     }
   }
 
-  emitUpdateConnectionData(data) {
-    data.room = this.roomID;
-    this.socket.emit('update connection data', data);
-  }
-
   render() {
     return (
       <div>
-
         <div
           id="canvas"
         >
@@ -403,33 +357,28 @@ class Canvas extends Component {
               fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
-    
               {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}
-                  id={node.id}
-                  type={node.type}
-                  placeNode={this.placeNode}
+                  node={node}
+                  room={this.roomID}
+                  socket={this.socket}
                   color="black"
                   canvasWidth={this.state.width}
                   canvasHeight={this.state.height}
                   scale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
-                  x={node.x}
-                  y={node.y}
                   beginNewConnection={this.beginNewConnection}
                   emitDeleteNode={this.emitDeleteNode}
-                  moveNode={this.moveNode}
                 />
               ))}
               {Object.keys(this.state.connections).map(id => (
                 <RouteLine
                   key={id}
                   id={id}
+                  room={this.roomID}
                   connection={this.state.connections[id]}
                   nodes={this.state.nodes}
-                  handlePointDrag={this.handlePointDrag}
-                  handleLineDrop={this.handleLineDrop}
-                  handleDelete={this.deleteConnection}
+                  socket={this.socket}
                   toggleOpenConnection={this.toggleOpenConnection}
                   nodeScale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
                   canvasHeight={this.state.height}
@@ -444,12 +393,13 @@ class Canvas extends Component {
                   processScreenshot={this.processScreenshot}
                 />
               ) : null}
- 
             </Layer>
           </Stage>
         </div>
         {this.state.openConnection ? (
           <RouteForm
+            room={this.roomID}
+            socket={this.socket}
             connection={this.state.openConnection}
             toggleOpenConnection={this.toggleOpenConnection}
             emitUpdateConnectionData={this.emitUpdateConnectionData}
