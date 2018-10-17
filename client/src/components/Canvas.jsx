@@ -8,6 +8,7 @@ import Toolbar from './Toolbar.jsx';
 import Node from './Node.jsx';
 import RouteLine from './RouteLine.jsx';
 import RouteForm from './RouteForm.jsx';
+import dummyData from './dummyDataForReact.jsx';
 
 class Canvas extends Component {
   constructor(props) {
@@ -140,8 +141,13 @@ class Canvas extends Component {
           connecteeLocation: location,
           handleX: (nodes[connector].x + nodes[connectee].x) / 2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
-          data: {}
-        };
+          data: {'': {
+            get: {},
+            post: {},
+            put: {},
+            delete: {}
+          }}
+        }
 
         data.room = this.roomID;
         this.socket.emit('make connection', data);
@@ -325,7 +331,6 @@ class Canvas extends Component {
     data.room = this.roomID;
     this.socket.emit('update connection data', data);
   }
-
   render() {
     return (
       <div>
@@ -389,6 +394,10 @@ class Canvas extends Component {
             room={this.roomID}
             socket={this.socket}
             connection={this.state.openConnection}
+            // data={dummyData}
+            data={Object.keys(this.state.openConnection.data)[0] ? this.state.openConnection.data : {'':{}}}
+            // pathName={Object.keys(dummyData)[0]}
+            pathName={Object.keys(this.state.openConnection.data)[0]}
             toggleOpenConnection={this.toggleOpenConnection}
             emitUpdateConnectionData={this.emitUpdateConnectionData}
             canvasHeight={this.state.height}
