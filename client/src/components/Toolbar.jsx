@@ -60,7 +60,7 @@ class Toolbar extends Component {
         {nodeTypes.map((type, i) => (
           <Text
             key={i}
-            onClick={() => this.props.prepNewNode(type)}
+            onClick={(e) => this.props.prepNewNode(type, e)}
             text={`${type} +`}
             fill={textProperties.fill}
             width={textProperties.width}
