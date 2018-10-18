@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Rect, Text, Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
+import dummyData from './dummyDataForReact.jsx'
 
 const toolbarProperties = {
-  width: 150,
-  height: 150,
+  width: 175,
+  height: 175,
   strokeWidth: 1,
   fill: 'rgba(255, 255, 255, 0.2)'
 };
@@ -66,6 +67,17 @@ class Toolbar extends Component {
             y={textProperties.y * (i + 1)}
           />
         ))}
+
+        <Text
+          onClick={this.props.takeMeToTheDocs}
+          json={dummyData}
+          fontSize={16}
+          text="+ DOCS"
+          fill={textProperties.fill}
+          width={textProperties.width}
+          align={textProperties.align}
+          y={textProperties.y * (nodeTypes.length+screenshotTypes.length + 1)}
+        />
       </Group>
     );
   }
