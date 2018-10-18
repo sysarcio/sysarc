@@ -4,14 +4,13 @@ import Konva from 'konva';
 
 const nodeProperties = {
   strokeWidth: 1,
-  fill: "rgba(255, 255, 255, 0.2)"
-}
+  fill: 'rgba(255, 255, 255, 0.2)'
+};
 
 class NodeShape extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   render() {
@@ -23,6 +22,7 @@ class NodeShape extends Component {
         fill={nodeProperties.fill}
         stroke={this.props.color}
         strokeWidth={nodeProperties.strokeWidth}
+        cornerRadius={15}
       />
     );
   }

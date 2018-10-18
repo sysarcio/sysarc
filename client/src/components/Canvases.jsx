@@ -94,7 +94,6 @@ class Canvases extends Component {
         const canvasesAfterDelete = canvasesCopy.filter(canvas => {
           return this.get(canvas, 'id') !== id;
         });
-        console.log('set state in deleteCanvas');
         this.setState({
           canvases: canvasesAfterDelete
         });
