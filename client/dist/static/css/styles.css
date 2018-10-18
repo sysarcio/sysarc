@@ -326,6 +326,10 @@ body {
 
 /* #canvas {
   border: 1px solid rgb(221, 221, 221);
+<<<<<<< HEAD
+=======
+  width: 100%;
+>>>>>>> dev
   background-color: #ccc;
   border-radius: 15px;
   overflow: hidden;
