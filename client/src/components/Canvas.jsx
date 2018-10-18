@@ -16,7 +16,7 @@ class Canvas extends Component {
     super(props);
     this.state = {
       width: window.innerWidth * 0.95,
-      height: window.innerHeight * 0.8,
+      height: window.innerHeight * 0.77,
       openConnection: null,
       nodeToAdd: null,
       connector: null,
@@ -81,14 +81,29 @@ class Canvas extends Component {
     this.processScreenshot = this.processScreenshot.bind(this);
     this.toggleOpenConnection = this.toggleOpenConnection.bind(this);
     this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
-    this.handlePathChange = this.handlePathChange.bind(this);
+    this.goToLanding = this.goToLanding.bind(this);
+    this.logout = this.logout.bind(this);
+    this.goToCanvases = this.goToCanvases.bind(this);
+  }
+
+  goToLanding() {
+    this.props.history.push('/');
+  }
+
+  goToCanvases() {
+    this.props.history.push('/canvases');
+  }
+
+  logout() {
+    localStorage.removeItem('userID');
+    this.props.history.push('/');
   }
 
   componentDidMount() {
     window.addEventListener('resize', () => {
       this.setState({
         width: window.innerWidth * 0.95,
-        height: window.innerHeight * 0.8
+        height: window.innerHeight * 0.77
       });
     });
 
@@ -350,128 +365,146 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
   render() {
+
+    const stageStyle = {
+      backgroundColor: 'red',
+      borderRadius: '15px',
+      border: '3px solid #394256',
+      overflow: 'hidden'
+    }
+
     let conPairs = {};
     return (
       <div className='canvas-style'>
-        <div
-          id="canvas"
-          width={this.state.width}
-          height={this.state.height}
-        >
-        {/* stage is entire canvas; numbers must be in curly brackets */}
-          <Stage
+        <div className='header'>
+          <h1 className='logo-sm' onClick={this.goToLanding}>Sketchpad Ninja</h1>
+        </div>
+        <div className="header-links">
+            <p className='logout-p' onClick={this.logout}>Logout</p>
+            <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
+          </div>
+        <div style={{overflow: 'hidden'}}>
+          <div
+            id="canvas"
             width={this.state.width}
             height={this.state.height}
           >
-            <Layer
-              className="canvas"
-            >
-            <Rect
+          {/* stage is entire canvas; numbers must be in curly brackets */}
+            <Stage
+              style={stageStyle}
               width={this.state.width}
               height={this.state.height}
-              fill={'rgba(0, 20, 155, 0.5)'}
-              onMouseDown={this.emitNewNode}
-            />
-              {Object.values(this.state.nodes).map(node => (
-                <Node
-                  key={node.id}
-                  node={node}
-                  room={this.roomID}
-                  socket={this.socket}
-                  color="black"
-                  canvasWidth={this.state.width}
-                  canvasHeight={this.state.height}
-                  scale={Math.min(
-                    this.state.height * 0.2,
-                    this.state.width * 0.2
-                  )}
-                  beginNewConnection={this.beginNewConnection}
-                  emitDeleteNode={this.emitDeleteNode}
-                />
-              ))}
-
-              {Object.keys(this.state.connections).map(id => {
-                let conPair = [
-                  this.state.connections[id].connector,
-                  this.state.connections[id].connectee
-                ]
-                  .sort()
-                  .join('');
-                typeof conPairs[conPair] === 'undefined'
-                  ? (conPairs[conPair] = 1)
-                  : conPairs[conPair]++;
-                return (
-                  <RouteLine
-                    key={id}
-                    lineCount={conPairs[conPair]}
-                    id={id}
+            >
+              <Layer
+                className="canvas"
+              >
+              <Rect
+                width={this.state.width}
+                height={this.state.height}
+                // fillPatternImage={''}
+                fill={'rgba(0, 20, 155, 0.5)'}
+                onMouseDown={this.emitNewNode}
+              />
+                {Object.values(this.state.nodes).map(node => (
+                  <Node
+                    key={node.id}
+                    node={node}
                     room={this.roomID}
-                    connection={this.state.connections[id]}
-                    nodes={this.state.nodes}
                     socket={this.socket}
-                    toggleOpenConnection={this.toggleOpenConnection}
-                    nodeScale={Math.min(
+                    color="black"
+                    canvasWidth={this.state.width}
+                    canvasHeight={this.state.height}
+                    scale={Math.min(
                       this.state.height * 0.2,
                       this.state.width * 0.2
                     )}
+                    beginNewConnection={this.beginNewConnection}
+                    emitDeleteNode={this.emitDeleteNode}
+                  />
+                ))}
+                {Object.keys(this.state.connections).map(id => {
+                  let conPair = [
+                    this.state.connections[id].connector,
+                    this.state.connections[id].connectee
+                  ]
+                    .sort()
+                    .join('');
+                  typeof conPairs[conPair] === 'undefined'
+                    ? (conPairs[conPair] = 1)
+                    : conPairs[conPair]++;
+                  return (
+                    <RouteLine
+                      key={id}
+                      lineCount={conPairs[conPair]}
+                      id={id}
+                      room={this.roomID}
+                      connection={this.state.connections[id]}
+                      nodes={this.state.nodes}
+                      socket={this.socket}
+                      toggleOpenConnection={this.toggleOpenConnection}
+                      nodeScale={Math.min(
+                        this.state.height * 0.2,
+                        this.state.width * 0.2
+                      )}
+                      canvasHeight={this.state.height}
+                      canvasWidth={this.state.width}
+                    />
+                  );
+                })}
+                {this.state.showMenu ? (
+                  <Toolbar
                     canvasHeight={this.state.height}
                     canvasWidth={this.state.width}
+                    prepNewNode={this.prepNewNode}
                   />
-                );
-              })}
-              {this.state.showMenu ? (
-                <Toolbar
-                  canvasHeight={this.state.height}
-                  canvasWidth={this.state.width}
-                  prepNewNode={this.prepNewNode}
-                />
-              ) : null}
-            </Layer>
-          </Stage>
-        </div>
-        {this.state.openConnection ? (
-          <RouteForm
-            room={this.roomID}
-            socket={this.socket}
-            connection={this.state.openConnection}
-            // data={dummyData}
-            data={
-              Object.keys(this.state.openConnection.data)[0]
-                ? this.state.openConnection.data
-                : { '': {} }
-            }
-            // pathName={Object.keys(dummyData)[0]}
-            pathName={Object.keys(this.state.openConnection.data)[0]}
-            toggleOpenConnection={this.toggleOpenConnection}
-            emitUpdateConnectionData={this.emitUpdateConnectionData}
-            canvasHeight={this.state.height}
-            canvasWidth={this.state.width}
-          />
-        ) : null}
-        {this.state.changingNodeType ? (
-          <div>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                this.setState({
-                  changingNodeType: false,
-                  miscNodeName: ''
-                });
-                this.prepNewNode(this.state.miscNodeName);
-              }}
-            >
-              <input
-                className="noStyle"
-                type="text"
-                placeholder="Enter type of node"
-                value={this.state.miscNodeName}
-                onChange={this.handlePathChange}
-                style={{ width: '20%' }}
-              />
-              <button>submit</button>
-            </form>
+                ) : null}
+              </Layer>
+            </Stage>
           </div>
-        ) : null}
+          {this.state.openConnection ? (
+            <RouteForm
+              room={this.roomID}
+              socket={this.socket}
+              connection={this.state.openConnection}
+              // data={dummyData}
+              data={
+                Object.keys(this.state.openConnection.data)[0]
+                  ? this.state.openConnection.data
+                  : { '': {} }
+              }
+              // pathName={Object.keys(dummyData)[0]}
+              pathName={Object.keys(this.state.openConnection.data)[0]}
+              toggleOpenConnection={this.toggleOpenConnection}
+              emitUpdateConnectionData={this.emitUpdateConnectionData}
+              canvasHeight={this.state.height}
+              canvasWidth={this.state.width}
+            />
+          ) : null}
+          {this.state.changingNodeType ? (
+            <div>
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  this.setState({
+                    changingNodeType: false,
+                    miscNodeName: ''
+                  });
+                  this.prepNewNode(this.state.miscNodeName);
+                }}
+              >
+                <input
+                  className="noStyle"
+                  type="text"
+                  placeholder="Enter type of node"
+                  value={this.state.miscNodeName}
+                  onChange={this.handlePathChange}
+                  style={{ width: '20%' }}
+                />
+                <button>submit</button>
+              </form>
+            </div>
+          ) : null}
+        </div>
       </div>
     );
   }

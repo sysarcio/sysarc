@@ -80,7 +80,7 @@ class RouteLine extends Component {
       4: 'yellow'
     };
     let lineColor = LINE_LOGIC[lineCount] || 'black';
-    console.log('because the number of lines is ', lineCount, ' the color is ', lineColor);
+    // console.log('because the number of lines is ', lineCount, ' the color is ', lineColor);
 
     let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
     handleX = handleX * canvasWidth;

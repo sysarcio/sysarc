@@ -6,7 +6,8 @@ const toolbarProperties = {
   width: 150,
   height: 150,
   strokeWidth: 1,
-  fill: 'rgba(255, 255, 255, 0.2)'
+  fill: "#aacfe4",
+  
 };
 
 const textProperties = {
@@ -49,6 +50,7 @@ class Toolbar extends Component {
     return (
       <Group draggable={true} dragBoundFunc={this.handleDragBounds}>
         <Rect
+          cornerRadius={15}
           width={toolbarProperties.width}
           height={toolbarProperties.height}
           fill={toolbarProperties.fill}

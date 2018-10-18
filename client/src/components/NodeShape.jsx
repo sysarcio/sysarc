@@ -4,8 +4,10 @@ import Konva from 'konva';
 
 const nodeProperties = {
   strokeWidth: 1,
-  fill: 'rgba(255, 255, 255, 0.2)'
-};
+  fill: "#aacfe4",
+  borderRadius: '15px',
+  
+}
 
 class NodeShape extends Component {
   constructor(props) {
@@ -16,7 +18,6 @@ class NodeShape extends Component {
   render() {
     return (
       <Rect
-        cornerRadius={15}
         width={this.props.nodeWidth}
         height={this.props.nodeHeight}
         fill={nodeProperties.fill}
