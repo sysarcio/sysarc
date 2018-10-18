@@ -15,8 +15,8 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: window.innerWidth * 0.95,
+      height: window.innerHeight * 0.8,
       openConnection: null,
       nodeToAdd: null,
       connector: null,
@@ -87,8 +87,8 @@ class Canvas extends Component {
   componentDidMount() {
     window.addEventListener('resize', () => {
       this.setState({
-        width: window.innerWidth,
-        height: window.innerHeight
+        width: window.innerWidth * 0.95,
+        height: window.innerHeight * 0.8
       });
     });
 
@@ -221,8 +221,8 @@ class Canvas extends Component {
 
   emitNewNode(e) {
     if (this.state.nodeToAdd) {
-      const x = e.evt.x / this.state.width;
-      const y = e.evt.y / this.state.height;
+      const x = e.evt.offsetX / this.state.width;
+      const y = e.evt.offsetY / this.state.height;
       const data = {
         x,
         y,
@@ -351,23 +351,23 @@ class Canvas extends Component {
   }
   render() {
     return (
-      <div>
-
+      <div className='canvas-style'>
         <div
-          className='canvas-style'
           id="canvas"
+          width={this.state.width}
+          height={this.state.height}
         >
         {/* stage is entire canvas; numbers must be in curly brackets */}
           <Stage
-            width={this.state.width * .75}
-            height={this.state.height * .75}
+            width={this.state.width}
+            height={this.state.height}
           >
             <Layer
               className="canvas"
             >
             <Rect
-              width={this.state.width * .75}
-              height={this.state.height * .75}
+              width={this.state.width}
+              height={this.state.height}
               fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
@@ -412,11 +412,6 @@ class Canvas extends Component {
                   prepNewNode={this.prepNewNode}
                 />
               ) : null}
-              <DownloadButton
-                canvasHeight={this.state.height}
-                canvasWidth={this.state.width}
-                processScreenshot={this.processScreenshot}
-              />
             </Layer>
           </Stage>
         </div>
