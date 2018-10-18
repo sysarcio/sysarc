@@ -61,7 +61,7 @@ class RouteForm extends Component {
     console.log('connection: ', connection);
     console.log('data object: ', connection.data);
     this.props.emitUpdateConnectionData(connection);
-    // this.props.toggleOpenConnection();
+    this.props.toggleOpenConnection();
   }
 
 
