@@ -47,6 +47,7 @@ class Canvases extends Component {
   }
 
   handleChange(e) {
+    console.log('set state in HandleChange');
     this.setState({
       text: e.target.value
     });

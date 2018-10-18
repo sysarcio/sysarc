@@ -15,20 +15,20 @@ jobs:
       - run:
           name: docker-pull-last
           command: docker pull baybars1223/sysarcio:latest
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: build-docker-image
           command: 'docker build -t baybars1223/sysarcio .'
           # command: docker login -u baybars1223 --password-stdin $DOCKER_PASS &&
           # command: docker version && service docker start
           # command: 'sudo service docker stop && sudo nohup docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock && ls && sudo docker info && sudo docker build -t baybars1223/sysarcio .'
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@5'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: install-npm-wee
-          command: npm install
+      # - run:
+      #     name: update-npm
+      #     command: 'sudo npm install -g npm@5'
+      # - run:
+      #     name: install-npm-wee
+      #     command: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
@@ -75,8 +75,8 @@ jobs:
           command: |
             ls -all
             cat .env
-            scp .env ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com:.env
-            ssh ubuntu@ec2-18-223-225-15.us-east-2.compute.amazonaws.com \
+            scp .env ubuntu@$SERVER_URL:.env
+            ssh ubuntu@$SERVER_URL \
             "wget https://raw.githubusercontent.com/baybars1223/scripts/master/rebuild.sh -O rebuild.sh &&
             chmod +x rebuild.sh &&
             ls &&

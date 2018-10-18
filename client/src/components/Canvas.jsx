@@ -351,18 +351,25 @@ class Canvas extends Component {
   render() {
     return (
       <div>
-        <div id="canvas">
+
+        <div
+          className='canvas-style'
+          id="canvas"
+        >
+        {/* stage is entire canvas; numbers must be in curly brackets */}
           <Stage
-            width={this.state.width * 0.75}
-            height={this.state.height * 0.75}
+            width={this.state.width * .75}
+            height={this.state.height * .75}
           >
-            <Layer className="canvas">
-              <Rect
-                width={this.state.width * 0.75}
-                height={this.state.height * 0.75}
-                fill={'rgba(0, 20, 155, 0.5)'}
-                onMouseDown={this.emitNewNode}
-              />
+            <Layer
+              className="canvas"
+            >
+            <Rect
+              width={this.state.width * .75}
+              height={this.state.height * .75}
+              fill={'rgba(0, 20, 155, 0.5)'}
+              onMouseDown={this.emitNewNode}
+            />
               {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}

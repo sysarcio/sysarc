@@ -9,6 +9,7 @@ module.exports = {
     path: DIST_DIR
   },
   module : {
+    
     rules : [
       {
         test : /\.jsx?/,

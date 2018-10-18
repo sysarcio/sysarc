@@ -16,6 +16,7 @@ class NodeShape extends Component {
   render() {
     return (
       <Rect
+        cornerRadius={15}
         width={this.props.nodeWidth}
         height={this.props.nodeHeight}
         fill={nodeProperties.fill}
