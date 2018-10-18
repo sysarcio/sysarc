@@ -31,11 +31,11 @@ class NodeRouteTarget extends Component {
     return (
       <Circle
         radius={7}
-        stroke={this.state.isHovered ? "yellow" : "black"}
+        stroke={this.state.isHovered ? "yellow" : "transparent"}
         strokeWidth={1}
         x={this.props.x}
         y={this.props.y}
-        fill="black"
+        fill="#3d3a3a"
         onClick={this.props.handleCircleClick}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
