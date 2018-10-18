@@ -4,7 +4,9 @@ import Konva from 'konva';
 
 const nodeProperties = {
   strokeWidth: 1,
-  fill: "rgba(255, 255, 255, 0.2)"
+  fill: "#aacfe4",
+  borderRadius: '15px',
+  
 }
 
 class NodeShape extends Component {

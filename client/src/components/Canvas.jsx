@@ -78,6 +78,17 @@ class Canvas extends Component {
     this.processScreenshot = this.processScreenshot.bind(this);
     this.toggleOpenConnection = this.toggleOpenConnection.bind(this);
     this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
+    this.goToLanding = this.goToLanding.bind(this);
+    this.logout = this.logout.bind(this);
+  }
+
+  goToLanding() {
+    this.props.history.push(`/`);
+  }
+
+  logout() {
+    localStorage.removeItem('userID');
+    this.props.history.push('/');
   }
 
   componentDidMount() {
@@ -332,24 +343,37 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
   render() {
+
+    const stageStyle = {
+      backgroundColor: 'grey',
+      borderRadius: '15px',
+      border: '3px solid #394256'
+    }
+
     return (
       <div>
+        <h1 className='logo-sm' onClick={this.goToLanding}>Sketchpad Ninja</h1>
+        <p className='logout-p' onClick={this.logout}>Logout</p>
+        <p className='canvases-p'> Canvases </p>
         <div
           className='canvas-style'
           id="canvas"
         >
         {/* stage is entire canvas; numbers must be in curly brackets */}
           <Stage
-            width={this.state.width * .75}
-            height={this.state.height * .75}
+            style={stageStyle}
+            width={this.state.width * .95}
+            height={this.state.height * .95}
           >
             <Layer
               className="canvas"
             >
             <Rect
-              width={this.state.width * .75}
-              height={this.state.height * .75}
-              fill={'rgba(0, 20, 155, 0.5)'}
+              cornerRadius={15}
+              width={this.state.width * .95}
+              height={this.state.height * .95}
+              fill={'#fafafa'}
+              // fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
               {Object.values(this.state.nodes).map(node => (
