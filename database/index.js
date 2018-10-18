@@ -307,5 +307,67 @@ module.exports = {
     } catch (err) {
       throw err;
     }
+  },
+
+  async getDocs(canvasID) {
+    try {
+      console.log('made it to db with id: ', canvasID);
+      const result = await session.run(
+        `
+        MATCH (n:CANVAS {id: $canvasID})
+        WITH n
+        OPTIONAL MATCH (n)-[:CONTAINS]->(m)
+        WITH m
+        OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
+        RETURN collect(p) AS connections`,
+        {
+          canvasID: canvasID
+        }  
+      );
+      session.close();
+      // console.log(`leaving db with keys: ${result.records[0].keys} \n fields: ${result.records[0]._fields} \n fieldLookup: ${result.records[0]._fieldLookup}`);
+      return result.records;
+    } catch (err) {
+      throw err;
+    }
   }
 };
+
+// `
+// MATCH (n:CANVAS {id: $canvasID})
+// WITH n
+// OPTIONAL MATCH (n)-[:CONTAINS]->(m)
+// WITH m
+// OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
+// RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS connections;`,
+// {
+//   canvasID: canvasID
+// }
+
+// `
+// MATCH (c:CANVAS {id: $room})-[:CONTAINS]->(n:NODE {id: $connector})
+// WITH n, c
+// MATCH (c)-[:CONTAINS]->(m:NODE {id: $connectee})
+// WITH n, m
+// CREATE (n)-[r:IS_CONNECTED {
+//   id: $id,
+//   handleX: $handleX,
+//   handleY: $handleY,
+//   connector: $connector,
+//   connectee: $connectee,
+//   data: $data,
+//   connectorLocation: $connectorLocation,
+//   connecteeLocation: $connecteeLocation
+// }]->(m)
+// RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data, r.connectorLocation AS connectorLocation, r.connecteeLocation AS connecteeLocation;`,
+// {
+//   connector,
+//   connectee,
+//   connectorLocation,
+//   connecteeLocation,
+//   handleX,
+//   handleY,
+//   room,
+//   id,
+//   data
+// }

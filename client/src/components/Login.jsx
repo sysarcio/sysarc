@@ -12,6 +12,7 @@ class Login extends Component {
     this.handlePassword = this.handlePassword.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.ghettoButton = this.ghettoButton.bind(this);
   }
 
   handleEmail(e) {
@@ -57,6 +58,9 @@ class Login extends Component {
     localStorage.removeItem('userID')
     this.props.history.push('/');
   }
+  ghettoButton(){
+    this.props.history.push(`/docs`);
+  }
 
   render() {
     return (
@@ -82,6 +86,7 @@ class Login extends Component {
             onClick={this.handleLogin}
             value="Login"
           />
+          <button type="button" onClick={this.ghettoButton}></button>
         </form>
       </div>
     );
