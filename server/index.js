@@ -6,7 +6,6 @@ const path = require('path');
 const uuidv4 = require('uuid/v4');
 
 const routes = require('./routes');
-
 const app = express();
 app.use(express.json({ limit: '500kb' }));
 
@@ -31,6 +30,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname + '/../client/dist'));
+
 app.use('/api', routes);
 
 server.listen(port, () => {
