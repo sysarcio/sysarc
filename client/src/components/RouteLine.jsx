@@ -71,7 +71,17 @@ class RouteLine extends Component {
   }
 
   render() {
-    const {nodes, canvasWidth, canvasHeight, nodeScale} = this.props;
+    const {nodes, canvasWidth, canvasHeight, nodeScale, lineCount} = this.props;
+
+    var LINE_LOGIC = {
+      1: 'red',
+      2: 'blue',
+      3: 'green',
+      4: 'yellow'
+    };
+    let lineColor = LINE_LOGIC[lineCount] || 'black';
+    // console.log('because the number of lines is ', lineCount, ' the color is ', lineColor);
+
     let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
     handleX = handleX * canvasWidth;
     handleY = handleY * canvasHeight;
@@ -125,7 +135,7 @@ class RouteLine extends Component {
             handleX, handleY,
             ...connecteePoints
           ]}
-          stroke={this.state.isHovered ? 'yellow' : 'black'}
+          stroke={this.state.isHovered ? 'yellow' : lineColor}
           strokeWidth={1}
           tension={1}
           bezier

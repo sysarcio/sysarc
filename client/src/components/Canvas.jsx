@@ -373,6 +373,7 @@ class Canvas extends Component {
       overflow: 'hidden'
     }
 
+    let conPairs = {};
     return (
       <div className='canvas-style'>
         <div className='header'>
@@ -421,23 +422,35 @@ class Canvas extends Component {
                     emitDeleteNode={this.emitDeleteNode}
                   />
                 ))}
-                {Object.keys(this.state.connections).map(id => (
-                  <RouteLine
-                    key={id}
-                    id={id}
-                    room={this.roomID}
-                    connection={this.state.connections[id]}
-                    nodes={this.state.nodes}
-                    socket={this.socket}
-                    toggleOpenConnection={this.toggleOpenConnection}
-                    nodeScale={Math.min(
-                      this.state.height * 0.2,
-                      this.state.width * 0.2
-                    )}
-                    canvasHeight={this.state.height}
-                    canvasWidth={this.state.width}
-                  />
-                ))}
+                {Object.keys(this.state.connections).map(id => {
+                  let conPair = [
+                    this.state.connections[id].connector,
+                    this.state.connections[id].connectee
+                  ]
+                    .sort()
+                    .join('');
+                  typeof conPairs[conPair] === 'undefined'
+                    ? (conPairs[conPair] = 1)
+                    : conPairs[conPair]++;
+                  return (
+                    <RouteLine
+                      key={id}
+                      lineCount={conPairs[conPair]}
+                      id={id}
+                      room={this.roomID}
+                      connection={this.state.connections[id]}
+                      nodes={this.state.nodes}
+                      socket={this.socket}
+                      toggleOpenConnection={this.toggleOpenConnection}
+                      nodeScale={Math.min(
+                        this.state.height * 0.2,
+                        this.state.width * 0.2
+                      )}
+                      canvasHeight={this.state.height}
+                      canvasWidth={this.state.width}
+                    />
+                  );
+                })}
                 {this.state.showMenu ? (
                   <Toolbar
                     canvasHeight={this.state.height}
