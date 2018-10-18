@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
-import { Rect, Text, Group, Circle, Line } from 'react-konva';
+import { Circle } from 'react-konva';
 import Konva from 'konva';
-
-// TODO: properties
-// const nodeProperties = {
-//   width: 150,
-//   height: 150,
-//   strokeWidth: 1,
-//   fill: "rgba(255, 255, 255, 0.2)"
-// }
 
 class NodeRouteTarget extends Component {
   constructor(props) {

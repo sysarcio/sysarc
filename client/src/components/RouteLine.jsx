@@ -25,9 +25,9 @@ class RouteLine extends Component {
   }
 
   handleLineDrag(e) {
-    let {x, y} = e.evt;
-    x = x / this.props.canvasWidth;
-    y = y / this.props.canvasHeight;
+    const {offsetX, offsetY} = e.evt;
+    let x = offsetX / this.props.canvasWidth;
+    let y = offsetY / this.props.canvasHeight;
 
     const data = {
       id: this.props.id,
@@ -55,9 +55,9 @@ class RouteLine extends Component {
   }
 
   handleLineDrop(e) {
-    let {x, y} = e.evt;
-    x = x / this.props.canvasWidth;
-    y = y / this.props.canvasHeight;
+    const {offsetX, offsetY} = e.evt;
+    let x = offsetX / this.props.canvasWidth;
+    let y = offsetY / this.props.canvasHeight;
 
     const data = {
       id: this.props.id,
