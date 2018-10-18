@@ -8,6 +8,7 @@ import Toolbar from './Toolbar.jsx';
 import Node from './Node.jsx';
 import RouteLine from './RouteLine.jsx';
 import RouteForm from './RouteForm.jsx';
+import DownloadButton from './DownloadButton.jsx';
 import dummyData from './dummyDataForReact.jsx';
 
 class Canvas extends Component {
@@ -409,9 +410,13 @@ class Canvas extends Component {
                   canvasHeight={this.state.height}
                   canvasWidth={this.state.width}
                   prepNewNode={this.prepNewNode}
-                  processScreenshot={this.processScreenshot}
                 />
               ) : null}
+              <DownloadButton
+                canvasHeight={this.state.height}
+                canvasWidth={this.state.width}
+                processScreenshot={this.processScreenshot}
+              />
             </Layer>
           </Stage>
         </div>
@@ -434,7 +439,6 @@ class Canvas extends Component {
             canvasWidth={this.state.width}
           />
         ) : null}
-
         {this.state.changingNodeType ? (
           <div>
             <form
