@@ -350,27 +350,22 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
   render() {
+    let conPairs = {};
     return (
       <div>
-
-        <div
-          className='canvas-style'
-          id="canvas"
-        >
-        {/* stage is entire canvas; numbers must be in curly brackets */}
+        <div className="canvas-style" id="canvas">
+          {/* stage is entire canvas; numbers must be in curly brackets */}
           <Stage
-            width={this.state.width * .75}
-            height={this.state.height * .75}
+            width={this.state.width * 0.75}
+            height={this.state.height * 0.75}
           >
-            <Layer
-              className="canvas"
-            >
-            <Rect
-              width={this.state.width * .75}
-              height={this.state.height * .75}
-              fill={'rgba(0, 20, 155, 0.5)'}
-              onMouseDown={this.emitNewNode}
-            />
+            <Layer className="canvas">
+              <Rect
+                width={this.state.width * 0.75}
+                height={this.state.height * 0.75}
+                fill={'rgba(0, 20, 155, 0.5)'}
+                onMouseDown={this.emitNewNode}
+              />
               {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}
@@ -388,23 +383,36 @@ class Canvas extends Component {
                   emitDeleteNode={this.emitDeleteNode}
                 />
               ))}
-              {Object.keys(this.state.connections).map(id => (
-                <RouteLine
-                  key={id}
-                  id={id}
-                  room={this.roomID}
-                  connection={this.state.connections[id]}
-                  nodes={this.state.nodes}
-                  socket={this.socket}
-                  toggleOpenConnection={this.toggleOpenConnection}
-                  nodeScale={Math.min(
-                    this.state.height * 0.2,
-                    this.state.width * 0.2
-                  )}
-                  canvasHeight={this.state.height}
-                  canvasWidth={this.state.width}
-                />
-              ))}
+
+              {Object.keys(this.state.connections).map(id => {
+                let conPair = [
+                  this.state.connections[id].connector,
+                  this.state.connections[id].connectee
+                ]
+                  .sort()
+                  .join('');
+                typeof conPairs[conPair] === 'undefined'
+                  ? (conPairs[conPair] = 1)
+                  : conPairs[conPair]++;
+                return (
+                  <RouteLine
+                    key={id}
+                    lineCount={conPairs[conPair]}
+                    id={id}
+                    room={this.roomID}
+                    connection={this.state.connections[id]}
+                    nodes={this.state.nodes}
+                    socket={this.socket}
+                    toggleOpenConnection={this.toggleOpenConnection}
+                    nodeScale={Math.min(
+                      this.state.height * 0.2,
+                      this.state.width * 0.2
+                    )}
+                    canvasHeight={this.state.height}
+                    canvasWidth={this.state.width}
+                  />
+                );
+              })}
               {this.state.showMenu ? (
                 <Toolbar
                   canvasHeight={this.state.height}
