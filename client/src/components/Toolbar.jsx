@@ -13,7 +13,7 @@ const toolbarProperties = {
 const textProperties = {
   width: 150,
   height: 100,
-  fill: '#fff',
+  fill: '#394256',
   align: 'center',
   y: 20
 };
