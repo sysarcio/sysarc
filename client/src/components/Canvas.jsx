@@ -25,7 +25,11 @@ class Canvas extends Component {
       nodes: {},
       showMenu: true,
       changingNodeType: false,
-      miscNodeName: ''
+      miscNodeName: '',
+      mouseLoc: {
+        x: 0,
+        y: 0
+      }
     };
 
     this.roomID = this.props.match.params.name;
@@ -84,6 +88,7 @@ class Canvas extends Component {
     this.goToLanding = this.goToLanding.bind(this);
     this.logout = this.logout.bind(this);
     this.goToCanvases = this.goToCanvases.bind(this);
+    this.handleNodeNameChange = this.handleNodeNameChange.bind(this);
   }
 
   goToLanding() {
@@ -217,10 +222,17 @@ class Canvas extends Component {
     this.setState({ connections });
   }
 
-  prepNewNode(type) {
+  prepNewNode(type, e) {
+    console.log(e);
     if (type === 'MISC') {
+      let mouseLocation = {
+        x: e.evt.clientX,
+        y: e.evt.clientY
+      };
+      console.log(mouseLocation);
       this.setState({
-        changingNodeType: true
+        changingNodeType: true,
+        mouseLoc: mouseLocation
       });
     } else {
       this.setState(
@@ -353,8 +365,9 @@ class Canvas extends Component {
     }
   }
 
-  handlePathChange(e) {
+  handleNodeNameChange(e) {
     e.preventDefault();
+    console.log(e);
     this.setState({
       miscNodeName: e.target.value
     });
@@ -365,54 +378,74 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
   render() {
-
     const stageStyle = {
       // backgroundColor: 'red',
       borderRadius: '15px',
       border: '1px solid #394256',
-      overflow: 'hidden',
+      overflow: 'hidden'
       // boxShadow: '5px 5px 10px #000'
+    };
+
+    const formContainer = {
+      position: 'absolute',
+      top: this.state.mouseLoc.y,
+      left: this.state.mouseLoc.x,
+      background: 'rgba(255,255,255,0.8)',
+      height: '50px',
+      width: '200px',
+      borderRadius: '5px',
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      padding: '10px',
+      overflowX: 'scroll'
     }
 
     let conPairs = {};
     return (
-      <div className='canvas-style'>
-        <div className='header'>
-          <h1 className='logo-sm' onClick={this.goToLanding}>Sketchpad Ninja</h1>
+      <div className="canvas-style">
+        <div className="header">
+          <h1 className="logo-sm" onClick={this.goToLanding}>
+            Sketchpad Ninja
+          </h1>
         </div>
         <div className="header-links">
-            <p className='logout-p' onClick={this.logout}>Logout</p>
-            <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
-          <p className='canvases-p' onClick={() => this.processScreenshot('DOWNLOAD')}>Screenshot</p>
-        </div>
-        <div style={{overflow: 'hidden'}}>
-          <div
-            id="canvas"
-            width={this.state.width}
-            height={this.state.height}
+          <p className="logout-p" onClick={this.logout}>
+            Logout
+          </p>
+          <p className="canvases-p" onClick={this.goToCanvases}>
+            {' '}
+            Canvases{' '}
+          </p>
+          <p
+            className="canvases-p"
+            onClick={() => this.processScreenshot('DOWNLOAD')}
           >
-          {/* stage is entire canvas; numbers must be in curly brackets */}
+            Screenshot
+          </p>
+        </div>
+        <div style={{ overflow: 'hidden' }}>
+          <div id="canvas" width={this.state.width} height={this.state.height}>
+            {/* stage is entire canvas; numbers must be in curly brackets */}
             <Stage
               style={stageStyle}
               width={this.state.width}
               height={this.state.height}
             >
-              <Layer
-                className="canvas"
-              >
-              <Rect
-                width={this.state.width}
-                height={this.state.height}
-                fill={'rgb(232, 232, 232)'}
-                onMouseDown={this.emitNewNode}
-              />
+              <Layer className="canvas">
+                <Rect
+                  width={this.state.width}
+                  height={this.state.height}
+                  fill={'rgb(232, 232, 232)'}
+                  onMouseDown={this.emitNewNode}
+                />
                 {Object.values(this.state.nodes).map(node => {
                   let colors = {
-                    'SERVER': '#ab987a',
-                    'DATABASE': '#394256',
-                    'CLIENT': '#ff533d',
-                    'SERVICES': '#f4b042'
-                  }
+                    SERVER: '#ab987a',
+                    DATABASE: '#394256',
+                    CLIENT: '#ff533d',
+                    SERVICES: '#f4b042'
+                  };
                   return (
                     <Node
                       key={node.id}
@@ -429,7 +462,7 @@ class Canvas extends Component {
                       beginNewConnection={this.beginNewConnection}
                       emitDeleteNode={this.emitDeleteNode}
                     />
-                  )
+                  );
                 })}
                 {Object.keys(this.state.connections).map(id => {
                   let conPair = [
@@ -490,15 +523,15 @@ class Canvas extends Component {
             />
           ) : null}
           {this.state.changingNodeType ? (
-            <div>
+            <div style={formContainer}>
               <form
                 onSubmit={e => {
                   e.preventDefault();
+                  this.prepNewNode(this.state.miscNodeName);
                   this.setState({
                     changingNodeType: false,
                     miscNodeName: ''
                   });
-                  this.prepNewNode(this.state.miscNodeName);
                 }}
               >
                 <input
@@ -506,8 +539,8 @@ class Canvas extends Component {
                   type="text"
                   placeholder="Enter type of node"
                   value={this.state.miscNodeName}
-                  onChange={this.handlePathChange}
-                  style={{ width: '20%' }}
+                  onChange={this.handleNodeNameChange}
+                  style={{ width: '60%' }}
                 />
                 <button>submit</button>
               </form>
