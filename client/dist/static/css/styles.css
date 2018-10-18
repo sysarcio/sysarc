@@ -15,7 +15,9 @@ body {
 /* --------------- Canvases--------------- */
 
 
-
+.canvas-style {
+  margin: 150px 20px 20px 100px;
+}
 
 .canvases {
   display: flex;

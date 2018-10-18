@@ -335,18 +335,20 @@ class Canvas extends Component {
     return (
       <div>
         <div
+          className='canvas-style'
           id="canvas"
         >
+        {/* stage is entire canvas; numbers must be in curly brackets */}
           <Stage
-            width={this.state.width}
-            height={this.state.height}
+            width={this.state.width * .75}
+            height={this.state.height * .75}
           >
             <Layer
               className="canvas"
             >
             <Rect
-              width={this.state.width}
-              height={this.state.height}
+              width={this.state.width * .75}
+              height={this.state.height * .75}
               fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
