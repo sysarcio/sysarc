@@ -382,6 +382,7 @@ class Canvas extends Component {
         <div className="header-links">
             <p className='logout-p' onClick={this.logout}>Logout</p>
             <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
+          <p className='canvases-p' onClick={() => this.processScreenshot('DOWNLOAD')}>Screenshot</p>
           </div>
         <div style={{overflow: 'hidden'}}>
           <div
