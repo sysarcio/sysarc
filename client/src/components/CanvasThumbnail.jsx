@@ -33,35 +33,24 @@ class CanvasThumbnail extends React.Component {
     const showModal = this.state.showModal;
     const showDeleteOption = <button className='canvas-delete-btn' onClick={this.handleModalShowClick}>X</button>
     const showConfirmation = <div className='canvas-delete-confirm'> Delete Canvas? <button onClick={() => this.props.deleteCanvas(this.props.get(this.props.canvas, 'id'))}> Y </button> <button onClick={this.handleModalCloseClick}> N </button></div>
-
-    return (
-      <div
-        className="canvas-thumbnail"
-        id={this.props.get(this.props.canvas, 'id')}>
-        
-        {showModal ? showConfirmation : showDeleteOption }
+    const divStyle = {
+      'height':"70px", 
+      'width':"70px"
+    }
+    return <div className="canvas-thumbnail" id={this.props.get(this.props.canvas, 'id')}>
+    <div className = 'centered-div'>
+        {showModal ? showConfirmation : showDeleteOption}
         <div onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas, 'id'))}>
-          <h3 >{this.props.get(this.props.canvas, 'name')}</h3>
-
-          <img
-           
-            src={this.props.get(this.props.canvas, 'image')}
-            height="40"
-            width="160"
-            alt={this.props.get(this.props.canvas, 'name')}
-          />
-          <pre>{this.props.get(this.props.canvas, 'id')}</pre>
-        </div>;
+          <h3>{this.props.get(this.props.canvas, 'name')}</h3>
+        <div style={divStyle}>
+            <img src={this.props.get(this.props.canvas, 'image')} width="100%" alt={this.props.get(this.props.canvas, 'name')} />
+          </div>
+        </div>
       </div>
-
-
-    );
+      </div>;
   }
 }
   
   
 
 export default CanvasThumbnail;
-
-// onClick = {() => deleteCanvas(get(canvas, 'id'))}
-//onClick={(e) => { if (window.confirm('Are you sure you wish to delete this item?')) deleteCanvas(get(canvas, 'id')) }}
