@@ -80,10 +80,15 @@ class Canvas extends Component {
     this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
     this.goToLanding = this.goToLanding.bind(this);
     this.logout = this.logout.bind(this);
+    this.goToCanvases = this.goToCanvases.bind(this);
   }
 
   goToLanding() {
-    this.props.history.push(`/`);
+    this.props.history.push('/');
+  }
+
+  goToCanvases() {
+    this.props.history.push('/canvases');
   }
 
   logout() {
@@ -354,7 +359,7 @@ class Canvas extends Component {
       <div>
         <h1 className='logo-sm' onClick={this.goToLanding}>Sketchpad Ninja</h1>
         <p className='logout-p' onClick={this.logout}>Logout</p>
-        <p className='canvases-p'> Canvases </p>
+        <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
         <div
           className='canvas-style'
           id="canvas"
