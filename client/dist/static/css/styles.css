@@ -7,7 +7,7 @@ body {
   padding: 0;
   background: #BDCDE0;
   background-image: linear-gradient(#61AFFE, #394256);
-  min-block-size: 100vh;
+  min-height: 100vh;
   font: 300 16px/22px "Lato","Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   justify-content: center;
 }
@@ -146,11 +146,22 @@ body {
 
 /* --------------- Canvases--------------- */
 
-.canvas-style {
+/* .canvas-style {
   margin: 100px 20px 20px 35px;
   position: relative;
   
   
+} */
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  height: 15%;
+}
+
+.header-links {
+  width: 100%;
 }
 
 .form-page__form-header {
@@ -254,8 +265,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
   padding-bottom: 10px;
-  min-height: 100vh;
 }
 
 .col-1-3 {
@@ -313,12 +324,12 @@ body {
   padding: 5px;
 }
 
-.canvas {
+/* #canvas {
   border: 1px solid rgb(221, 221, 221);
   background-color: #ccc;
   border-radius: 15px;
   overflow: hidden;
-}
+} */
 
 .canvases-form {
   height: 150px;

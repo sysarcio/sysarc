@@ -16,7 +16,7 @@ class Canvas extends Component {
     super(props);
     this.state = {
       width: window.innerWidth * 0.95,
-      height: window.innerHeight * 0.8,
+      height: window.innerHeight * 0.77,
       openConnection: null,
       nodeToAdd: null,
       connector: null,
@@ -103,7 +103,7 @@ class Canvas extends Component {
     window.addEventListener('resize', () => {
       this.setState({
         width: window.innerWidth * 0.95,
-        height: window.innerHeight * 0.8
+        height: window.innerHeight * 0.77
       });
     });
 
@@ -369,17 +369,20 @@ class Canvas extends Component {
     const stageStyle = {
       backgroundColor: 'red',
       borderRadius: '15px',
-      border: '3px solid #394256'
+      border: '3px solid #394256',
+      overflow: 'hidden'
     }
 
     return (
-      <div>
-        <div>
+      <div className='canvas-style'>
+        <div className='header'>
           <h1 className='logo-sm' onClick={this.goToLanding}>Sketchpad Ninja</h1>
-          <p className='logout-p' onClick={this.logout}>Logout</p>
-          <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
         </div>
-        <div className='canvas-style'>
+        <div className="header-links">
+            <p className='logout-p' onClick={this.logout}>Logout</p>
+            <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
+          </div>
+        <div style={{overflow: 'hidden'}}>
           <div
             id="canvas"
             width={this.state.width}
@@ -388,16 +391,15 @@ class Canvas extends Component {
           {/* stage is entire canvas; numbers must be in curly brackets */}
             <Stage
               style={stageStyle}
-              width={this.state.width * .95}
-              height={this.state.height * .95}
+              width={this.state.width}
+              height={this.state.height}
             >
               <Layer
                 className="canvas"
               >
               <Rect
-                cornerRadius={15}
-                width={this.state.width * .95}
-                height={this.state.height * .95}
+                width={this.state.width}
+                height={this.state.height}
                 // fillPatternImage={''}
                 fill={'rgba(0, 20, 155, 0.5)'}
                 onMouseDown={this.emitNewNode}
