@@ -30,7 +30,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname + '/../client/dist'));
-
+app.get('/test', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.sendFile(path.join(__dirname, '../testData.json'));
+})
+app.get('/docs', (req, res) => {
+  res.sendFile(path.join(__dirname, '../docs.html'));
+})
 app.use('/api', routes);
 
 server.listen(port, () => {

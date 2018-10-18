@@ -82,6 +82,7 @@ class Canvas extends Component {
     this.toggleOpenConnection = this.toggleOpenConnection.bind(this);
     this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
     this.handlePathChange = this.handlePathChange.bind(this);
+    this.takeMeToTheDocs = this.takeMeToTheDocs.bind(this);
   }
 
   componentDidMount() {
@@ -326,6 +327,11 @@ class Canvas extends Component {
     );
   }
 
+  takeMeToTheDocs() {
+    console.log('you did it')
+    this.props.history.push(`/docs`);
+  }
+
   toggleOpenConnection(connection = null) {
     this.setState({
       openConnection: null
@@ -410,6 +416,7 @@ class Canvas extends Component {
                   canvasHeight={this.state.height}
                   canvasWidth={this.state.width}
                   prepNewNode={this.prepNewNode}
+                  takeMeToTheDocs={this.takeMeToTheDocs}
                 />
               ) : null}
               <DownloadButton

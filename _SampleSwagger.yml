@@ -141,9 +141,9 @@ definitions:
       message:
         type: string
 
-#####################################################
+# ####################################################
 # Arguable 'Minimums' - Does not include parameters #
-#####################################################
+# ####################################################
 # swagger: '2.0' # REQUIRED
 # info: # REQUIRED
 #   version: 1.0.0 # REQUIRED for info object
