@@ -34,7 +34,6 @@ class CanvasThumbnail extends React.Component {
     const showDeleteOption = <button className='canvas-delete-btn' onClick={this.handleModalShowClick}>X</button>
     const showConfirmation = <div className='canvas-delete-confirm'> Delete Canvas? <button onClick={() => this.props.deleteCanvas(this.props.get(this.props.canvas, 'id'))}> Y </button> <button onClick={this.handleModalCloseClick}> N </button></div>
     const divStyle = {
-      'object-fit': 'cover',
       'height':"70px", 
       'width':"70px"
     }
@@ -44,7 +43,7 @@ class CanvasThumbnail extends React.Component {
         <div onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas, 'id'))}>
           <h3>{this.props.get(this.props.canvas, 'name')}</h3>
         <div style={divStyle}>
-            <img src={this.props.get(this.props.canvas, 'image')} object-fit='cover' width="100%" alt={this.props.get(this.props.canvas, 'name')} />
+            <img src={this.props.get(this.props.canvas, 'image')} width="100%" alt={this.props.get(this.props.canvas, 'name')} />
           </div>
         </div>
       </div>
