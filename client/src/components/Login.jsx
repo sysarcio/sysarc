@@ -45,12 +45,17 @@ class Login extends Component {
       try {
         const {data} = await axios(options);
         localStorage.userID = data;
-        this.props.history.push('/');
+        this.props.history.push('/canvases');
       } catch(err) {
         // Actually show user what went wrong
         console.log(err);
       }
     }
+  }
+
+  logout(){
+    localStorage.removeItem('userID')
+    this.props.history.push('/');
   }
 
   render() {

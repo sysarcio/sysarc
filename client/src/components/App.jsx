@@ -4,6 +4,7 @@ import Canvas from './Canvas.jsx';
 import Login from './Login.jsx';
 import Signup from './Signup.jsx';
 import Canvases from './Canvases.jsx';
+import Landing from './Landing.jsx';
 import NavBar from './NavBar.jsx'
 
 class App extends Component {
@@ -22,6 +23,10 @@ class App extends Component {
         {/* <NavBar /> */}
         <Route
           exact path='/'
+          component={Landing}
+        />
+        <Route
+          path='/canvases'
           component={Canvases}
         />
         <Route

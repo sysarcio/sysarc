@@ -25,6 +25,9 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "@material-ui/core": "^3.2.2",
+    "@material-ui/icons": "^3.0.1",
+    "animejs": "^2.2.0",
     "axios": "^0.18.0",
     "bcrypt": "^3.0.1",
     "body-parser": "^1.18.3",
@@ -33,6 +36,7 @@
     "express": "^4.16.3",
     "ioredis": "^4.0.0",
     "konva": "^2.4.2",
+    "lodash": "^4.17.11",
     "neo4j-driver": "^1.6.3",
     "path": "^0.12.7",
     "react": "^16.5.2",
@@ -42,6 +46,7 @@
     "react-konva": "^16.5.2",
     "react-pose": "^3.3.6",
     "react-router-dom": "^4.3.1",
+    "react-typist": "^2.0.4",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
     "styled-components": "^3.4.9",
