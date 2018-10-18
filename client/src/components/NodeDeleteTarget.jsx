@@ -38,20 +38,36 @@ class NodeDeleteTarget extends Component {
 
   render() {
     return (
-      <Circle
-        x={7}
-        y={7}
-        radius={7}
-        visible={
-          this.props.parentHovered || this.state.isHovered ? true : false
-        }
-        stroke={this.state.isHovered ? 'red' : 'black'}
-        strokeWidth={1}
-        fill={this.state.isHovered ? 'red' : 'black'}
-        onClick={() => this.props.emitDeleteNode(this.props.id)}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-      />
+      <Group>
+        <Line
+          visible={
+            this.props.parentHovered || this.state.isHovered ? true : false
+          }
+          points={[7, 7, 17, 17]}
+          stroke={this.state.isHovered ? 'red' : 'black'}
+          strokeWidth={2}
+        />
+        <Line
+          visible={
+            this.props.parentHovered || this.state.isHovered ? true : false
+          }
+          points={[17, 7, 7, 17]}
+          stroke={this.state.isHovered ? 'red' : 'black'}
+          strokeWidth={2}
+        />
+        <Circle
+          x={12}
+          y={12}
+          radius={7}
+          visible={true}
+          stroke={'transparent'}
+          strokeWidth={1}
+          fill={'transparent'}
+          onClick={() => this.props.emitDeleteNode(this.props.id)}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        />
+      </Group>
     );
   }
 }
