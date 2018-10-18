@@ -324,6 +324,9 @@ body {
   padding: 5px;
 }
 
+/* #canvas {
+  border: 1px solid rgb(221, 221, 221);
+=======
 .centered-div {
   position: relative;
   margin: auto;
@@ -337,6 +340,7 @@ body {
 
 /* #canvas {
   border: 1px solid rgb(221, 221, 221);
+>>>>>>> dev
   background-color: #ccc;
   border-radius: 15px;
   overflow: hidden;

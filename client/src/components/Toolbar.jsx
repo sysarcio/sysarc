@@ -13,7 +13,7 @@ const toolbarProperties = {
 const textProperties = {
   width: 150,
   height: 100,
-  fill: '#fff',
+  fill: '#394256',
   align: 'center',
   y: 20
 };
@@ -60,12 +60,13 @@ class Toolbar extends Component {
           <Text
             key={i}
             onClick={() => this.props.prepNewNode(type)}
-            text={`+ ${type}`}
+            text={`${type} +`}
             fill={textProperties.fill}
             width={textProperties.width}
-            align={textProperties.align}
+            align={textProperties.left}
             fontSize={16}
-            y={textProperties.y * (i + 1)}
+            x={27}
+            y={textProperties.y * (i + 1) + 5}
           />
         ))}
       </Group>

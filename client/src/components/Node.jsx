@@ -127,6 +127,7 @@ class Node extends Component {
           <NodeShape
             nodeWidth={this.props.scale}
             nodeHeight={this.props.scale}
+            type={type}
             color={this.props.color}
           />
           <NodeText scale={this.props.scale} text={type} />

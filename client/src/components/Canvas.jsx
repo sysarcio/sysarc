@@ -367,10 +367,11 @@ class Canvas extends Component {
   render() {
 
     const stageStyle = {
-      backgroundColor: 'red',
+      // backgroundColor: 'red',
       borderRadius: '15px',
-      border: '3px solid #394256',
-      overflow: 'hidden'
+      border: '1px solid #394256',
+      overflow: 'hidden',
+      // boxShadow: '5px 5px 10px #000'
     }
 
     let conPairs = {};
@@ -383,7 +384,7 @@ class Canvas extends Component {
             <p className='logout-p' onClick={this.logout}>Logout</p>
             <p className='canvases-p' onClick={this.goToCanvases}> Canvases </p>
           <p className='canvases-p' onClick={() => this.processScreenshot('DOWNLOAD')}>Screenshot</p>
-          </div>
+        </div>
         <div style={{overflow: 'hidden'}}>
           <div
             id="canvas"
@@ -402,27 +403,34 @@ class Canvas extends Component {
               <Rect
                 width={this.state.width}
                 height={this.state.height}
-                // fillPatternImage={''}
-                fill={'rgba(0, 20, 155, 0.5)'}
+                fill={'rgb(232, 232, 232)'}
                 onMouseDown={this.emitNewNode}
               />
-                {Object.values(this.state.nodes).map(node => (
-                  <Node
-                    key={node.id}
-                    node={node}
-                    room={this.roomID}
-                    socket={this.socket}
-                    color="black"
-                    canvasWidth={this.state.width}
-                    canvasHeight={this.state.height}
-                    scale={Math.min(
-                      this.state.height * 0.2,
-                      this.state.width * 0.2
-                    )}
-                    beginNewConnection={this.beginNewConnection}
-                    emitDeleteNode={this.emitDeleteNode}
-                  />
-                ))}
+                {Object.values(this.state.nodes).map(node => {
+                  let colors = {
+                    'SERVER': '#ab987a',
+                    'DATABASE': '#394256',
+                    'CLIENT': '#ff533d',
+                    'SERVICES': '#f4b042'
+                  }
+                  return (
+                    <Node
+                      key={node.id}
+                      node={node}
+                      room={this.roomID}
+                      socket={this.socket}
+                      color={colors[node.type] || 'transparent'}
+                      canvasWidth={this.state.width}
+                      canvasHeight={this.state.height}
+                      scale={Math.min(
+                        this.state.height * 0.2,
+                        this.state.width * 0.2
+                      )}
+                      beginNewConnection={this.beginNewConnection}
+                      emitDeleteNode={this.emitDeleteNode}
+                    />
+                  )
+                })}
                 {Object.keys(this.state.connections).map(id => {
                   let conPair = [
                     this.state.connections[id].connector,

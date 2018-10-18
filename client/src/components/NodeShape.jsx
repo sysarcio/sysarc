@@ -20,8 +20,8 @@ class NodeShape extends Component {
       <Rect
         width={this.props.nodeWidth}
         height={this.props.nodeHeight}
-        fill={nodeProperties.fill}
-        stroke={this.props.color}
+        fill={this.props.color}
+        stroke={this.props.color === 'transparent' ? '#394256' : '#fafafa'}
         strokeWidth={nodeProperties.strokeWidth}
         cornerRadius={15}
       />
