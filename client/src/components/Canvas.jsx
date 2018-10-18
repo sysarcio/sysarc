@@ -350,7 +350,7 @@ class Canvas extends Component {
   render() {
 
     const stageStyle = {
-      backgroundColor: 'grey',
+      backgroundColor: 'red',
       borderRadius: '15px',
       border: '3px solid #394256'
     }
@@ -377,8 +377,8 @@ class Canvas extends Component {
               cornerRadius={15}
               width={this.state.width * .95}
               height={this.state.height * .95}
-              fill={'#fafafa'}
-              // fill={'rgba(0, 20, 155, 0.5)'}
+              // fillPatternImage={''}
+              fill={'rgba(0, 20, 155, 0.5)'}
               onMouseDown={this.emitNewNode}
             />
               {Object.values(this.state.nodes).map(node => (
