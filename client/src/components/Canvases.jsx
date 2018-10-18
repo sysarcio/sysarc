@@ -47,7 +47,6 @@ class Canvases extends Component {
   }
 
   handleChange(e) {
-    console.log('set state in HandleChange');
     this.setState({
       text: e.target.value
     });
@@ -94,7 +93,6 @@ class Canvases extends Component {
         const canvasesAfterDelete = canvasesCopy.filter(canvas => {
           return this.get(canvas, 'id') !== id;
         });
-        console.log('set state in deleteCanvas');
         this.setState({
           canvases: canvasesAfterDelete
         });

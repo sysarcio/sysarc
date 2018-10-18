@@ -22,7 +22,9 @@ class Canvas extends Component {
       connectorLocation: null,
       connections: {},
       nodes: {},
-      showMenu: true
+      showMenu: true,
+      changingNodeType: false,
+      miscNodeName: ''
     };
 
     this.roomID = this.props.match.params.name;
@@ -78,6 +80,7 @@ class Canvas extends Component {
     this.processScreenshot = this.processScreenshot.bind(this);
     this.toggleOpenConnection = this.toggleOpenConnection.bind(this);
     this.emitUpdateConnectionData = this.emitUpdateConnectionData.bind(this);
+    this.handlePathChange = this.handlePathChange.bind(this);
   }
 
   componentDidMount() {
@@ -122,8 +125,7 @@ class Canvas extends Component {
         nodes,
         connections
       });
-
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   }
@@ -141,13 +143,15 @@ class Canvas extends Component {
           connecteeLocation: location,
           handleX: (nodes[connector].x + nodes[connectee].x) / 2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
-          data: {'': {
-            get: {},
-            post: {},
-            put: {},
-            delete: {}
-          }}
-        }
+          data: {
+            '': {
+              get: {},
+              post: {},
+              put: {},
+              delete: {}
+            }
+          }
+        };
 
         data.room = this.roomID;
         this.socket.emit('make connection', data);
@@ -198,14 +202,22 @@ class Canvas extends Component {
   }
 
   prepNewNode(type) {
-    this.setState(
-      {
-        nodeToAdd: type
-      },
-      () => {
-        document.body.style.cursor = 'crosshair';
-      }
-    );
+    if (type === 'MISC') {
+      console.log('woohoo, making a misc thingie');
+      this.setState({
+        changingNodeType: true
+      });
+    } else {
+      console.log('setting state to ', type);
+      this.setState(
+        {
+          nodeToAdd: type
+        },
+        () => {
+          document.body.style.cursor = 'crosshair';
+        }
+      );
+    }
   }
 
   emitNewNode(e) {
@@ -221,8 +233,8 @@ class Canvas extends Component {
       this.socket.emit('add node', data);
 
       this.setState(
-        {nodeToAdd: null},
-        () => document.body.style.cursor = 'default'
+        { nodeToAdd: null },
+        () => (document.body.style.cursor = 'default')
       );
     }
   }
@@ -231,14 +243,14 @@ class Canvas extends Component {
     const nodes = JSON.parse(JSON.stringify(this.state.nodes));
     nodes[node.id] = node;
 
-    this.setState({nodes});
+    this.setState({ nodes });
   }
 
   updateNode(data) {
     const newNodes = JSON.parse(JSON.stringify(this.state.nodes));
     newNodes[data.id].x = data.x;
     newNodes[data.id].y = data.y;
-    this.setState({nodes: newNodes});
+    this.setState({ nodes: newNodes });
   }
 
   emitDeleteNode(id) {
@@ -327,29 +339,33 @@ class Canvas extends Component {
     }
   }
 
+  handlePathChange(e) {
+    e.preventDefault();
+    this.setState({
+      miscNodeName: e.target.value
+    });
+  }
+
   emitUpdateConnectionData(data) {
     data.room = this.roomID;
     this.socket.emit('update connection data', data);
   }
   render() {
+    console.log('am I changing node type? : ', this.state.changingNodeType);
     return (
       <div>
-        <div
-          id="canvas"
-        >
+        <div id="canvas">
           <Stage
-            width={this.state.width}
-            height={this.state.height}
+            width={this.state.width * 0.75}
+            height={this.state.height * 0.75}
           >
-            <Layer
-              className="canvas"
-            >
-            <Rect
-              width={this.state.width}
-              height={this.state.height}
-              fill={'rgba(0, 20, 155, 0.5)'}
-              onMouseDown={this.emitNewNode}
-            />
+            <Layer className="canvas">
+              <Rect
+                width={this.state.width * 0.75}
+                height={this.state.height * 0.75}
+                fill={'rgba(0, 20, 155, 0.5)'}
+                onMouseDown={this.emitNewNode}
+              />
               {Object.values(this.state.nodes).map(node => (
                 <Node
                   key={node.id}
@@ -359,7 +375,10 @@ class Canvas extends Component {
                   color="black"
                   canvasWidth={this.state.width}
                   canvasHeight={this.state.height}
-                  scale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
+                  scale={Math.min(
+                    this.state.height * 0.2,
+                    this.state.width * 0.2
+                  )}
                   beginNewConnection={this.beginNewConnection}
                   emitDeleteNode={this.emitDeleteNode}
                 />
@@ -373,7 +392,10 @@ class Canvas extends Component {
                   nodes={this.state.nodes}
                   socket={this.socket}
                   toggleOpenConnection={this.toggleOpenConnection}
-                  nodeScale={Math.min(this.state.height * 0.2, this.state.width * 0.2)}
+                  nodeScale={Math.min(
+                    this.state.height * 0.2,
+                    this.state.width * 0.2
+                  )}
                   canvasHeight={this.state.height}
                   canvasWidth={this.state.width}
                 />
@@ -395,7 +417,11 @@ class Canvas extends Component {
             socket={this.socket}
             connection={this.state.openConnection}
             // data={dummyData}
-            data={Object.keys(this.state.openConnection.data)[0] ? this.state.openConnection.data : {'':{}}}
+            data={
+              Object.keys(this.state.openConnection.data)[0]
+                ? this.state.openConnection.data
+                : { '': {} }
+            }
             // pathName={Object.keys(dummyData)[0]}
             pathName={Object.keys(this.state.openConnection.data)[0]}
             toggleOpenConnection={this.toggleOpenConnection}
@@ -403,6 +429,31 @@ class Canvas extends Component {
             canvasHeight={this.state.height}
             canvasWidth={this.state.width}
           />
+        ) : null}
+
+        {this.state.changingNodeType ? (
+          <div>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                this.setState({
+                  changingNodeType: false,
+                  miscNodeName: ''
+                });
+                this.prepNewNode(this.state.miscNodeName);
+              }}
+            >
+              <input
+                className="noStyle"
+                type="text"
+                placeholder="Enter type of node"
+                value={this.state.miscNodeName}
+                onChange={this.handlePathChange}
+                style={{ width: '20%' }}
+              />
+              <button>submit</button>
+            </form>
+          </div>
         ) : null}
       </div>
     );

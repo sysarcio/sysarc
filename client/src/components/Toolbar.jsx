@@ -17,8 +17,7 @@ const textProperties = {
   y: 20
 };
 
-const nodeTypes = ['CLIENT', 'SERVER', 'DATABASE', 'SERVICES'];
-const screenshotTypes = ['DOWNLOAD', 'UPLOAD'];
+const nodeTypes = ['CLIENT', 'SERVER', 'DATABASE', 'SERVICES', 'MISC'];
 
 class Toolbar extends Component {
   constructor(props) {
@@ -67,19 +66,15 @@ class Toolbar extends Component {
             y={textProperties.y * (i + 1)}
           />
         ))}
-
-        {screenshotTypes.map((type, i) => (
-          <Text
-            key={i}
-            onClick={() => this.props.processScreenshot(type)}
-            text={`+ ${type}`}
-            fill={textProperties.fill}
-            width={textProperties.width}
-            align={textProperties.align}
-            fontSize={16}
-            y={textProperties.y * (i + 5)}
-          />
-        ))}
+        <Text
+          onClick={() => this.props.processScreenshot('DOWNLOAD')}
+          text={'DOWNLOAD'}
+          fill={textProperties.fill}
+          width={textProperties.width}
+          align={textProperties.align}
+          fontSize={16}
+          y={textProperties.y * 6}
+        />
       </Group>
     );
   }
