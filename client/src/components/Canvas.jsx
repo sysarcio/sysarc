@@ -203,12 +203,10 @@ class Canvas extends Component {
 
   prepNewNode(type) {
     if (type === 'MISC') {
-      console.log('woohoo, making a misc thingie');
       this.setState({
         changingNodeType: true
       });
     } else {
-      console.log('setting state to ', type);
       this.setState(
         {
           nodeToAdd: type
@@ -351,7 +349,6 @@ class Canvas extends Component {
     this.socket.emit('update connection data', data);
   }
   render() {
-    console.log('am I changing node type? : ', this.state.changingNodeType);
     return (
       <div>
         <div id="canvas">
