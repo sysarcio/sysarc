@@ -307,5 +307,28 @@ module.exports = {
     } catch (err) {
       throw err;
     }
+  },
+
+  async getDocs(canvasID) {
+    try {
+      console.log('made it to db with id: ', canvasID);
+      const result = await session.run(
+        `
+        MATCH (n:CANVAS {id: $canvasID})
+        WITH n
+        OPTIONAL MATCH (n)-[:CONTAINS]->(m)
+        WITH m
+        OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
+        RETURN collect(p) AS connections`,
+        {
+          canvasID: canvasID
+        }  
+      );
+      session.close();
+      // console.log(`leaving db with keys: ${result.records[0].keys} \n fields: ${result.records[0]._fields} \n fieldLookup: ${result.records[0]._fieldLookup}`);
+      return result.records;
+    } catch (err) {
+      throw err;
+    }
   }
 };

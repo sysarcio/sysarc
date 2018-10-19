@@ -5,40 +5,17 @@ class RouteForm extends Component {
     super(props);
     this.state = {
       pathName: this.props.pathName,
+      previousPathName: '',
       selectedMethod: '',
-      methods: ['get', 'post', 'put', 'delete'], // which method is the user currently editing?
-
-      // get: {
-      //   description: 'method description',
-      //   parameters: [
-      //     {
-      //       name: 'param name',
-      //       type: 'integer',
-      //       in: 'query',
-      //       required: false,
-      //       description: 'description'
-      //     }
-      //   ],
-      //   responses: {
-      //     '200': {
-      //       description: 'response description',
-      //     }
-      //   }
-      // },
-      // post: {},
-      // put: {},
-      // delete: {}
-
+      methods: ['get', 'post', 'put', 'delete'],
       get: this.props.data[this.props.pathName]['get'] ? this.props.data[this.props.pathName]['get'] : {},
       post: this.props.data[this.props.pathName]['post'] ? this.props.data[this.props.pathName]['post'] : {},
       put: this.props.data[this.props.pathName]['put'] ? this.props.data[this.props.pathName]['put'] : {},
       delete: this.props.data[this.props.pathName]['delete'] ? this.props.data[this.props.pathName]['delete'] : {},
-      // data: {},
     };
 
     this.handleSave = this.handleSave.bind(this);
     this.handlePathChange = this.handlePathChange.bind(this);
-    // this.handleMethodChange = this.handleMethodChange.bind(this);
     this.handleMethodDescriptionChange = this.handleMethodDescriptionChange.bind(this);
     this.selectMethod = this.selectMethod.bind(this);
     this.cloneMethod = this.cloneMethod.bind(this);
@@ -48,8 +25,9 @@ class RouteForm extends Component {
   }
 
   handleSave(e) {
-    e.preventDefault();
+    // e.preventDefault();
     const connection = this.props.connection;
+    // console.log(this.state.previousPathName)
     connection.data = {
       [this.state.pathName]: {
         'get': this.state.get,
@@ -58,8 +36,8 @@ class RouteForm extends Component {
         'delete': this.state.delete
       }
     };
-    console.log('connection: ', connection);
-    console.log('data object: ', connection.data);
+    // console.log('connection: ', connection);
+    // console.log('data object: ', connection.data);
     this.props.emitUpdateConnectionData(connection);
     this.props.toggleOpenConnection();
   }
@@ -68,15 +46,10 @@ class RouteForm extends Component {
 
   handlePathChange(e) {
     this.setState({
+      // previousPathName: this.state.pathName,
       pathName: e.target.value,
     });
   }
-
-  // handleMethodChange(e) {
-  //   this.setState({
-  //     currMethod: e.target.value
-  //   });
-  // }
 
   handleMethodDescriptionChange(e) {
     this.setState({
@@ -115,13 +88,6 @@ class RouteForm extends Component {
             }
           } else if (property === 'parameters') {
             clone.parameters = []
-            // {
-            //   name: '',
-            //   type: '',
-            //   in: '',
-            //   required: false,
-            //   description: ''
-            // }
           }
         }
       })
@@ -134,13 +100,6 @@ class RouteForm extends Component {
           }
         },
         parameters: []
-        // {
-        //   name: '',
-        //   type: '',
-        //   in: '',
-        //   required: false,
-        //   description: ''
-        // }
       }
     }
     // console.log('new clone: ', clone)
@@ -148,11 +107,11 @@ class RouteForm extends Component {
   }
 
   handleAddParameter(methodName, clone) {
-    console.log(methodName)
+    // console.log(methodName)
     clone.parameters.push({
       name: '',
-      type: '',
-      in: '',
+      type: 'string',
+      in: 'query',
       required: false,
       description: ''
     })
@@ -163,13 +122,13 @@ class RouteForm extends Component {
         responses: this.state[methodName].responses
       })
     }), () => {
-      console.log('method after adding parameter: ', this.state[methodName]);
+      // console.log('method after adding parameter: ', this.state[methodName]);
     })
         
   }
 
   handleAddResponse(methodName, clone) {
-    console.log(methodName)
+    // console.log(methodName)
     clone.responses[''] = { 
       description: ''
     }
@@ -180,7 +139,7 @@ class RouteForm extends Component {
         responses: clone.responses
       })
     }), () => {
-      console.log('method after adding response: ', this.state[methodName]);
+      // console.log('method after adding response: ', this.state[methodName]);
     })
         
   }
@@ -232,26 +191,37 @@ class RouteForm extends Component {
   render() {
     const formContainer = {
       position: 'absolute',
-      top: Math.max((this.props.connection.handleY * this.props.canvasHeight) - 200, 0),
+      top: Math.max((this.props.connection.handleY * this.props.canvasHeight) + 25, 0),
       left: (this.props.connection.handleX * this.props.canvasWidth) + 3.5 - 100,
       background: 'rgba(255,255,255,0.8)',
-      height: '200px',
-      width: '200px',
+      height: '210px',
+      width: '300px',
       borderRadius: '5px',
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'center',
-      padding: '20px',
+      padding: '10px',
       overflowX: 'scroll'
     }
 
     const formStyle = {
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      // justifyContent: 'center',
+      width: '90%'
+    }
+
+    const inputStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      // justifyContent: 'center',
+      width: '100%'
     }
 
     const saveStyle = {
-      marginTop: 'auto'
+      marginTop: 'auto',
+      // justifyContent: 'center',
+      width: '100%'
     }
     // console.log('pathName in state: ', this.state.pathName);
     // console.log('get in state: ', this.state.get);
@@ -260,13 +230,14 @@ class RouteForm extends Component {
     return (
       <div style={formContainer}>
         <form style={formStyle}>
-          <input
+          <input 
+            style={inputStyle}
             className='noStyle'
             type="text"
             placeholder="Enter path..."
             value={this.state.pathName}
             onChange={this.handlePathChange}
-            style={{width: "100%"}}
+            style={inputStyle}
           />
 
           {this.state.methods.map((m, i) => {
@@ -280,6 +251,7 @@ class RouteForm extends Component {
                   {m.toUpperCase()}
                 </div>
                 <input 
+                  style={inputStyle}
                   className='noStyle'
                   type="text" 
                   value={method.description}
@@ -293,32 +265,28 @@ class RouteForm extends Component {
                     // console.log(method); 
                     return (
                       <div key={i}>
-                        {/* <div> */}
-                          
                         <div>
-                          {/* {p.name} */}
                           <input
                             type="text"
                             value={p.name}
                             onChange={(e) => {this.handlePropertyEdit(e, m, method, 'parameters', 'name', i)}}
                             placeholder="Enter parameter name..."
-                            style={{width: "70%"}}
+                            style={inputStyle}
                           />
                         </div>                      
                         <div>
-                          {/* {p.description} */}
                           <input
                             type="text"
                             value={p.description}
                             onChange={(e)=> {this.handlePropertyEdit(e, m, method, 'parameters', 'description', i)}}
                             placeholder="Enter parameter description..."
-                            style={{width: "70%"}}
+                            style={inputStyle}
                           />
                         </div>
                         <select
                           value={p.in}
                           onChange={(e) => {this.handlePropertyEdit(e, m, method, 'parameters', 'in', i)}}
-                          style={{width: "30%"}}
+                          style={{width: "33%"}}
                         >
                           <option value="query">query</option>
                           <option value="body">body</option>
@@ -327,7 +295,7 @@ class RouteForm extends Component {
                         <select
                           value={p.type}
                           onChange={(e) => {this.handlePropertyEdit(e, m, method, 'parameters', 'type', i)}}
-                          style={{width: "30%"}}
+                          style={{width: "33%"}}
                         >
                           <option value="string">string</option>
                           <option value="array">array</option>
@@ -341,13 +309,12 @@ class RouteForm extends Component {
                           <select
                             value={p.required}
                             onChange={(e) => {this.handlePropertyEdit(e, m, method, 'parameters', 'required', i)}}
-                            style={{width: "30%"}}
+                            style={{width: "33%"}}
                           >
                             <option value="true">Required</option>
                             <option value="false">Not Required</option>
                           </select>
                         }
-                      {/* </div> */}
                       </div>
                     )
                   })}
@@ -356,8 +323,8 @@ class RouteForm extends Component {
                   {Object.keys(method.responses).map((r, i) => {
                     return (
                       <div key={i}>
-                        <div><input type='text' placeholder='Enter response status code...' value={r} onChange={(e) => {this.handlePropertyEdit(e, m, method, 'responses', r, i)}}/></div>
-                        <div><input type='text' placeholder='Enter response description...' value={method.responses[r].description} onChange={(e) => {this.handlePropertyEdit(e, m, method, 'responses', 'description', r)}}/></div>
+                        <div><input style={inputStyle} type='text' placeholder='Enter response status code...' value={r} onChange={(e) => {this.handlePropertyEdit(e, m, method, 'responses', r, i)}}/></div>
+                        <div><input style={inputStyle} type='text' placeholder='Enter response description...' value={method.responses[r].description} onChange={(e) => {this.handlePropertyEdit(e, m, method, 'responses', 'description', r)}}/></div>
                       </div>
                     )
                   })}
@@ -368,38 +335,12 @@ class RouteForm extends Component {
             )
           }})}
 
-          {/* {this.state.path ? 
-            <div
-              style={{display: 'flex', flexWrap: 'wrap'}}
-            >
-              <select
-                value={this.state.method}
-                onChange={this.handleMethodChange}
-                style={{width: "30%"}}
-              >
-                <option value="GET">GET</option>
-                <option value="PUT">PUT</option>
-                <option value="POST">POST</option>
-                <option value="DELETE">DELETE</option>
-              </select>
-              <input
-                type="text"
-                value={this.state.methodDescription}
-                onChange={this.handleMethodDescriptionChange}
-                placeholder="Enter request description..."
-                style={{width: "70%"}}
-              />
-              <button>+ Param</button>
-            </div>
-          :
-            null
-          } */}
-          <input
-            type="submit"
+          <button
+            type="button"
             value="SAVE"
             onClick={this.handleSave}
             style={saveStyle}
-          />
+          >Save</button>
         </form>
       </div>
     );

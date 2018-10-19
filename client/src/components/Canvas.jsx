@@ -3,12 +3,14 @@ import io from 'socket.io-client';
 import { Stage, Layer, Rect, Group } from 'react-konva';
 import Konva from 'konva';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 import Toolbar from './Toolbar.jsx';
 import Node from './Node.jsx';
 import RouteLine from './RouteLine.jsx';
 import RouteForm from './RouteForm.jsx';
 import DownloadButton from './DownloadButton.jsx';
+
 import dummyData from './dummyDataForReact.jsx';
 
 class Canvas extends Component {
@@ -25,7 +27,8 @@ class Canvas extends Component {
       nodes: {},
       showMenu: true,
       changingNodeType: false,
-      miscNodeName: ''
+      miscNodeName: '',
+      toDocs: false
     };
 
     this.roomID = this.props.match.params.name;
@@ -84,6 +87,8 @@ class Canvas extends Component {
     this.goToLanding = this.goToLanding.bind(this);
     this.logout = this.logout.bind(this);
     this.goToCanvases = this.goToCanvases.bind(this);
+    this.handlePathChange = this.handlePathChange.bind(this);
+    this.takeMeToTheDocs = this.takeMeToTheDocs.bind(this);
   }
 
   goToLanding() {
@@ -341,6 +346,13 @@ class Canvas extends Component {
     );
   }
 
+  takeMeToTheDocs() {
+    // console.log(window.location.pathname.split('/')[2]);
+    this.setState({
+      toDocs: true
+    });
+  }
+
   toggleOpenConnection(connection = null) {
     this.setState({
       openConnection: null
@@ -375,6 +387,11 @@ class Canvas extends Component {
     }
 
     let conPairs = {};
+
+    if (this.state.toDocs === true) {
+      return <Redirect to={{pathname:'/docs', canvasID: window.location.pathname.split('/')[2]}}/>
+    }
+
     return (
       <div className='canvas-style'>
         <div className='header'>
@@ -465,6 +482,7 @@ class Canvas extends Component {
                     canvasHeight={this.state.height}
                     canvasWidth={this.state.width}
                     prepNewNode={this.prepNewNode}
+                    takeMeToTheDocs={this.takeMeToTheDocs}
                   />
                 ) : null}
               </Layer>

@@ -525,3 +525,22 @@ span {
   overflow: hidden;
 }
 
+.docs-endpoint {
+  margin: 1px;
+  border: 1px dotted tan;
+}
+
+.docs-operation {
+  margin: 1px;
+  border: 1px double brown;
+}
+
+.docs-response {
+  margin: 1px;
+  border: 1px dashed green;
+}
+
+.docs-parameter {
+  margin: 1px;
+  border: 1px solid blue;
+}
