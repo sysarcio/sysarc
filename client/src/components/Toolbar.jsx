@@ -35,7 +35,7 @@ class Toolbar extends Component {
         x={this.props.canvasWidth - toolbarProperties.width}
       >
         <Rect
-          cornerRadius={15}
+          cornerRadius={5}
           width={toolbarProperties.width}
           height={toolbarProperties.height}
           fill={toolbarProperties.fill}
