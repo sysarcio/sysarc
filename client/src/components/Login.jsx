@@ -62,9 +62,14 @@ class Login extends Component {
 
   render() {
     return (
-      <div className='login'>
+      <div className='form-page__wrapper'>
+        <div className='form-page__form-wrapper'>
+          <div className='form-page__form-header'>
+            <h2 className='form-page__form-heading'>Login</h2>
+          </div>
         <form id="login-form">
           <input 
+            className='signup-input'
             type="email"
             placeholder='Email'
             required
@@ -78,13 +83,20 @@ class Login extends Component {
             required
             value={this.state.password}
             onChange={this.handlePassword}
+            className='signup-input'
           />
-          <button
-            type="submit"
-            onClick={this.handleLogin}
-            value="Login"
-          > Login </button>
-        </form>
+          </form>
+          <div className='submit-form'>
+            <p onClick={this.props.toggleSignup} className='existing-user'>Create new account?</p>
+            <button
+              type="submit"
+              onClick={this.handleSignup}
+              className='signup-btn'>
+              Login
+              </button>
+          </div>
+        </div>
+
       </div>
     );
   }

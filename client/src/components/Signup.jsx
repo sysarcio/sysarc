@@ -85,7 +85,7 @@ class Signup extends Component {
             
           </form>
           <div className='submit-form'>
-            <p className='existing-user'>Already have an account?</p>
+            <p onClick={this.props.toggleLogin} className='existing-user'>Already have an account?</p>
             <button
               type="submit"
               onClick={this.handleSignup}

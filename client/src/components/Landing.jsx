@@ -14,21 +14,29 @@ class Landing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-     showLogin: false
+     showSignUp: true
     };
 
-    this.toggleShowLogin = this.toggleShowLogin.bind(this);
+    this.showLogin = this.showLogin.bind(this);
+    this.showSignUp = this.showSignUp.bind(this);
   }
 
-  toggleShowLogin() {
+
+  showLogin() {
     this.setState({
-      showLogin: !this.showLogin
+      showSignUp: false
+    })
+  }
+
+  showSignUp() {
+    this.setState({
+      showSignUp: true
     })
   }
 
   render() {
-
-    const displayLogin = !this.state.showLogin ? <SignUp toggleLogin={this.toggleShowLogin} /> : <Login toggleLogin={this.toggleShowLogin}/>;
+console.log('show login?', this.state.showLogin)
+    const displayLogin = this.state.showSignUp ? <SignUp toggleLogin={this.showLogin} /> : <Login toggleSignup={this.showSignUp}/>;
 
     return(
 
