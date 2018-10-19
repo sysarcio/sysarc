@@ -393,7 +393,7 @@ class Canvas extends Component {
   render() {
     const stageStyle = {
       // backgroundColor: 'red',
-      borderRadius: '15px',
+      borderRadius: '5px',
       border: '1px solid #394256',
       overflow: 'hidden'
       // boxShadow: '5px 5px 10px #000'

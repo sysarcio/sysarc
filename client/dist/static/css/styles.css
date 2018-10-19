@@ -13,38 +13,92 @@ body {
 }
 
 .form-page__wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
 
+  width: 420px;
+  margin: 0 auto;
+  z-index: 99;
+  display: block;
+  margin-top: 5%;
+  background: transparent;
+  border-radius: .25em .25em .4em .4em;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  color: #fff;
+ 
 }
 
 .form-page__form-wrapper {
-  margin: 200px 20px 150px 60px;
+  margin: 100px 20px 80px 20px;
   max-width: 450px;
   height: 450px;
   width: 100%;
-  border: 1px solid #49cc90;
+  font-size: 20px;
+  font-weight: 300;
   border-radius: 3px;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
-  background-color: #61AFFE;
+  
 }
 
 .form-page__form-heading {
   text-align: center;
   font-size: 2em;
-  user-select: none;
+  color: #49cc90;
+  text-align: center;
+  opacity: 0.7;
+  padding: 30px;
+  
 }
+
+.signup-input {
+  border-radius: 3px;
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  -webkit-appearance: none;
+  display: block;
+  background: transparent;
+  color: #49cc90;
+  width: 90%;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+
+
+.signup-btn {
+  position: center;
+  padding: 10px 30px;
+  line-height: 20px;
+  overflow: hidden;
+  outline: none;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+  background-color: #49cc90;
+  color: #ecf0f1;
+  transition: background-color .3s;
+  margin-top: 18px;
+  margin-right: 45px;
+  float:right;
+  display:block;
+  
+}
+
+.existing-user {
+  padding: 1px 5px;
+  line-height: 30px;
+  overflow: hidden;
+  color: #49cc90;
+  margin-top: 18px;
+  margin-left: 1px;
+  float:left;
+}
+
+
 
 /* ---------------Buttons------------------------ */
 .login-btn {
   background-color: #394256;
   color: white;
-  display: block;
+  /* display: block; */
   position: relative;
-  float: left;
+  /* float: left; */
   width: 80px;
   padding: 0;
   margin: 10px 20px 50px 1000px;
@@ -54,6 +108,22 @@ body {
   border-radius: 5px;
   transition: all 0.2s;
 
+}
+
+.signin-btn {
+  background-color: #394256;
+  color: white;
+  /* display: block; */
+  position: relative;
+  float: left;
+  width: 80px;
+  padding: 0;
+  margin: 10px 20px 10px 10px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 5px;
+  transition: all 0.2s;
 }
 
 
@@ -91,21 +161,7 @@ body {
   transform: scale(1.15);
 }
 
-.signin-btn {
-    background-color: #394256;
-    color: white;
-    display: block;
-    position: relative;
-    float: left;
-    width: 80px;
-    padding: 0;
-    margin: 10px 20px 10px 10px;
-    font-weight: 600;
-    text-align: center;
-    line-height: 30px;
-    border-radius: 5px;
-    transition: all 0.2s;
-  }
+
 
   .logout-btn {
     background-color: #394256;
@@ -176,17 +232,21 @@ body {
   padding: 3em;
 }
 
-.signin-input {
-  display: block;
+.signup-form {
+  /* display: block;
   font-size:11px;
   padding:4px 2px;
-  border:solid 1px #aacfe4;
+  background: none;
   width:70px;
-  margin:2px 0 20px 10px;
+  margin:2px 0 20px 10px; */
+  padding: 30px;
+  padding-top: 60px;
+  background: #fff;
 }
 
 .logo {
-  margin: 10px 20px 0px 60px;
+  /* margin: 125px 20px 0px 60px; */
+  margin: 150px auto;
   font-weight: 200;
   letter-spacing: .5px;
   font-size: 148px;
@@ -219,7 +279,9 @@ body {
   text-transform: uppercase;
   text-align: center;
   color: #394256;
+  margin-top: 40px;
   font: 1000 40px/5px "Roboto",
+ 
   "Lato",
   "Open Sans",
   "Helvetica Neue",
@@ -233,7 +295,7 @@ body {
 }
 
 .hello {
-  margin: 100px 20px 0px 60px;
+  margin: 100px 20px 0px 160px;
   font-weight: 200;
   letter-spacing: .5px;
   font-size: 15px;
@@ -297,11 +359,28 @@ body {
 
 /* --------------- Canvases--------------- */
 
+.final-delete {
+  border-radius: 5px;
+   padding: 1px 2px;
+   line-height: 10px;
+   overflow: hidden;
+   color: #49cc90;
+   margin-top: 5px;
+
+}
+
+.final-delete:hover {
+  color:#EED463;
+}
+
+
 .canvases {
   display: flex;
   flex-wrap: wrap;
   width: 80%;
-  margin: 0 auto;
+  margin: 60px auto;
+  margin-top: 80px;
+
 
 }
 
@@ -309,13 +388,14 @@ body {
   height: 150px;
   width: 200px;
   border: 2px solid #394256;
-  border-radius: 15px;
+  border-radius: 5px;
   margin: 20px;
   padding: 20px;
   overflow: hidden;
   cursor: pointer;
   opacity: 0.5;
-  background: #91CAC3;
+  background: #394256;
+ color: #49cc90; 
 }
 
 .canvas-thumbnail:hover {
@@ -358,7 +438,7 @@ body {
   height: 150px;
   width: 200px;
   border: 2px solid #EED463;
-  border-radius: 15px;
+  border-radius: 5px;
   margin: 20px;
   padding: 20px;
   cursor: pointer;
@@ -372,14 +452,14 @@ body {
     height: 150px;
     width: 200px;
     border: 2px solid #394256;
-    border-radius: 15px;
+    border-radius: 5px;
     margin: 20px;
     padding: 20px;
     cursor: pointer;
-    opacity: 0.5;
-    background: #91CAC3;
+    opacity: 0.75;
     text-align: center;
     vertical-align: middle;
+    color: #394256
 }
 
 
@@ -387,14 +467,17 @@ body {
   appearance: none;
   background-color: none;
   border: 1px solid #EED463;
-  line-height: 0; 
   font-size: 17px;
   width: 100%; 
   display: block; 
   box-sizing: border-box; 
   padding: 5px px; 
-  border-radius: 50px;
+  border-radius: 5px;
   outline: none;
+  margin-bottom: 15px;
+  /* text-align: center; */
+  font-size: 14px;
+  
 }
 
 .form-button {
@@ -402,12 +485,18 @@ body {
   text-align: center;
   background: none;
   cursor: pointer;
-  background: #91CAC3;
-  padding: 5px px;
-  border-radius: 50px;
+  padding: 5px;
+  border-radius: 5px;
   width: 100%;
+  text-align: right;
+  font-size: 14px;
+  padding: 5px 25px;
+  border: white;
+  background: transparent;
+  color:#EED463
   
 }
+
 
 
 
@@ -430,8 +519,10 @@ body {
   padding: 20px;
   font-size: 10px;
   /* width: 40px; */
-  background-color: #dddddd;
+  border: 1px #49cc90;
+  background-color: transparent;
   display: flex;
+  font-size: 14px;
 }
 
 span {
@@ -455,8 +546,8 @@ span {
 
 
 .canvas-delete-btn {
-  /* float:left;
-  position:relative; */
+  /* float:left; */
+  /* position:relative;  */
   cursor:pointer;
   
 }

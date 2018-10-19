@@ -88,24 +88,7 @@ const tiers = [
   
   },
 ];
-const footers = [
-  {
-    title: 'Company',
-    description: ['Team', 'History', 'Contact us', 'Locations'],
-  },
-  {
-    title: 'Features',
-    description: ['Cool stuff', 'Random feature', 'Team feature', 'Developer stuff', 'Another one'],
-  },
-  {
-    title: 'Resources',
-    description: ['Resource', 'Resource name', 'Another resource', 'Final resource'],
-  },
-  {
-    title: 'Legal',
-    description: ['Privacy policy', 'Terms of use'],
-  },
-];
+
 
 function Landing(
   props) {
@@ -121,8 +104,12 @@ function Landing(
     marginTop: '10px'
   }
 
-  const appBenefit ={
-    marginTop: '100px'
+  const appBenefit = {
+    marginTop: '200px',
+    marginBottom: '30px',
+    fontSize: '25px',
+    color: 'white',
+    padding: '10px 40px'
   }
 
   return (
@@ -138,7 +125,6 @@ function Landing(
           <Typography style={appBenefit} variant="h6" align="center" color="textSecondary" component="p">
             We take the tedious design process out of the equation so you can focus on building your system architecture quickly and accurately
         
-           
           </Typography>
         </div>
         {/* End hero unit */}
@@ -176,24 +162,7 @@ function Landing(
           ))}
         </Grid>
       </main>
-      {/* Footer */}
-      {/* <footer className={classNames(classes.footer, classes.layout)}>
-        <Grid container spacing={32} justify="space-evenly">
-          {footers.map(footer => (
-            <Grid item xs key={footer.title}>
-              <Typography variant="h6" color="textPrimary" gutterBottom>
-                {footer.title}
-              </Typography>
-              {footer.description.map(item => (
-                <Typography key={item} variant="subtitle1" color="textSecondary">
-                  {item}
-                </Typography>
-              ))}
-            </Grid>
-          ))}
-        </Grid>
-      </footer> */}
-      {/* End footer */}
+      
     </React.Fragment>
   );
 }

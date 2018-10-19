@@ -17,6 +17,17 @@ class Canvases extends Component {
     this.goToCanvas = this.goToCanvas.bind(this);
     this.toggleShowForm = this.toggleShowForm.bind(this);
     this.deleteCanvas = this.deleteCanvas.bind(this);
+    this.goToLanding = this.goToLanding.bind(this);
+    this.logout = this.logout.bind(this);
+  }
+
+  goToLanding() {
+    this.props.history.push('/');
+  }
+
+  logout() {
+    localStorage.removeItem('userID');
+    this.props.history.push('/');
   }
 
   async componentDidMount() {
@@ -106,6 +117,7 @@ class Canvases extends Component {
   render() {
     const showCreateNewCanvas = this.state.showForm ? (
       <div>
+       
         <form className="canvases-form">
           <input
             type="text"
@@ -115,7 +127,7 @@ class Canvases extends Component {
             className="form-input"
           />
           <button className="form-button" onClick={this.createCanvas}>
-            +
+            Add Canvas +
           </button>
         </form>
       </div>
@@ -128,22 +140,30 @@ class Canvases extends Component {
     );
 
     return (
-      <div className="canvases ">
-        {showCreateNewCanvas}
+      <div>
+        <h1 className="logo-sm" onClick={this.goToLanding}>
+          Sketchpad Ninja
+        </h1>
+        <p className="logout-p" onClick={this.logout}>
+          Logout
+        </p>
+        <div className="canvases ">
+          {showCreateNewCanvas}
 
-        {this.state.canvases.map(c => {
-          if (this.get(c, 'id')) {
-            return (
-              <CanvasThumbnail
-                deleteCanvas={this.deleteCanvas}
-                get={this.get}
-                canvas={c}
-                goToCanvas={this.goToCanvas}
-                key={this.get(c, 'id')}
-              />
-            );
-          }
-        })}
+          {this.state.canvases.map(c => {
+            if (this.get(c, 'id')) {
+              return (
+                <CanvasThumbnail
+                  deleteCanvas={this.deleteCanvas}
+                  get={this.get}
+                  canvas={c}
+                  goToCanvas={this.goToCanvas}
+                  key={this.get(c, 'id')}
+                />
+              );
+            }
+          })}
+          </div>
       </div>
     );
   }

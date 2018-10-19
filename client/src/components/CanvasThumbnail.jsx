@@ -31,8 +31,22 @@ class CanvasThumbnail extends React.Component {
   render() {
 
     const showModal = this.state.showModal;
-    const showDeleteOption = <button className='canvas-delete-btn' onClick={this.handleModalShowClick}>X</button>
-    const showConfirmation = <div className='canvas-delete-confirm'> Delete Canvas? <button onClick={() => this.props.deleteCanvas(this.props.get(this.props.canvas, 'id'))}> Y </button> <button onClick={this.handleModalCloseClick}> N </button></div>
+    const showDeleteOption = <p className='canvas-delete-btn' onClick={this.handleModalShowClick}>X</p>
+    const showConfirmation = <div className='canvas-delete-confirm'> Delete Canvas? 
+      <div>
+        <p 
+          className='final-delete' 
+          onClick={() => this.props.deleteCanvas(this.props.get(this.props.canvas, 'id'))}> 
+            Yes 
+        </p > 
+        
+        <p 
+          className='final-delete' 
+          onClick={this.handleModalCloseClick}> 
+            No 
+        </p >
+      </div>
+    </div>
     const divStyle = {
       'height':"70px", 
       'width':"70px"

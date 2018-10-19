@@ -139,35 +139,6 @@ router.get('/getRoomData/:id', async (req, res) => {
     }, [{},{}]);
     
     res.send({nodes, connections, name});
-<<<<<<< HEAD
-  } catch(err) {
-    console.log(err);
-  }
-});
-
-router.get('/Docs/:id', async (req, res) => {
-  console.log('made it to server with id: ', req.params.id);
-  try {
-    const records = await db.getDocs(req.params.id);
-    records.forEach((r, i) => {
-      console.log(r);
-      console.log(i);
-    })
-    const [connections] = records.reduce((output, r) => {
-      r.get('connections').forEach(c => { 
-        const {id, data} = c.properties;
-        output[0][id] = {
-          id,
-          data: JSON.parse(data)
-        }
-      });
-      return output;
-    }, [{},{}]);
-    console.log('formatted records: ', connections)
-    // console.log('leaving server with records: ', records)
-    res.send({connections});
-=======
->>>>>>> Implement multi-point lines
   } catch(err) {
     console.log(err);
   }
