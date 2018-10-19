@@ -11,6 +11,8 @@ class Signup extends Component {
       password: ''
     };
 
+    console.log(this.props.history);
+
     this.handlePassword = this.handlePassword.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
@@ -44,10 +46,10 @@ class Signup extends Component {
           password: this.state.password
         }
       };
-
+      
       try {
-        const data = await axios(options);
-        console.log(data);
+        const {data} = await axios(options);
+        localStorage.userID = data;
         this.props.history.push('/canvases');
       } catch(err) {
         console.log(err);

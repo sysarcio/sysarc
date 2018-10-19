@@ -18,10 +18,13 @@ class Logo extends Component {
       <div>
         <Typist className='logo'>
           Sketchpad Ninja 
+<<<<<<< HEAD
           <Typist.Delay ms={300} />
           <br />
           <h2 className='hello'>Hello.</h2>
             
+=======
+>>>>>>> 6be7715abc10fed59b8e78b1470f9a8b6e86667b
         </Typist>
 
        

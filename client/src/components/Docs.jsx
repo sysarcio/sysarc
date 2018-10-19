@@ -12,8 +12,14 @@ class Docs extends React.Component {
       apiVersion: 1,
       apiTitle: this.props.location.canvasID
     }
-    this.getDocsData(this.props.location.canvasID)
+    this.getDocsData(this.props.location.canvasID);
+    this.goToCanvas = this.goToCanvas.bind(this);
   }
+
+  goToCanvas() {
+    this.props.history.push(`/canvas/${this.props.location.canvasID}`);
+  }
+
 
   async getDocsData(id) {
     const options = {
@@ -51,16 +57,18 @@ class Docs extends React.Component {
                 path = {path}
                 />
     })
-    return (
-      <div className="docs">
+    return <div className="docs">
         <div>
           <p>Swagger Version: {this.state.swaggerVersion}</p>
           <p>API Version: {this.state.apiVersion}</p>
           <p>API Title: {this.state.apiTitle}</p>
+
           <div>{pathCeption}</div>
         </div>
-      </div>
-    )
+      <button className="return-button" onClick={this.goToCanvas}>
+        Return to Canvas
+          </button>
+      </div>;
   }
 }
 

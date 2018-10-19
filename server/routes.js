@@ -26,7 +26,7 @@ router.post('/signup', async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
     req.body.password = password;
     const user = await db.addUser(req.body);
-    // res.send(user.get('u.id'));
+    res.send(user.get('u.id'));
   } catch (err) {
     console.log(err);
     res.statusMessage = 'That email address is already in use';
@@ -140,6 +140,35 @@ router.get('/getRoomData/:id', async (req, res) => {
     
     res.send({nodes, connections, name});
   } catch(err) {
+<<<<<<< HEAD
+=======
+    console.log(err);
+  }
+});
+
+router.get('/Docs/:id', async (req, res) => {
+  console.log('made it to server with id: ', req.params.id);
+  try {
+    const records = await db.getDocs(req.params.id);
+    records.forEach((r, i) => {
+      console.log(r);
+      console.log(i);
+    })
+    const [connections] = records.reduce((output, r) => {
+      r.get('connections').forEach(c => { 
+        const {id, data} = c.properties;
+        output[0][id] = {
+          id,
+          data: JSON.parse(data)
+        }
+      });
+      return output;
+    }, [{},{}]);
+    console.log('formatted records: ', connections)
+    // console.log('leaving server with records: ', records)
+    res.send({connections});
+    } catch(err) {
+>>>>>>> 6be7715abc10fed59b8e78b1470f9a8b6e86667b
     console.log(err);
   }
 });

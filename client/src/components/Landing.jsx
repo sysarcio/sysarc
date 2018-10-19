@@ -6,6 +6,7 @@ import Login from './Login.jsx';
 import LandingInfo from './LandingInfo.jsx';
 import Logo from './Logo.jsx'
 import SignUp from './Signup.jsx';
+import { Route, withRouter } from 'react-router-dom';
 
 
 
@@ -36,16 +37,28 @@ class Landing extends Component {
 
   render() {
 console.log('show login?', this.state.showLogin)
+<<<<<<< HEAD
     const displayLogin = this.state.showSignUp ? <SignUp toggleLogin={this.showLogin} /> : <Login toggleSignup={this.showSignUp}/>;
+=======
+    const displayLogin = this.state.showSignUp ? <SignUp toggleLogin={this.showLogin} history={this.props.history} /> : <Login toggleSignup={this.showSignUp} history={this.props.history}/>;
+>>>>>>> 6be7715abc10fed59b8e78b1470f9a8b6e86667b
 
     return(
 
       <div>
+<<<<<<< HEAD
        <Logo />
       
        <LandingInfo />
 
        {displayLogin}
+=======
+        <Logo />
+      
+        <LandingInfo />
+
+        {displayLogin}
+>>>>>>> 6be7715abc10fed59b8e78b1470f9a8b6e86667b
        
       </div>
     );
@@ -53,7 +66,7 @@ console.log('show login?', this.state.showLogin)
 
 }
 
-export default Landing;
+export default withRouter(Landing);
 
 //   <section className="row">
 //     <div className="grid">
