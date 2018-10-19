@@ -70,6 +70,10 @@ class Docs extends React.Component {
           
           <div>{pathCeption}</div>
         </div>
+        <button className="return-button" onClick={this.goToCanvas}>
+        Return to Canvas
+          </button>
+
       </div>
     )
   }
