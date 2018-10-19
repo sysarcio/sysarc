@@ -81,6 +81,7 @@ body {
 }
 
 .existing-user {
+  cursor: pointer;
   padding: 1px 5px;
   line-height: 30px;
   overflow: hidden;
@@ -128,6 +129,7 @@ body {
 
 
 .logout-p {
+  cursor: pointer;
   color: #394256;
   display: block;
   position: relative;
@@ -145,6 +147,7 @@ body {
 }
 
 .canvases-p {
+  cursor: pointer;
   color: #394256;
   display: block;
   position: relative;
@@ -270,6 +273,7 @@ body {
 }
 
 .logo-sm {
+  cursor: pointer;
   font-weight: 200;
   letter-spacing: .5px;
   font-size: 40px;
