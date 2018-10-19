@@ -1,7 +1,11 @@
 import React from 'react';
 import Response from './DocsResponse.jsx';
 import Parameter from './DocsParameter.jsx';
+<<<<<<< HEAD
 
+=======
+import bootstrap from 'react-bootstrap'
+>>>>>>> styling for docs
 class DocsOperation extends React.Component {
 
   constructor(props) {
@@ -25,6 +29,7 @@ class DocsOperation extends React.Component {
     // console.log(this.props.operation.responses);
     // console.log(`Object passed from DocsOperation to DocsParameter: \n`);
     // console.log(this.props.operation.parameters);
+<<<<<<< HEAD
     const pathCeptionThePathRises = (responses) => {
       return Object.values(responses).map((response, index) => {
         return (
@@ -36,6 +41,8 @@ class DocsOperation extends React.Component {
         )
       })
     }
+=======
+>>>>>>> styling for docs
     const groupExamples = (parameters) => {
       const examples = {
         query: [],
@@ -56,6 +63,7 @@ class DocsOperation extends React.Component {
         } else if (param.in === 'header') {
           examples.header.push(param)
         }
+<<<<<<< HEAD
       })
       // console.log('returning examples: ', examples);
       return examples;
@@ -67,6 +75,21 @@ class DocsOperation extends React.Component {
       if (paramsArray[0].in === 'query') {
         let output = `Example query: ${this.props.pathName}?`;
         paramsArray.forEach((element, idx) => {
+=======
+      });
+      // console.log('returning examples: ', examples);
+      return examples;
+    };
+
+    const formatExample = (paramsArray) => {
+      if (paramsArray[0].in === 'query') {
+        let output = 'Example query: \n';
+        paramsArray.forEach((element, idx) => {
+          if (idx === 0) {
+            output += `${this.props.pathName}?`
+          }
+          // output += <wbr/>;
+>>>>>>> styling for docs
           output += `${element.name}=YOUR_INPUT_HERE`
           if (idx !== paramsArray.length-1) {
             output += '&'
@@ -155,7 +178,11 @@ class DocsOperation extends React.Component {
 
     const generateExamples = (parameters) => {
       return (
+<<<<<<< HEAD
         <div>
+=======
+        <div className="parameter-example">
+>>>>>>> styling for docs
           {Object.values(groupExamples(parameters)).map((example, i) => {
             {if(example.length>0){return <div key={i}>{formatExample(example)}</div>}}
           })}
@@ -163,6 +190,7 @@ class DocsOperation extends React.Component {
       )
     }
 
+<<<<<<< HEAD
 
     const pathCeptionThePathBegins = (parameters) => {
       // console.log(parameters);
@@ -177,11 +205,27 @@ class DocsOperation extends React.Component {
             )
           })}
         {generateExamples(parameters)}
+=======
+    const pathCeptionThePathBegins = (parameters) => {
+      console.log(parameters);
+      return (
+        <div className="docs-parameters-container">
+          {Object.values(parameters).map((param, index) => {
+              return (
+                    <Parameter
+                      key={index}
+                      param={param}
+                    />
+              )
+            })}
+          {generateExamples(parameters)}
+>>>>>>> styling for docs
 
         </div>
       )
     }
 
+<<<<<<< HEAD
     return (
       <div className="docs-operation">
         <div onClick={this.expand}>
@@ -198,6 +242,38 @@ class DocsOperation extends React.Component {
             </div>
             <div>
               <pre>    Responses: </pre>
+=======
+    const pathCeptionThePathRises = (responses) => {
+      return (
+        <div className="docs-responses-container"> {Object.values(responses).map((response, index) => {
+        return (
+          <Response
+            key={index}
+            statusCode={Object.keys(responses)[index]}
+            response={response}
+          />  
+        )
+      })}
+      </div>
+      )
+    }
+// teasfaegtasdfasfasfasfda
+    return (
+      <div className="docs-operation">
+        <div onClick={this.expand}>
+            <div className={this.props.className}>{this.props.method.toUpperCase()}</div>
+            <div className="docs-method-description">{this.props.operation.description.slice(0, 1).toUpperCase() + this.props.operation.description.slice(1)}</div>
+        </div>
+        
+        {this.state.show && (
+          <div className="docs-operation-container">
+            <div className="docs-parameters">
+            <h6 className="docs-details-heading">Parameters:</h6>
+              {pathCeptionThePathBegins(this.props.operation.parameters)}
+            </div>
+            <div className="docs-responses">
+              <h6 className="docs-details-heading">Responses: </h6>
+>>>>>>> styling for docs
               {pathCeptionThePathRises(this.props.operation.responses)}
             </div>
           </div>)

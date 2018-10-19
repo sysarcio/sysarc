@@ -12,6 +12,7 @@ class Login extends Component {
     this.handlePassword = this.handlePassword.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.ghettoButton = this.ghettoButton.bind(this);
   }
 
   handleEmail(e) {
@@ -58,6 +59,9 @@ class Login extends Component {
   logout(){
     localStorage.removeItem('userID')
     this.props.history.push('/');
+  }
+  ghettoButton(){
+    this.props.history.push(`/docs`);
   }
 
   render() {

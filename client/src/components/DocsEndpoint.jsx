@@ -1,5 +1,9 @@
 import React from 'react';
 import Operation from './DocsOperation.jsx';
+<<<<<<< HEAD
+=======
+import bootstrap from 'react-bootstrap'
+>>>>>>> styling for docs
 
 class DocsEndpoint extends React.Component {
 
@@ -30,6 +34,10 @@ class DocsEndpoint extends React.Component {
                 method = {Object.keys(path)[index]}
                 operation = {operation}
                 pathName = {this.props.basePath}
+<<<<<<< HEAD
+=======
+                className = {`docs-method-${Object.keys(path)[index]}`}
+>>>>>>> styling for docs
               />
       })
     }
@@ -37,10 +45,17 @@ class DocsEndpoint extends React.Component {
     return (
       <div className="docs-endpoint">
         <div onClick={this.expand}>
+<<<<<<< HEAD
           Endpoint: {this.props.basePath}
         </div>
         {this.state.show && (
           <div>
+=======
+          <h3 className="docs-endpoint-heading">{this.props.basePath.toUpperCase()}</h3>
+        </div>
+        {this.state.show && (
+          <div className="docs-details-container">
+>>>>>>> styling for docs
             {pathCeptionThePathening(this.props.path[this.props.basePath])}
           </div>)
         }
