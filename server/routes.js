@@ -140,6 +140,8 @@ router.get('/getRoomData/:id', async (req, res) => {
     
     res.send({nodes, connections, name});
   } catch(err) {
+<<<<<<< HEAD
+=======
     console.log(err);
   }
 });
@@ -166,6 +168,7 @@ router.get('/Docs/:id', async (req, res) => {
     // console.log('leaving server with records: ', records)
     res.send({connections});
     } catch(err) {
+>>>>>>> 6be7715abc10fed59b8e78b1470f9a8b6e86667b
     console.log(err);
   }
 });

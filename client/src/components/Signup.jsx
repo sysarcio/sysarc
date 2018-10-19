@@ -33,6 +33,7 @@ class Signup extends Component {
   }
 
   async handleSignup(e) {
+    
     const isValid = document.getElementById("signup-form").checkValidity();
     
     if (isValid) {

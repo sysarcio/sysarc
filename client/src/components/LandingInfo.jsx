@@ -73,9 +73,9 @@ const tiers = [
     description: ['Minimize design refactoring', 'Fast architecture protoyping'],
   },
   {
-    title: 'Swagger Compliant',
-    price: 'Swagger Compliant',
-    description: ['Generate Swagger documentation', 'See all endpoints and methods'],
+    title: 'Generate Documentation',
+    price: 'Generate Documentation',
+    description: ['Swagger compliant documentation', 'See all endpoints and methods'],
    
   },
   {

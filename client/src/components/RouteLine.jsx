@@ -74,10 +74,10 @@ class RouteLine extends Component {
     const {nodes, canvasWidth, canvasHeight, nodeScale, lineCount} = this.props;
 
     var LINE_LOGIC = {
-      1: 'red',
-      2: 'blue',
-      3: 'green',
-      4: 'yellow'
+      1: '#f93e3e',
+      2: '#61affe',
+      3: '#49cc90',
+      4: '#fca130'
     };
     let lineColor = LINE_LOGIC[lineCount] || 'black';
     const multiplier = lineCount % 2 ? lineCount * 10 : lineCount * -10;
