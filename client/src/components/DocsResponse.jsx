@@ -15,10 +15,10 @@ class DocsResponse extends React.Component {
     return (
       <div className="docs-response">
         <div>  
-          <pre>      Status Code: {this.props.statusCode}</pre>
+                Status Code: {this.props.statusCode}
         </div>
         <div>
-          <pre>        Description: {this.props.response.description}</pre>
+                  Description: {this.props.response.description}
         </div>
       </div>
     )

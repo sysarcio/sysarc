@@ -418,12 +418,7 @@ class Canvas extends Component {
 
     if (this.state.toDocs === true) {
       return (
-        <Redirect
-          to={{
-            pathname: '/docs',
-            canvasID: window.location.pathname.split('/')[2]
-          }}
-        />
+        <Redirect to={{pathname:`/docs/${window.location.pathname.split('/')[2]}`, canvasID: window.location.pathname.split('/')[2]}}/>
       );
     }
 

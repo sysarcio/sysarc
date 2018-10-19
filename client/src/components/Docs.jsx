@@ -10,16 +10,15 @@ class Docs extends React.Component {
       swaggerVersion: '2.0',
       paths: {},
       apiVersion: 1,
-      apiTitle: this.props.location.canvasID
+      apiTitle: window.location.pathname.split('/')[2]
     }
-    this.getDocsData(this.props.location.canvasID);
+    this.getDocsData(window.location.pathname.split('/')[2]);
     this.goToCanvas = this.goToCanvas.bind(this);
+    console.log(window.location.pathname.split('/')[2]);
   }
-
   goToCanvas() {
     this.props.history.push(`/canvas/${this.props.location.canvasID}`);
   }
-
 
   async getDocsData(id) {
     const options = {
@@ -34,9 +33,12 @@ class Docs extends React.Component {
       const { connections } = data;
       let paths = {};
       Object.keys(connections).map((e, i)=> {
-        paths[Object.keys(connections[e].data)[0]] = connections[e].data
-        // console.log(paths);
+        if(Object.keys(connections[e].data)[0]!=="") {
+          paths[Object.keys(connections[e].data)[0]] = connections[e].data
+          // console.log(paths);
+        }
       })
+      console.log(paths);
       this.setState({
         paths
       });
@@ -50,25 +52,31 @@ class Docs extends React.Component {
     // console.log('paths on entrance into render: ', this.state.paths)
     const pathCeption = Object.values(this.state.paths).map((path, index) => {
       // console.log('path/endpoint: ',Object.keys(this.state.paths)[index], ' ', path);
-      // console.log('keys of path: ', Object.keys(path));
-      return <Endpoint
-                key={index}
-                basePath = {Object.keys(this.state.paths)[index]}
-                path = {path}
-                />
+      console.log(Object.keys(this.state.paths)[index]);
+      if (Object.keys(this.state.paths)[index] !== '' && Object.keys(this.state.paths)[index] !== "") { // console.log('keys of path: ', Object.keys(path));
+      return (
+        <Endpoint
+          key={index}
+          basePath = {Object.keys(this.state.paths)[index]}
+          path = {path}
+        />
+      )}
     })
-    return <div className="docs">
+    return (
+      <div className="docs">
         <div>
-          <p>Swagger Version: {this.state.swaggerVersion}</p>
-          <p>API Version: {this.state.apiVersion}</p>
-          <p>API Title: {this.state.apiTitle}</p>
-
+          <h1 className="card-title">API Title: {this.state.apiTitle}</h1>
+          <h2 className="text-muted">Swagger Version: {this.state.swaggerVersion}</h2>
+          <h2 className="text-muted">API Version: {this.state.apiVersion}</h2>
+          
           <div>{pathCeption}</div>
         </div>
-      <button className="return-button" onClick={this.goToCanvas}>
+        <button className="return-button" onClick={this.goToCanvas}>
         Return to Canvas
           </button>
-      </div>;
+
+      </div>
+    )
   }
 }
 

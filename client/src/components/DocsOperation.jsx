@@ -1,7 +1,6 @@
 import React from 'react';
 import Response from './DocsResponse.jsx';
 import Parameter from './DocsParameter.jsx';
-
 class DocsOperation extends React.Component {
 
   constructor(props) {
@@ -25,17 +24,6 @@ class DocsOperation extends React.Component {
     // console.log(this.props.operation.responses);
     // console.log(`Object passed from DocsOperation to DocsParameter: \n`);
     // console.log(this.props.operation.parameters);
-    const pathCeptionThePathRises = (responses) => {
-      return Object.values(responses).map((response, index) => {
-        return (
-          <Response
-            key={index}
-            statusCode={Object.keys(responses)[index]}
-            response={response}
-          />  
-        )
-      })
-    }
     const groupExamples = (parameters) => {
       const examples = {
         query: [],
@@ -56,17 +44,19 @@ class DocsOperation extends React.Component {
         } else if (param.in === 'header') {
           examples.header.push(param)
         }
-      })
+      });
       // console.log('returning examples: ', examples);
       return examples;
-    }
-
-
+    };
 
     const formatExample = (paramsArray) => {
       if (paramsArray[0].in === 'query') {
-        let output = `Example query: ${this.props.pathName}?`;
+        let output = 'Example query: \n';
         paramsArray.forEach((element, idx) => {
+          if (idx === 0) {
+            output += `${this.props.pathName}?`
+          }
+          // output += <wbr/>;
           output += `${element.name}=YOUR_INPUT_HERE`
           if (idx !== paramsArray.length-1) {
             output += '&'
@@ -74,9 +64,9 @@ class DocsOperation extends React.Component {
           return output;
         })
         return (
-          <code>
+          <div>
             {output}
-          </code>
+          </div>
         )
       } else if (paramsArray[0].in === 'body') {
         // console.log(paramsArray);
@@ -155,7 +145,7 @@ class DocsOperation extends React.Component {
 
     const generateExamples = (parameters) => {
       return (
-        <div>
+        <div className="parameter-example">
           {Object.values(groupExamples(parameters)).map((example, i) => {
             {if(example.length>0){return <div key={i}>{formatExample(example)}</div>}}
           })}
@@ -163,41 +153,54 @@ class DocsOperation extends React.Component {
       )
     }
 
-
     const pathCeptionThePathBegins = (parameters) => {
-      // console.log(parameters);
+      console.log(parameters);
       return (
-        <div>
-        {Object.values(parameters).map((param, index) => {
-            return (
-                  <Parameter
-                    key={index}
-                    param={param}
-                  />
-            )
-          })}
-        {generateExamples(parameters)}
+        <div className="docs-parameters-container">
+          {Object.values(parameters).map((param, index) => {
+              return (
+                    <Parameter
+                      key={index}
+                      param={param}
+                    />
+              )
+            })}
+          {generateExamples(parameters)}
 
         </div>
+      )
+    }
+
+    const pathCeptionThePathRises = (responses) => {
+      return (
+        <div className="docs-responses-container"> {Object.values(responses).map((response, index) => {
+        return (
+          <Response
+            key={index}
+            statusCode={Object.keys(responses)[index]}
+            response={response}
+          />  
+        )
+      })}
+      </div>
       )
     }
 
     return (
       <div className="docs-operation">
         <div onClick={this.expand}>
-          <pre>  Method/Operation: {this.props.method}</pre>
+            <div className={this.props.className}>{this.props.method.toUpperCase()}</div>
+            <div className="docs-method-description">{this.props.operation.description.slice(0, 1).toUpperCase() + this.props.operation.description.slice(1)}</div>
         </div>
+        
         {this.state.show && (
-          <div>
-            <div>
-              <pre>    Description: {this.props.operation.description}</pre>
-            </div>
-            <div className="docs-parameter">
-              Parameters:<br/>
+          <div className="docs-operation-container">
+            <div className="docs-parameters">
+            <h6 className="docs-details-heading">Parameters:</h6>
               {pathCeptionThePathBegins(this.props.operation.parameters)}
             </div>
-            <div>
-              <pre>    Responses: </pre>
+            <div className="docs-responses">
+              <h6 className="docs-details-heading">Responses: </h6>
               {pathCeptionThePathRises(this.props.operation.responses)}
             </div>
           </div>)

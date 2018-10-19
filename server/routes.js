@@ -165,7 +165,7 @@ router.get('/Docs/:id', async (req, res) => {
     console.log('formatted records: ', connections)
     // console.log('leaving server with records: ', records)
     res.send({connections});
-    } catch(err) {
+    } catch (err) {
     console.log(err);
   }
 });
