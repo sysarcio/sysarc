@@ -11,6 +11,8 @@ class Signup extends Component {
       password: ''
     };
 
+    console.log(this.props.history);
+
     this.handlePassword = this.handlePassword.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
@@ -31,28 +33,27 @@ class Signup extends Component {
   }
 
   async handleSignup(e) {
-    console.log(this.props);
-    // const isValid = document.getElementById("signup-form").checkValidity();
+    const isValid = document.getElementById("signup-form").checkValidity();
     
-    // if (isValid) {
-    //   e.preventDefault();
-    //   const options = {
-    //     method: 'POST',
-    //     url: '/api/signup',
-    //     data: {
-    //       email: this.state.email,
-    //       password: this.state.password
-    //     }
-    //   };
-
-    //   try {
-    //     const data = await axios(options);
-    //     console.log(data);
-    //     this.props.history.push('/canvases');
-    //   } catch(err) {
-    //     console.log(err);
-    //   }
-    // }
+    if (isValid) {
+      e.preventDefault();
+      const options = {
+        method: 'POST',
+        url: '/api/signup',
+        data: {
+          email: this.state.email,
+          password: this.state.password
+        }
+      };
+      
+      try {
+        const {data} = await axios(options);
+        localStorage.userID = data;
+        this.props.history.push('/canvases');
+      } catch(err) {
+        console.log(err);
+      }
+    }
   }
 
   render() {

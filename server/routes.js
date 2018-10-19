@@ -26,7 +26,7 @@ router.post('/signup', async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
     req.body.password = password;
     const user = await db.addUser(req.body);
-    // res.send(user.get('u.id'));
+    res.send(user.get('u.id'));
   } catch (err) {
     console.log(err);
     res.statusMessage = 'That email address is already in use';
