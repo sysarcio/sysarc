@@ -51,12 +51,15 @@ class Docs extends React.Component {
     // console.log('paths on entrance into render: ', this.state.paths)
     const pathCeption = Object.values(this.state.paths).map((path, index) => {
       // console.log('path/endpoint: ',Object.keys(this.state.paths)[index], ' ', path);
-      // console.log('keys of path: ', Object.keys(path));
-      return <Endpoint
-                key={index}
-                basePath = {Object.keys(this.state.paths)[index]}
-                path = {path}
-                />
+      console.log(Object.keys(this.state.paths)[index]);
+      if (Object.keys(this.state.paths)[index] !== '' && Object.keys(this.state.paths)[index] !== "") { // console.log('keys of path: ', Object.keys(path));
+      return (
+        <Endpoint
+          key={index}
+          basePath = {Object.keys(this.state.paths)[index]}
+          path = {path}
+        />
+      )}
     })
     return (
       <div className="docs">

@@ -24,14 +24,20 @@ class DocsEndpoint extends React.Component {
       // console.log(`input passed from DocsEndpoint to DocsOperation: `);
       // console.log(path);
       return Object.values(path).map((operation, index) => {
-        return <Operation
-                expand={this.expand}
-                key={index}
-                method = {Object.keys(path)[index]}
-                operation = {operation}
-                pathName = {this.props.basePath}
-                className = {`docs-method-${Object.keys(path)[index]}`}
-              />
+        console.log(operation.description, operation.parameters.length);
+        console.log(Object.keys(operation.responses)[0]);
+        if (operation.description !== "" || operation.parameters.length !== 0 || Object.keys(operation.responses)[0] !== "") {
+        return (
+          <Operation
+            expand={this.expand}
+            key={index}
+            method = {Object.keys(path)[index]}
+            operation = {operation}
+            pathName = {this.props.basePath}
+            className = {`docs-method-${Object.keys(path)[index]}`}
+          />
+        )
+      }
       })
     }
 

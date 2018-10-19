@@ -64,9 +64,9 @@ class DocsOperation extends React.Component {
           return output;
         })
         return (
-          <code>
+          <div>
             {output}
-          </code>
+          </div>
         )
       } else if (paramsArray[0].in === 'body') {
         // console.log(paramsArray);
