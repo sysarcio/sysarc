@@ -31,28 +31,28 @@ class Signup extends Component {
   }
 
   async handleSignup(e) {
+    console.log(this.props);
+    // const isValid = document.getElementById("signup-form").checkValidity();
     
-    const isValid = document.getElementById("signup-form").checkValidity();
-    
-    if (isValid) {
-      e.preventDefault();
-      const options = {
-        method: 'POST',
-        url: '/api/signup',
-        data: {
-          email: this.state.email,
-          password: this.state.password
-        }
-      };
+    // if (isValid) {
+    //   e.preventDefault();
+    //   const options = {
+    //     method: 'POST',
+    //     url: '/api/signup',
+    //     data: {
+    //       email: this.state.email,
+    //       password: this.state.password
+    //     }
+    //   };
 
-      try {
-        const data = await axios(options);
-        console.log(data);
-        this.props.history.push('/canvases');
-      } catch(err) {
-        console.log(err);
-      }
-    }
+    //   try {
+    //     const data = await axios(options);
+    //     console.log(data);
+    //     this.props.history.push('/canvases');
+    //   } catch(err) {
+    //     console.log(err);
+    //   }
+    // }
   }
 
   render() {
