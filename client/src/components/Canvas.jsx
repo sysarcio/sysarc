@@ -427,6 +427,7 @@ class Canvas extends Component {
             Sketchpad Ninja
           </h1>
         </div>
+<<<<<<< HEAD
         <div className="canvas-name">
           {/* CANVAS NAME */}
           <h2>{this.state.name}</h2>
@@ -453,6 +454,30 @@ class Canvas extends Component {
           >
             Screenshot
           </p>
+=======
+        <div className="header-bar">
+          <div>
+            <h2>{this.state.name}</h2>
+          </div>
+          <div>
+            <p className="logout-p" onClick={this.logout}>
+              Logout
+            </p>
+            <p className="canvases-p" onClick={this.goToCanvases}>
+              {' '}
+              Canvases{' '}
+            </p>
+            <p className='canvases-p' onClick={this.takeMeToTheDocs}>
+              Docs
+            </p>
+            <p
+              className="canvases-p"
+              onClick={() => this.processScreenshot('DOWNLOAD')}
+            >
+              Screenshot
+            </p>
+          </div>
+>>>>>>> Line up canvas name with nav links
         </div>
         <div style={{ overflow: 'hidden' }}>
           <div id="canvas" width={this.state.width} height={this.state.height}>

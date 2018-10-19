@@ -161,11 +161,10 @@ body {
 }
 
 .header-bar {
-  width: 100%; 
-}
-
-.header-links {
-  width: 50%;
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .form-page__form-header {
@@ -271,10 +270,6 @@ body {
   align-items: center;
   height: 100vh;
   padding-bottom: 10px;
-}
-
-.canvas-name {
-  width: 50%;
 }
 
 .col-1-3 {
