@@ -29,6 +29,7 @@ class Login extends Component {
   }
 
   async handleLogin(e) {
+    console.log('login called')
     const isValid = document.getElementById("login-form").checkValidity();
     
     if (isValid) {
@@ -43,6 +44,7 @@ class Login extends Component {
       };
 
       try {
+        console.log('login was successful')
         const {data} = await axios(options);
         localStorage.userID = data;
         this.props.history.push('/canvases');
@@ -77,11 +79,11 @@ class Login extends Component {
             value={this.state.password}
             onChange={this.handlePassword}
           />
-          <input
+          <button
             type="submit"
             onClick={this.handleLogin}
             value="Login"
-          />
+          > Login </button>
         </form>
       </div>
     );

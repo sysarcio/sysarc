@@ -31,6 +31,7 @@ class Signup extends Component {
   }
 
   async handleSignup(e) {
+    
     const isValid = document.getElementById("signup-form").checkValidity();
     
     if (isValid) {
@@ -61,7 +62,7 @@ class Signup extends Component {
       <div className='form-page__wrapper'>
         <div className='form-page__form-wrapper'>
           <div className='form-page__form-header'>
-            <h2 className='form-page__form-heading'>Login</h2>
+            <h2 className='form-page__form-heading'>Sign Up</h2>
           </div>
           <form id="signup-form">
             <input
@@ -71,7 +72,7 @@ class Signup extends Component {
               title="Must be a valid email address"
               value={this.state.email}
               onChange={this.handleEmail}
-              className='signin-input'
+              className='signup-input'
             />
             <input
               type="password"
@@ -79,48 +80,24 @@ class Signup extends Component {
               required
               value={this.state.password}
               onChange={this.handlePassword}
-              className='signin-input'
+              className='signup-input'
             />
-            <input
+            
+          </form>
+          <div className='submit-form'>
+            <p className='existing-user'>Already have an account?</p>
+            <button
               type="submit"
               onClick={this.handleSignup}
-              value="Signup"
-              className='signin-input'
-            />
-          </form>
+              className='signup-btn'>
+              Signup
+              </button>
+          </div>
         </div>
        
       </div>
 
 
-
-
-
-
-      // <div className='signup'>
-      //   <form id="signup-form">
-      //     <input 
-      //       type="email"
-      //       placeholder='Email'
-      //       required
-      //       title="Must be a valid email address"
-      //       value={this.state.email}
-      //       onChange={this.handleEmail}
-      //     />
-      //     <input
-      //       type="password"
-      //       placeholder='Password'
-      //       required
-      //       value={this.state.password}
-      //       onChange={this.handlePassword}
-      //     />
-      //     <input
-      //       type="submit"
-      //       onClick={this.handleSignup}
-      //       value="Signup"
-      //     />
-      //   </form>
-      // </div>
     );
   }
 }

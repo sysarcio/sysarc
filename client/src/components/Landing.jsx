@@ -14,22 +14,30 @@ class Landing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-     
+     showLogin: false
     };
+
+    this.toggleShowLogin = this.toggleShowLogin.bind(this);
+  }
+
+  toggleShowLogin() {
+    this.setState({
+      showLogin: !this.showLogin
+    })
   }
 
   render() {
 
+    const displayLogin = !this.state.showLogin ? <SignUp toggleLogin={this.toggleShowLogin} /> : <Login toggleLogin={this.toggleShowLogin}/>;
+
     return(
 
       <div>
-        <button className='login-btn'>Login</button>
-        <button className='signin-btn'>Signup</button>
-       
-       {/* <h1 className='logo'>Sketchpad Ninja</h1> */}
- 
        <Logo />
+      
        <LandingInfo />
+
+       {displayLogin}
        
       </div>
     );
