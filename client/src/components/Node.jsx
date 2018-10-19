@@ -11,6 +11,10 @@ class Node extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isHovered: false
+    }
+
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleCircleClick = this.handleCircleClick.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
