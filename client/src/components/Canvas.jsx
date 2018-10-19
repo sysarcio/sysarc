@@ -433,6 +433,9 @@ class Canvas extends Component {
             {' '}
             Canvases{' '}
           </p>
+          <p className='canvases-p' onClick={this.takeMeToTheDocs}>
+            Docs
+          </p>
           <p
             className="canvases-p"
             onClick={() => this.processScreenshot('DOWNLOAD')}
