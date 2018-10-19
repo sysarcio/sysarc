@@ -44,7 +44,7 @@ class NodeDeleteTarget extends Component {
             this.props.parentHovered || this.state.isHovered ? true : false
           }
           points={[7, 7, 17, 17]}
-          stroke={this.state.isHovered ? 'red' : 'black'}
+          stroke={this.state.isHovered ? '#EED463' : 'black'}
           strokeWidth={2}
         />
         <Line
@@ -52,7 +52,7 @@ class NodeDeleteTarget extends Component {
             this.props.parentHovered || this.state.isHovered ? true : false
           }
           points={[17, 7, 7, 17]}
-          stroke={this.state.isHovered ? 'red' : 'black'}
+          stroke={this.state.isHovered ? '#EED463' : 'black'}
           strokeWidth={2}
         />
         <Circle
