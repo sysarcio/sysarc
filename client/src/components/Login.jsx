@@ -90,7 +90,7 @@ class Login extends Component {
             <p onClick={this.props.toggleSignup} className='existing-user'>Create new account?</p>
             <button
               type="submit"
-              onClick={this.handleSignup}
+              onClick={this.handleLogin}
               className='signup-btn'>
               Login
               </button>

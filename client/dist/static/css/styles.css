@@ -63,19 +63,13 @@ body {
   -webkit-appearance: none;
   display: block;
   background: transparent;
-  color: #03a9f4;
+  color: #49cc90;
   width: 90%;
   border: none;
   border-bottom: 1px solid #ddd;
 }
 
-.submit-form {
-    /* text-align: right;
-    clear: both;
-    float: center;
-    margin-right:40px;
-    display:inline-block */
-} 
+
 .signup-btn {
   position: center;
   padding: 10px 30px;
@@ -292,7 +286,9 @@ body {
   text-transform: uppercase;
   text-align: center;
   color: #394256;
+  margin-top: 40px;
   font: 1000 40px/5px "Roboto",
+ 
   "Lato",
   "Open Sans",
   "Helvetica Neue",
@@ -370,11 +366,28 @@ body {
 
 /* --------------- Canvases--------------- */
 
+.final-delete {
+  border-radius: 5px;
+   padding: 1px 2px;
+   line-height: 10px;
+   overflow: hidden;
+   color: #49cc90;
+   margin-top: 5px;
+
+}
+
+.final-delete:hover {
+  color:#EED463;
+}
+
+
 .canvases {
   display: flex;
   flex-wrap: wrap;
   width: 80%;
-  margin: 0 auto;
+  margin: 60px auto;
+  margin-top: 80px;
+
 
 }
 
@@ -382,13 +395,14 @@ body {
   height: 150px;
   width: 200px;
   border: 2px solid #394256;
-  border-radius: 15px;
+  border-radius: 5px;
   margin: 20px;
   padding: 20px;
   overflow: hidden;
   cursor: pointer;
   opacity: 0.5;
-  background: #91CAC3;
+  background: #394256;
+ color: #49cc90; 
 }
 
 .canvas-thumbnail:hover {
@@ -431,7 +445,7 @@ body {
   height: 150px;
   width: 200px;
   border: 2px solid #EED463;
-  border-radius: 15px;
+  border-radius: 5px;
   margin: 20px;
   padding: 20px;
   cursor: pointer;
@@ -445,14 +459,14 @@ body {
     height: 150px;
     width: 200px;
     border: 2px solid #394256;
-    border-radius: 15px;
+    border-radius: 5px;
     margin: 20px;
     padding: 20px;
     cursor: pointer;
-    opacity: 0.5;
-    background: #91CAC3;
+    opacity: 0.75;
     text-align: center;
     vertical-align: middle;
+    color: #394256
 }
 
 
@@ -460,14 +474,17 @@ body {
   appearance: none;
   background-color: none;
   border: 1px solid #EED463;
-  line-height: 0; 
   font-size: 17px;
   width: 100%; 
   display: block; 
   box-sizing: border-box; 
   padding: 5px px; 
-  border-radius: 50px;
+  border-radius: 5px;
   outline: none;
+  margin-bottom: 15px;
+  /* text-align: center; */
+  font-size: 14px;
+  
 }
 
 .form-button {
@@ -475,12 +492,18 @@ body {
   text-align: center;
   background: none;
   cursor: pointer;
-  background: #91CAC3;
-  padding: 5px px;
-  border-radius: 50px;
+  padding: 5px;
+  border-radius: 5px;
   width: 100%;
+  text-align: right;
+  font-size: 14px;
+  padding: 5px 25px;
+  border: white;
+  background: transparent;
+  color:#EED463
   
 }
+
 
 
 
@@ -503,8 +526,10 @@ body {
   padding: 20px;
   font-size: 10px;
   /* width: 40px; */
-  background-color: #dddddd;
+  border: 1px #49cc90;
+  background-color: transparent;
   display: flex;
+  font-size: 14px;
 }
 
 span {
@@ -528,8 +553,8 @@ span {
 
 
 .canvas-delete-btn {
-  /* float:left;
-  position:relative; */
+  /* float:left; */
+  /* position:relative;  */
   cursor:pointer;
   
 }
