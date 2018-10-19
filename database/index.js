@@ -107,9 +107,9 @@ module.exports = {
         MATCH (n:CANVAS {id: $canvasID})
         WITH n
         OPTIONAL MATCH (n)-[:CONTAINS]->(m)
-        WITH m
+        WITH m, n
         OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, m.created_at AS created_at, collect(p) AS connections;`,
+        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, n.name AS name, m.created_at AS created_at, collect(p) AS connections;`,
         {
           canvasID: canvasID
         }

@@ -80,6 +80,7 @@ class RouteLine extends Component {
       4: 'yellow'
     };
     let lineColor = LINE_LOGIC[lineCount] || 'black';
+    const multiplier = lineCount % 2 ? lineCount * 10 : lineCount * -10;
     // console.log('because the number of lines is ', lineCount, ' the color is ', lineColor);
 
     let {connectee, connector, connecteeLocation, connectorLocation, handleX, handleY} = this.props.connection;
@@ -87,25 +88,28 @@ class RouteLine extends Component {
     handleY = handleY * canvasHeight;
     const positions = {
       connectorRight: [
-        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2)
+        nodes[connector].x * canvasWidth + nodeScale, nodes[connector].y * canvasHeight + (nodeScale / 2),
+        (nodes[connector].x * canvasWidth + nodeScale) + 50, nodes[connector].y * canvasHeight + (nodeScale / 2) + multiplier
       ],
       connectorLeft: [
-        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2)
+        nodes[connector].x * canvasWidth, nodes[connector].y * canvasHeight + (nodeScale / 2),
+        (nodes[connector].x * canvasWidth) - 50, nodes[connector].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeRight: [
+        (nodes[connectee].x * canvasWidth + nodeScale) + 50, nodes[connectee].y * canvasHeight + (nodeScale / 2),
         nodes[connectee].x * canvasWidth + nodeScale, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ],
       connecteeLeft: [
+        (nodes[connectee].x * canvasWidth) - 50, nodes[connectee].y * canvasHeight + (nodeScale / 2) + multiplier,
         nodes[connectee].x * canvasWidth, nodes[connectee].y * canvasHeight + (nodeScale / 2)
       ]
       
     };
-    positions.transparentConnectorRight = [positions.connectorRight[0] + 7, positions.connectorRight[1]];
-    positions.transparentConnectorLeft = [positions.connectorLeft[0] - 7, positions.connectorLeft[1]];
-    positions.transparentConnecteeRight = [positions.connecteeRight[0] + 7, positions.connecteeRight[1]];
-    positions.transparentConnecteeLeft = [positions.connecteeLeft[0] - 7, positions.connecteeLeft[1]];
-
-
+    positions.transparentConnectorRight = [positions.connectorRight[0] + 15, ...positions.connectorRight.slice(1)];
+    positions.transparentConnectorLeft = [positions.connectorLeft[0] - 15, ...positions.connectorLeft.slice(1)];
+    positions.transparentConnecteeRight = [positions.connecteeRight[0] + 15, ...positions.connecteeRight.slice(1)];
+    positions.transparentConnecteeLeft = [positions.connecteeLeft[0] - 15, ...positions.connecteeLeft.slice(1)];
+    
     const connectorPoints = connectorLocation === 'left' ? positions.connectorLeft : positions.connectorRight;
     const connecteePoints = connecteeLocation === 'left' ? positions.connecteeLeft : positions.connecteeRight;
     const transparentConnectorPoints = connectorLocation === 'left' ? positions.transparentConnectorLeft : positions.transparentConnectorRight;
@@ -121,40 +125,19 @@ class RouteLine extends Component {
         <Line
           points={[
             ...transparentConnectorPoints,
-            handleX, handleY,
             ...transparentConnecteePoints
           ]}
           stroke='transparent'
           strokeWidth={20}
-          tension={1}
-          bezier
         />
         <Line
           points={[
             ...connectorPoints,
-            handleX, handleY,
             ...connecteePoints
           ]}
           stroke={this.state.isHovered ? 'yellow' : lineColor}
           strokeWidth={1}
-          tension={1}
-          bezier
         />
-        {this.state.isHovered ? 
-          <Circle
-            radius={7}
-            stroke={"yellow"}
-            strokeWidth={1}
-            x={handleX}
-            y={handleY}
-            fill="black"
-            draggable={true}
-            onDragMove={this.handleLineDrag}
-            onDragEnd={this.handleLineDrop}
-          />
-        :
-          null
-        }
       </Group>
     );
   }
