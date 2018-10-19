@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Rect, Text, Group, Circle, Line } from 'react-konva';
 import Konva from 'konva';
+import dummyData from './dummyDataForReact.jsx'
 
 const toolbarProperties = {
-  width: 150,
-  height: 150,
+  width: 175,
+  height: 175,
   strokeWidth: 1,
   fill: "rgb(232, 232, 232)",
   border: "1px solid #394256"
@@ -44,7 +45,7 @@ class Toolbar extends Component {
         {nodeTypes.map((type, i) => (
           <Text
             key={i}
-            onClick={() => this.props.prepNewNode(type)}
+            onClick={(e) => this.props.prepNewNode(type, e)}
             text={`${type} +`}
             fill={textProperties.fill}
             width={textProperties.width}

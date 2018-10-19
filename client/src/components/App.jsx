@@ -6,6 +6,7 @@ import Signup from './Signup.jsx';
 import Canvases from './Canvases.jsx';
 import Landing from './Landing.jsx';
 import NavBar from './NavBar.jsx'
+import Docs from './Docs.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -40,6 +41,10 @@ class App extends Component {
         <Route
           path='/canvas/:name'
           component={Canvas}
+        />
+        <Route
+          path='/docs'
+          component={Docs}
         />
       </div>
     );
