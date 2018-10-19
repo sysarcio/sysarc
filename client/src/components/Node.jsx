@@ -12,11 +12,9 @@ class Node extends Component {
     super(props);
 
     this.state = {
-      dragX: null,
-      dragY: null
-    };
+      isHovered: false
+    }
 
-    this.handleDragBounds = this.handleDragBounds.bind(this);
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleCircleClick = this.handleCircleClick.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
@@ -25,11 +23,31 @@ class Node extends Component {
   }
 
   handleDragState(e) {
-    const { x, y } = e.target.attrs;
-    this.setState({
-      dragX: x,
-      dragY: y
-    });
+    let { x, y } = e.target.attrs;
+    
+    if (x < 0) {
+      x = 0;
+    } else if (x + this.props.scale > this.props.canvasWidth) {
+      x = this.props.canvasWidth - this.props.scale;
+    }
+
+    if (y < 0) {
+      y = 0;
+    } else if (y + this.props.scale > this.props.canvasHeight) {
+      y = this.props.canvasHeight - this.props.scale;
+    }
+
+    x = x / this.props.canvasWidth;
+    y = y / this.props.canvasHeight;
+
+    const data = {
+      x,
+      y,
+      id: this.props.node.id,
+      room: this.props.room
+    };
+
+    this.props.socket.emit('move node', data);
   }
 
   handleCircleClick(target) {
@@ -59,39 +77,6 @@ class Node extends Component {
     };
 
     this.props.socket.emit('place node', data);
-
-    this.setState({
-      dragX: null,
-      dragY: null
-    });
-  }
-
-  handleDragBounds({ x, y }) {
-    if (x < 0) {
-      x = 0;
-    } else if (x + this.props.scale > this.props.canvasWidth) {
-      x = this.props.canvasWidth - this.props.scale;
-    }
-
-    if (y < 0) {
-      y = 0;
-    } else if (y + this.props.scale > this.props.canvasHeight) {
-      y = this.props.canvasHeight - this.props.scale;
-    }
-
-    x = x / this.props.canvasWidth;
-    y = y / this.props.canvasHeight;
-
-    const data = {
-      x,
-      y,
-      id: this.props.node.id,
-      room: this.props.room
-    };
-
-    this.props.socket.emit('move node', data);
-
-    return { x, y };
   }
 
   render() {
@@ -116,7 +101,6 @@ class Node extends Component {
         onDragEnd={this.handleDragEnd}
         draggable={true}
         onDragMove={this.handleDragState}
-        dragBoundFunc={this.handleDragBounds}
         x={x}
         y={y}
       >

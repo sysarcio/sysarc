@@ -139,6 +139,7 @@ router.get('/getRoomData/:id', async (req, res) => {
     }, [{},{}]);
     
     res.send({nodes, connections, name});
+<<<<<<< HEAD
   } catch(err) {
     console.log(err);
   }
@@ -165,6 +166,8 @@ router.get('/Docs/:id', async (req, res) => {
     console.log('formatted records: ', connections)
     // console.log('leaving server with records: ', records)
     res.send({connections});
+=======
+>>>>>>> Implement multi-point lines
   } catch(err) {
     console.log(err);
   }
