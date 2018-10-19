@@ -54,7 +54,7 @@ class CanvasThumbnail extends React.Component {
     return <div className="canvas-thumbnail" id={this.props.get(this.props.canvas, 'id')}>
     <div className = 'centered-div'>
         {showModal ? showConfirmation : showDeleteOption}
-        <div onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas, 'id'))}>
+        <div className="canvas-thumbnail-goto" onClick={() => this.props.goToCanvas(this.props.get(this.props.canvas, 'id'))}>
           <h3>{this.props.get(this.props.canvas, 'name')}</h3>
         <div style={divStyle}>
             <img src={this.props.get(this.props.canvas, 'image')} width="100%" alt={this.props.get(this.props.canvas, 'name')} />
