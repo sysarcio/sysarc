@@ -160,8 +160,12 @@ body {
   height: 15%;
 }
 
+.header-bar {
+  width: 100%; 
+}
+
 .header-links {
-  width: 100%;
+  width: 50%;
 }
 
 .form-page__form-header {
@@ -267,6 +271,10 @@ body {
   align-items: center;
   height: 100vh;
   padding-bottom: 10px;
+}
+
+.canvas-name {
+  width: 50%;
 }
 
 .col-1-3 {

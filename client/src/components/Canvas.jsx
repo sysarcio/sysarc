@@ -28,6 +28,7 @@ class Canvas extends Component {
       showMenu: true,
       changingNodeType: false,
       miscNodeName: '',
+      name: '',
       toDocs: false,
       mouseLoc: {
         x: 0,
@@ -142,13 +143,14 @@ class Canvas extends Component {
       url: `/api/getRoomData/${this.roomID}`,
       method: 'GET'
     };
-
+    
     try {
       const { data } = await axios(options);
-      const { nodes, connections } = data;
+      const { nodes, connections, name } = data;
       this.setState({
         nodes,
-        connections
+        connections,
+        name
       });
     } catch (err) {
       console.log(err);
@@ -424,6 +426,10 @@ class Canvas extends Component {
           <h1 className="logo-sm" onClick={this.goToLanding}>
             Sketchpad Ninja
           </h1>
+        </div>
+        <div className="canvas-name">
+          {/* CANVAS NAME */}
+          <h2>{this.state.name}</h2>
         </div>
         <div className="header-links">
           <p className="logout-p" onClick={this.logout}>

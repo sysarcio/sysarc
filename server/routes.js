@@ -26,7 +26,6 @@ router.post('/signup', async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
     req.body.password = password;
     const user = await db.addUser(req.body);
-    console.log(user);
     // res.send(user.get('u.id'));
   } catch (err) {
     console.log(err);
@@ -111,6 +110,7 @@ router.delete('/canvas/:id', async (req, res) => {
 router.get('/getRoomData/:id', async (req, res) => {
   try {
     const records = await db.getCanvas(req.params.id);
+    const name = records[0].get('name');
     const [nodes, connections] = records.reduce((output, r) => {
       if (r.get('id') === null) return output;
       
@@ -138,7 +138,7 @@ router.get('/getRoomData/:id', async (req, res) => {
       return output;
     }, [{},{}]);
     
-    res.send({nodes, connections});
+    res.send({nodes, connections, name});
   } catch(err) {
     console.log(err);
   }

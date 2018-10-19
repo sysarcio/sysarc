@@ -7,8 +7,8 @@ const toolbarProperties = {
   width: 175,
   height: 175,
   strokeWidth: 1,
-  fill: "#aacfe4",
-  
+  fill: "rgb(232, 232, 232)",
+  border: "1px solid #394256"
 };
 
 const textProperties = {
@@ -26,36 +26,21 @@ class Toolbar extends Component {
     super(props);
     this.state = {};
 
-    this.handleDragBounds = this.handleDragBounds.bind(this);
-  }
-
-  handleDragBounds(pos) {
-    let { x, y } = pos;
-
-    if (x < 0) {
-      x = 0;
-    } else if (x + toolbarProperties.width > window.innerWidth) {
-      x = this.props.canvasWidth - toolbarProperties.width;
-    }
-
-    if (y < 0) {
-      y = 0;
-    } else if (y + toolbarProperties.height > window.innerHeight) {
-      y = this.props.canvasHeight - toolbarProperties.height;
-    }
-
-    return { x, y };
   }
 
   render() {
     return (
-      <Group draggable={true} dragBoundFunc={this.handleDragBounds}>
+      <Group
+        draggable={true}
+        x={this.props.canvasWidth - toolbarProperties.width}
+      >
         <Rect
           cornerRadius={15}
           width={toolbarProperties.width}
           height={toolbarProperties.height}
           fill={toolbarProperties.fill}
-          strokeWidth={toolbarProperties.strokeWidth}
+          stroke={"#394256"}
+          strokeWidth={1}
         />
         {nodeTypes.map((type, i) => (
           <Text
