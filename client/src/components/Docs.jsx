@@ -12,7 +12,8 @@ class Docs extends React.Component {
       apiVersion: 1,
       apiTitle: window.location.pathname.split('/')[2]
     }
-    this.getDocsData(window.location.pathname.split('/')[2])
+    this.getDocsData(window.location.pathname.split('/')[2]);
+    this.goToCanvas = this.goToCanvas.bind(this);
     console.log(window.location.pathname.split('/')[2]);
   }
   goToCanvas() {
