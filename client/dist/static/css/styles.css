@@ -13,15 +13,7 @@ body {
 }
 
 .form-page__wrapper {
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70%;
-  width: 70%;
-  border: 1px solid #49cc90;
-  margin: 200px 40px 60px 195px;
-  float: center; */
-  
+
   width: 420px;
   margin: 0 auto;
   z-index: 99;
@@ -253,7 +245,8 @@ body {
 }
 
 .logo {
-  margin: 10px 20px 0px 60px;
+  /* margin: 125px 20px 0px 60px; */
+  margin: 150px auto;
   font-weight: 200;
   letter-spacing: .5px;
   font-size: 148px;
@@ -302,7 +295,7 @@ body {
 }
 
 .hello {
-  margin: 100px 20px 0px 60px;
+  margin: 100px 20px 0px 160px;
   font-weight: 200;
   letter-spacing: .5px;
   font-size: 15px;
