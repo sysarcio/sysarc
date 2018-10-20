@@ -10,14 +10,14 @@ class Docs extends React.Component {
       swaggerVersion: '2.0',
       paths: {},
       apiVersion: 1,
-      apiTitle: window.location.pathname.split('/')[2]
+      apiTitle: 'Your Canvas'
     }
     this.getDocsData(window.location.pathname.split('/')[2]);
     this.goToCanvas = this.goToCanvas.bind(this);
     console.log(window.location.pathname.split('/')[2]);
   }
   goToCanvas() {
-    this.props.history.push(`/canvas/${this.props.location.canvasID}`);
+    this.props.history.push(`/canvas/${window.location.pathname.split('/')[2]}`);
   }
 
   async getDocsData(id) {
