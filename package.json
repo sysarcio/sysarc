@@ -9,6 +9,7 @@
   "scripts": {
     "start": "webpack -d && node server/index.js",
     "watch": "webpack -d && nodemon server/index.js -w",
+    "production": "webpack -d && pm2 start server/index.js",
     "react-dev": "webpack -d --watch",
     "server-dev": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -39,6 +40,7 @@
     "lodash": "^4.17.11",
     "neo4j-driver": "^1.6.3",
     "path": "^0.12.7",
+    "pm2": "^3.2.2",
     "react": "^16.5.2",
     "react-bootstrap": "^0.32.4",
     "react-bootstrap-modal": "^4.2.0",

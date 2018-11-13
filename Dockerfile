@@ -10,6 +10,6 @@ COPY . .
 
 EXPOSE 80
 
-CMD ["npm", "run", "watch"]
+CMD ["npm", "run", "production"]
 
 
