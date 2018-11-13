@@ -12,6 +12,6 @@ COPY . .
 
 EXPOSE 80
 
-CMD ["npm", "run", "production"]
+CMD ["pm2-runtime", "npm", "--", "start"]
 
 
