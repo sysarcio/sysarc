@@ -25,6 +25,8 @@ const db = require('../database/index');
 // redis.on('connect', () => {
 //   console.log('Redis connected successfully');
 // });
+console.log('\n\n instantiated io: \n');
+console.log(io);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

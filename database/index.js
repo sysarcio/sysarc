@@ -8,9 +8,12 @@ const driver = neo4j.driver(
   ),
   {disableLosslessIntegers: true}
 );
-
+console.log('\n\n\n Initialized connection with DB \n');
+console.log(driver);
 const session = driver.session();
-
+console.log('\n\n\n Initialized session from DB \n');
+console.log(session);
+console.log('\n\n');
 module.exports = {
   async addUser({ id, email, password }) {
     try {
