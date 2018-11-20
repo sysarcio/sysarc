@@ -25,6 +25,9 @@ const db = require('../database/index');
 // redis.on('connect', () => {
 //   console.log('Redis connected successfully');
 // });
+console.log('\n\n instantiated server: \n');
+console.log(server);
+
 console.log('\n\n instantiated io: \n');
 console.log(io);
 
