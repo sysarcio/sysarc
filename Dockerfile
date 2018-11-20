@@ -12,6 +12,6 @@ COPY . .
 
 EXPOSE 80
 
-CMD ["npm", "run", "temp"]
+CMD ["npm", "--", "start"]
 
 
