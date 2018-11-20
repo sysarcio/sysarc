@@ -7,7 +7,7 @@
     "node": "8.11.1"
   },
   "scripts": {
-    "start": "webpack -d && node server/index.js",
+    "start": "webpack -p && forever start -f server/index.js",
     "watch": "webpack -d && nodemon server/index.js -w",
     "production": "webpack -d && pm2 start server/index.js",
     "react-dev": "webpack -d --watch",
