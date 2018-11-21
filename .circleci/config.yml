@@ -12,17 +12,17 @@ jobs:
       - run:
           name: login-docker
           command: docker login -u baybars1223 --password $DOCKER_PASS
-      - run:
-          name: docker-pull-last
-          command: docker pull baybars1223/sysarcio:latest
+      # - run:
+      #     name: docker-pull-last
+      #     command: docker pull baybars1223/sysarcio:latest
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@5'
-      - run:
-          name: install-npm-wee
-          command: npm install
+      # - run:
+      #     name: update-npm
+      #     command: 'sudo npm install -g npm@5'
+      # - run:
+      #     name: install-npm-wee
+      #     command: npm install
       - run:
           name: build-docker-image
           command: 'docker build -t baybars1223/sysarcio .'
