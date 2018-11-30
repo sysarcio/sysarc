@@ -2,6 +2,8 @@
 
 A fast, collaborative design tool for systems architecture.
 
+![SketchpadNinja](https://user-images.githubusercontent.com/22054442/49307047-a0d09d00-f499-11e8-8553-999bfbb1f43d.png)
+
 [sketchpad.ninja](http:/sketchpad.ninja/)
 
 ## Getting Started
