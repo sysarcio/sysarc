@@ -1,4 +1,4 @@
-const neo4j = require('neo4j-driver').v1;
+const neo4j = require("neo4j-driver").v1;
 
 const driver = neo4j.driver(
   process.env.GRAPHENEDB_URI,
@@ -6,14 +6,11 @@ const driver = neo4j.driver(
     process.env.GRAPHENEDB_USERNAME,
     process.env.GRAPHENEDB_PASSWORD
   ),
-  {disableLosslessIntegers: true}
+  { disableLosslessIntegers: true }
 );
-console.log('\n\n\n Initialized connection with DB \n');
-console.log(driver);
+
 const session = driver.session();
-console.log('\n\n\n Initialized session from DB \n');
-console.log(session);
-console.log('\n\n');
+
 module.exports = {
   async addUser({ id, email, password }) {
     try {
@@ -45,8 +42,6 @@ module.exports = {
         }
       );
 
-      console.log(user);
-
       session.close();
       if (!user.records.length) {
         throw {
@@ -54,7 +49,7 @@ module.exports = {
           code: 401
         };
       }
-      
+
       return user.records[0];
     } catch (err) {
       throw err;
@@ -98,7 +93,7 @@ module.exports = {
       session.close();
 
       return;
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   },
@@ -226,13 +221,23 @@ module.exports = {
       );
 
       session.close();
-      return
+      return;
     } catch (err) {
       throw err;
     }
   },
 
-  async addConnection({connector, connectee, handleX, connectorLocation, connecteeLocation, handleY, room, id, data}) {
+  async addConnection({
+    connector,
+    connectee,
+    handleX,
+    connectorLocation,
+    connecteeLocation,
+    handleY,
+    room,
+    id,
+    data
+  }) {
     data = JSON.stringify(data);
     try {
       const results = await session.run(
@@ -266,12 +271,12 @@ module.exports = {
       );
 
       return results.records[0];
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   },
 
-  async updateConnection({data, handleX, handleY, id}) {
+  async updateConnection({ data, handleX, handleY, id }) {
     data = JSON.stringify(data);
     try {
       const results = await session.run(
@@ -288,7 +293,7 @@ module.exports = {
         }
       );
       return results.records[0];
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   },
@@ -314,7 +319,6 @@ module.exports = {
 
   async getDocs(canvasID) {
     try {
-      console.log('made it to db with id: ', canvasID);
       const result = await session.run(
         `
         MATCH (n:CANVAS {id: $canvasID})
@@ -325,10 +329,10 @@ module.exports = {
         RETURN collect(p) AS connections`,
         {
           canvasID: canvasID
-        }  
+        }
       );
       session.close();
-      // console.log(`leaving db with keys: ${result.records[0].keys} \n fields: ${result.records[0]._fields} \n fieldLookup: ${result.records[0]._fieldLookup}`);
+
       return result.records;
     } catch (err) {
       throw err;

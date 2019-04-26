@@ -1,6 +1,6 @@
-import React from 'react';
-import Response from './DocsResponse.jsx';
-import Parameter from './DocsParameter.jsx';
+import React from "react";
+import Response from "./DocsResponse.jsx";
+import Parameter from "./DocsParameter.jsx";
 class DocsOperation extends React.Component {
   constructor(props) {
     super(props);
@@ -15,14 +15,9 @@ class DocsOperation extends React.Component {
     this.setState({
       show: !this.state.show
     });
-    // console.log(this.state.show);
   }
 
   render() {
-    // console.log(`Object passed from DocsOperation to DocsResponse: \n`);
-    // console.log(this.props.operation.responses);
-    // console.log(`Object passed from DocsOperation to DocsParameter: \n`);
-    // console.log(this.props.operation.parameters);
     const groupExamples = parameters => {
       const examples = {
         query: [],
@@ -32,25 +27,25 @@ class DocsOperation extends React.Component {
         header: []
       };
       parameters.map(param => {
-        if (param.in === 'query') {
+        if (param.in === "query") {
           examples.query.push(param);
-        } else if (param.in === 'body') {
+        } else if (param.in === "body") {
           examples.body.push(param);
-        } else if (param.in === 'path') {
+        } else if (param.in === "path") {
           examples.path.push(param);
-        } else if (param.in === 'formData') {
+        } else if (param.in === "formData") {
           examples.formData.push(param);
-        } else if (param.in === 'header') {
+        } else if (param.in === "header") {
           examples.header.push(param);
         }
       });
-      // console.log('returning examples: ', examples);
+
       return examples;
     };
 
     const formatExample = paramsArray => {
-      if (paramsArray[0].in === 'query') {
-        let output = 'Example query: \n';
+      if (paramsArray[0].in === "query") {
+        let output = "Example query: \n";
         paramsArray.forEach((element, idx) => {
           if (idx === 0) {
             output += `${this.props.pathName}?`;
@@ -58,40 +53,37 @@ class DocsOperation extends React.Component {
           // output += <wbr/>;
           output += `${element.name}=YOUR_INPUT_HERE`;
           if (idx !== paramsArray.length - 1) {
-            output += '&';
+            output += "&";
           }
           return output;
         });
         return <div>{output}</div>;
       }
-      if (paramsArray[0].in === 'body') {
-        // console.log(paramsArray);
-        let output = 'Example body object: { ';
+      if (paramsArray[0].in === "body") {
+        let output = "Example body object: { ";
         paramsArray.forEach((element, idx) => {
           output += `"${element.name}": YOUR_INPUT_HERE`;
           if (idx !== paramsArray.length - 1) {
-            output += ', ';
+            output += ", ";
           } else {
-            output += ' }';
+            output += " }";
           }
           return output;
         });
         return <div>{output}</div>;
       }
-      if (paramsArray[0].in === 'path') {
-        // console.log(paramsArray);
+      if (paramsArray[0].in === "path") {
         let output = `Example path: ${this.props.pathName}/`;
         paramsArray.forEach((element, idx) => {
           output += `YOUR_INPUT_HERE`;
           if (idx !== paramsArray.length - 1) {
-            output += '/';
+            output += "/";
           }
           return output;
         });
         return <div>{output}</div>;
       }
-      if (paramsArray[0].in === 'formData') {
-        // console.log(paramsArray);
+      if (paramsArray[0].in === "formData") {
         let output = `Example with curl: curl -X ${this.props.method.toUpperCase()} "${
           this.props.pathName
         }" -H "Content-Type: application/x-www-form-urlendivd" -d `;
@@ -101,7 +93,7 @@ class DocsOperation extends React.Component {
           }
           output += `${element.name}=YOUR_INPUT_HERE`;
           if (idx !== paramsArray.length - 1) {
-            output += '&';
+            output += "&";
           } else {
             output += '"';
           }
@@ -109,8 +101,7 @@ class DocsOperation extends React.Component {
         });
         return <div>{output}</div>;
       }
-      if (paramsArray[0].in === 'header') {
-        // console.log(paramsArray);
+      if (paramsArray[0].in === "header") {
         let output = `Example with curl: curl -X ${this.props.method.toUpperCase()} "${
           this.props.pathName
         }" -H `;
@@ -120,7 +111,7 @@ class DocsOperation extends React.Component {
           }
           output += `${element.name}:YOUR_INPUT_HERE`;
           if (idx !== paramsArray.length - 1) {
-            output += ', ';
+            output += ", ";
           } else {
             output += '"';
           }
@@ -144,43 +135,40 @@ class DocsOperation extends React.Component {
       );
     };
 
-    const pathCeptionThePathBegins = (parameters) => {
-      console.log(parameters);
+    const pathCeptionThePathBegins = parameters => {
       return (
         <div className="docs-parameters-container">
           {Object.values(parameters).map((param, index) => {
-              return (
-                    <Parameter
-                      key={index}
-                      param={param}
-                    />
-              )
-            })}
+            return <Parameter key={index} param={param} />;
+          })}
           {generateExamples(parameters)}
-
         </div>
       );
     };
 
-    const pathCeptionThePathRises = (responses) => {
+    const pathCeptionThePathRises = responses => {
       return (
-        <div className="docs-responses-container"> {Object.values(responses).map((response, index) => {
-        return (
-          <Response
-            key={index}
-            statusCode={Object.keys(responses)[index]}
-            response={response}
-          />  
-        )
-      })}
-      </div>
-      )
-    }
+        <div className="docs-responses-container">
+          {" "}
+          {Object.values(responses).map((response, index) => {
+            return (
+              <Response
+                key={index}
+                statusCode={Object.keys(responses)[index]}
+                response={response}
+              />
+            );
+          })}
+        </div>
+      );
+    };
 
     return (
       <div className="docs-operation">
         <div onClick={this.expand}>
-          <div className={this.props.className}>{this.props.method.toUpperCase()}</div>
+          <div className={this.props.className}>
+            {this.props.method.toUpperCase()}
+          </div>
           <div className="docs-method-description">
             {this.props.operation.description.slice(0, 1).toUpperCase() +
               this.props.operation.description.slice(1)}
