@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import io from 'socket.io-client';
-import { Stage, Layer, Rect, Group } from 'react-konva';
-import Konva from 'konva';
-import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import React, { Component } from "react";
+import io from "socket.io-client";
+import { Stage, Layer, Rect, Group } from "react-konva";
+import Konva from "konva";
+import axios from "axios";
+import { Redirect } from "react-router-dom";
 
-import Toolbar from './Toolbar.jsx';
-import Node from './Node.jsx';
-import RouteLine from './RouteLine.jsx';
-import RouteForm from './RouteForm.jsx';
-import DownloadButton from './DownloadButton.jsx';
+import Toolbar from "./Toolbar.jsx";
+import Node from "./Node.jsx";
+import RouteLine from "./RouteLine.jsx";
+import RouteForm from "./RouteForm.jsx";
+import DownloadButton from "./DownloadButton.jsx";
 
-import dummyData from './dummyDataForReact.jsx';
+import dummyData from "./dummyDataForReact.jsx";
 
 class Canvas extends Component {
   constructor(props) {
@@ -27,8 +27,8 @@ class Canvas extends Component {
       nodes: {},
       showMenu: true,
       changingNodeType: false,
-      miscNodeName: '',
-      name: '',
+      miscNodeName: "",
+      name: "",
       toDocs: false,
       mouseLoc: {
         x: 0,
@@ -39,42 +39,41 @@ class Canvas extends Component {
     this.roomID = this.props.match.params.name;
 
     this.socket = io.connect();
-    this.socket.on('connect', () => {
-      console.log('socket connected client side');
-      this.socket.emit('join room', this.roomID);
+    this.socket.on("connect", () => {
+      this.socket.emit("join room", this.roomID);
       this.getRoomData();
     });
 
-    this.socket.on('node added', node => {
+    this.socket.on("node added", node => {
       this.handleNewNode(node);
     });
 
-    this.socket.on('node moved', data => {
+    this.socket.on("node moved", data => {
       this.updateNode(data);
     });
 
-    this.socket.on('node deleted', data => {
+    this.socket.on("node deleted", data => {
       this.handleDeleteNode(data);
     });
 
-    this.socket.on('connection made', data => {
+    this.socket.on("connection made", data => {
       this.handleNewConnection(data);
     });
 
-    this.socket.on('connection dragged', data => {
+    this.socket.on("connection dragged", data => {
       this.updateConnection(data);
     });
 
-    this.socket.on('connection deleted', id => {
+    this.socket.on("connection deleted", id => {
       this.handleDeleteConnection(id);
     });
 
-    this.socket.on('connection updated', data => {
+    this.socket.on("connection updated", data => {
       this.handleConnectionUpdated(data);
     });
 
-    this.socket.on('request screenshot', data => {
-      this.processScreenshot('UPLOAD');
+    this.socket.on("request screenshot", data => {
+      this.processScreenshot("UPLOAD");
     });
 
     this.updateNode = this.updateNode.bind(this);
@@ -97,27 +96,27 @@ class Canvas extends Component {
   }
 
   goToLanding() {
-    this.props.history.push('/');
+    this.props.history.push("/");
   }
 
   goToCanvases() {
-    this.props.history.push('/canvases');
+    this.props.history.push("/canvases");
   }
 
   logout() {
-    localStorage.removeItem('userID');
-    this.props.history.push('/');
+    localStorage.removeItem("userID");
+    this.props.history.push("/");
   }
 
   componentDidMount() {
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       this.setState({
         width: window.innerWidth * 0.95,
         height: window.innerHeight * 0.77
       });
     });
 
-    window.addEventListener('keyup', e => {
+    window.addEventListener("keyup", e => {
       if (e.keyCode === 27) {
         this.setState({
           openConnection: null,
@@ -127,7 +126,7 @@ class Canvas extends Component {
       }
     });
 
-    window.addEventListener('keyup', e => {
+    window.addEventListener("keyup", e => {
       if (e.keyCode === 27) {
         this.setState({
           openConnection: null,
@@ -141,7 +140,7 @@ class Canvas extends Component {
   async getRoomData() {
     const options = {
       url: `/api/getRoomData/${this.roomID}`,
-      method: 'GET'
+      method: "GET"
     };
 
     try {
@@ -152,16 +151,12 @@ class Canvas extends Component {
         connections,
         name
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   }
 
   beginNewConnection(connectee, location) {
     const { connector, nodes, connectorLocation } = this.state;
     if (connector !== connectee) {
-      // const addToConnectorX = connectorLocation === 'left' ? -25 / this.width : 150 / this.width;
-      // const addToConnecteeX = location === 'left' ? -25 / this.width : 150 / this.width;
       if (connector) {
         const data = {
           connector,
@@ -171,7 +166,7 @@ class Canvas extends Component {
           handleX: (nodes[connector].x + nodes[connectee].x) / 2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
           data: {
-            '': {
+            "": {
               get: {},
               post: {},
               put: {},
@@ -181,7 +176,7 @@ class Canvas extends Component {
         };
 
         data.room = this.roomID;
-        this.socket.emit('make connection', data);
+        this.socket.emit("make connection", data);
 
         this.setState({
           connector: null
@@ -229,13 +224,12 @@ class Canvas extends Component {
   }
 
   prepNewNode(type, e) {
-    console.log(e);
-    if (type === 'MISC') {
+    if (type === "MISC") {
       let mouseLocation = {
         x: e.evt.clientX,
         y: e.evt.clientY
       };
-      console.log(mouseLocation);
+
       this.setState({
         changingNodeType: true,
         mouseLoc: mouseLocation
@@ -246,7 +240,7 @@ class Canvas extends Component {
           nodeToAdd: type
         },
         () => {
-          document.body.style.cursor = 'crosshair';
+          document.body.style.cursor = "crosshair";
         }
       );
     }
@@ -262,11 +256,11 @@ class Canvas extends Component {
         type: this.state.nodeToAdd,
         room: this.roomID
       };
-      this.socket.emit('add node', data);
+      this.socket.emit("add node", data);
 
       this.setState(
         { nodeToAdd: null },
-        () => (document.body.style.cursor = 'default')
+        () => (document.body.style.cursor = "default")
       );
     }
   }
@@ -290,7 +284,7 @@ class Canvas extends Component {
       id,
       room: this.roomID
     };
-    this.socket.emit('delete node', data);
+    this.socket.emit("delete node", data);
   }
 
   handleDeleteNode(data) {
@@ -315,17 +309,17 @@ class Canvas extends Component {
         showMenu: false
       },
       () => {
-        // //make a URL to point to the PNG recreation of the canvas
+        // make a URL to point to the PNG recreation of the canvas
         let screenshotURL = document
-          .getElementsByTagName('canvas')[0]
-          .toDataURL('image/png');
+          .getElementsByTagName("canvas")[0]
+          .toDataURL("image/png");
 
-        if (type === 'DOWNLOAD') {
-          var a = window.document.createElement('a');
+        if (type === "DOWNLOAD") {
+          var a = window.document.createElement("a");
           //set the href to your url, and give it the PNG type.
-          (a.href = screenshotURL), { type: 'image/png' };
+          (a.href = screenshotURL), { type: "image/png" };
           //set the filename
-          a.download = 'canvas.png';
+          a.download = "canvas.png";
           //append download to body
           document.body.appendChild(a);
           //execute click event on element
@@ -333,23 +327,23 @@ class Canvas extends Component {
           // Remove anchor from body
           document.body.removeChild(a);
         }
-        if (type === 'UPLOAD') {
+        if (type === "UPLOAD") {
           const options = {
-            method: 'POST',
-            url: '/api/uploadScreenshot',
+            method: "POST",
+            url: "/api/uploadScreenshot",
             data: {
-              canvasID: window.location.href.split('/canvas/')[1],
+              canvasID: window.location.href.split("/canvas/")[1],
               image: screenshotURL
             }
           };
 
           axios(options)
             .then(data => {
-              // console.log('uploaded screenshot');
+              //
             })
             .catch(err => {
               // Actually show user what went wrong
-              // console.log(err);
+              //
             });
         }
         this.setState({
@@ -360,69 +354,64 @@ class Canvas extends Component {
   }
 
   takeMeToTheDocs() {
-    // console.log(window.location.pathname.split('/')[2]);
-    this.setState({
-      toDocs: true
-    });
+    this.setState({ toDocs: true });
   }
 
   toggleOpenConnection(connection = null) {
-    this.setState({
-      openConnection: null
-    });
+    this.setState({ openConnection: null });
 
     if (connection) {
-      this.setState({
-        openConnection: connection
-      });
+      this.setState({ openConnection: connection });
     }
   }
 
   handleNodeNameChange(e) {
     e.preventDefault();
-    console.log(e);
-    this.setState({
-      miscNodeName: e.target.value
-    });
+
+    this.setState({ miscNodeName: e.target.value });
   }
 
   emitUpdateConnectionData(data) {
     data.room = this.roomID;
-    this.socket.emit('update connection data', data);
+    this.socket.emit("update connection data", data);
   }
   render() {
     const stageStyle = {
-      // backgroundColor: 'red',
-      borderRadius: '5px',
-      border: '1px solid #394256',
-      overflow: 'hidden'
-      // boxShadow: '5px 5px 10px #000'
+      borderRadius: "5px",
+      border: "1px solid #394256",
+      overflow: "hidden"
     };
 
     const formContainer = {
-      position: 'absolute',
+      position: "absolute",
       top: this.state.mouseLoc.y,
       left: this.state.mouseLoc.x,
-      background: 'rgba(255,255,255,0.8)',
-      height: '50px',
-      width: '200px',
-      borderRadius: '5px',
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      padding: '10px',
-      overflowX: 'scroll'
+      background: "rgba(255,255,255,0.8)",
+      height: "50px",
+      width: "200px",
+      borderRadius: "5px",
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      padding: "10px",
+      overflowX: "scroll"
     };
 
     let conPairs = {};
 
     if (this.state.toDocs === true) {
       return (
-        <Redirect to={{pathname:`/docs/${window.location.pathname.split('/')[2]}`, canvasID: window.location.pathname.split('/')[2]}}/>
+        <Redirect
+          to={{
+            pathname: `/docs/${window.location.pathname.split("/")[2]}`,
+            canvasID: window.location.pathname.split("/")[2]
+          }}
+        />
       );
     }
 
-    return <div className="canvas-style">
+    return (
+      <div className="canvas-style">
         <div className="header">
           <h1 className="logo-sm" onClick={this.goToLanding}>
             Sketchpad Ninja
@@ -430,33 +419,65 @@ class Canvas extends Component {
         </div>
         <div className="header-bar">
           <div>
-          <p className="canvas-name-p ">{this.state.name}</p>
+            <p className="canvas-name-p ">{this.state.name}</p>
           </div>
           <div>
             <p className="logout-p" onClick={this.logout}>
               Logout
             </p>
             <p className="canvases-p" onClick={this.goToCanvases}>
-              {' '}
-              Canvases{' '}
+              {" "}
+              Canvases{" "}
             </p>
             <p className="canvases-p" onClick={this.takeMeToTheDocs}>
               Docs
             </p>
-            <p className="canvases-p" onClick={() => this.processScreenshot('DOWNLOAD')}>
+            <p
+              className="canvases-p"
+              onClick={() => this.processScreenshot("DOWNLOAD")}
+            >
               Screenshot
             </p>
           </div>
         </div>
-        <div style={{ overflow: 'hidden' }}>
+        <div style={{ overflow: "hidden" }}>
           <div id="canvas" width={this.state.width} height={this.state.height}>
-            {/* stage is entire canvas; numbers must be in curly brackets */}
-            <Stage style={stageStyle} width={this.state.width} height={this.state.height}>
+            <Stage
+              style={stageStyle}
+              width={this.state.width}
+              height={this.state.height}
+            >
               <Layer className="canvas">
-                <Rect width={this.state.width} height={this.state.height} fill={'rgb(232, 232, 232)'} onMouseDown={this.emitNewNode} />
+                <Rect
+                  width={this.state.width}
+                  height={this.state.height}
+                  fill={"rgb(232, 232, 232)"}
+                  onMouseDown={this.emitNewNode}
+                />
                 {Object.values(this.state.nodes).map(node => {
-                  let colors = { SERVER: '#ab987a', DATABASE: '#394256', CLIENT: '#ff533d', SERVICES: '#f4b042' };
-                return <Node key={node.id} node={node} room={this.roomID} socket={this.socket} color={colors[node.type] || '#717f93'} canvasWidth={this.state.width} canvasHeight={this.state.height} scale={Math.min(this.state.height * 0.2, this.state.width * 0.2)} beginNewConnection={this.beginNewConnection} emitDeleteNode={this.emitDeleteNode} />;
+                  let colors = {
+                    SERVER: "#ab987a",
+                    DATABASE: "#394256",
+                    CLIENT: "#ff533d",
+                    SERVICES: "#f4b042"
+                  };
+                  return (
+                    <Node
+                      key={node.id}
+                      node={node}
+                      room={this.roomID}
+                      socket={this.socket}
+                      color={colors[node.type] || "#717f93"}
+                      canvasWidth={this.state.width}
+                      canvasHeight={this.state.height}
+                      scale={Math.min(
+                        this.state.height * 0.2,
+                        this.state.width * 0.2
+                      )}
+                      beginNewConnection={this.beginNewConnection}
+                      emitDeleteNode={this.emitDeleteNode}
+                    />
+                  );
                 })}
                 {Object.keys(this.state.connections).map(id => {
                   let conPair = [
@@ -464,32 +485,84 @@ class Canvas extends Component {
                     this.state.connections[id].connectee
                   ]
                     .sort()
-                    .join('');
-                  typeof conPairs[conPair] === 'undefined' ? (conPairs[conPair] = 1) : conPairs[conPair]++;
-                  return <RouteLine key={id} lineCount={conPairs[conPair]} id={id} room={this.roomID} connection={this.state.connections[id]} nodes={this.state.nodes} socket={this.socket} toggleOpenConnection={this.toggleOpenConnection} nodeScale={Math.min(this.state.height * 0.2, this.state.width * 0.2)} canvasHeight={this.state.height} canvasWidth={this.state.width} />;
+                    .join("");
+                  typeof conPairs[conPair] === "undefined"
+                    ? (conPairs[conPair] = 1)
+                    : conPairs[conPair]++;
+                  return (
+                    <RouteLine
+                      key={id}
+                      lineCount={conPairs[conPair]}
+                      id={id}
+                      room={this.roomID}
+                      connection={this.state.connections[id]}
+                      nodes={this.state.nodes}
+                      socket={this.socket}
+                      toggleOpenConnection={this.toggleOpenConnection}
+                      nodeScale={Math.min(
+                        this.state.height * 0.2,
+                        this.state.width * 0.2
+                      )}
+                      canvasHeight={this.state.height}
+                      canvasWidth={this.state.width}
+                    />
+                  );
                 })}
-                {this.state.showMenu ? <Toolbar canvasHeight={this.state.height} canvasWidth={this.state.width} prepNewNode={this.prepNewNode} takeMeToTheDocs={this.takeMeToTheDocs} /> : null}
+                {this.state.showMenu ? (
+                  <Toolbar
+                    canvasHeight={this.state.height}
+                    canvasWidth={this.state.width}
+                    prepNewNode={this.prepNewNode}
+                    takeMeToTheDocs={this.takeMeToTheDocs}
+                  />
+                ) : null}
               </Layer>
             </Stage>
           </div>
-          {this.state.openConnection ? <RouteForm room={this.roomID} socket={this.socket} connection={this.state.openConnection} // data={dummyData}
-              data={Object.keys(this.state.openConnection.data)[0] ? this.state.openConnection.data : { '': {} }} // pathName={Object.keys(dummyData)[0]}
-              pathName={Object.keys(this.state.openConnection.data)[0]} toggleOpenConnection={this.toggleOpenConnection} emitUpdateConnectionData={this.emitUpdateConnectionData} canvasHeight={this.state.height} canvasWidth={this.state.width} /> : null}
-          {this.state.changingNodeType ? <div style={formContainer}>
-              <form onSubmit={e => {
+          {this.state.openConnection ? (
+            <RouteForm
+              room={this.roomID}
+              socket={this.socket}
+              connection={this.state.openConnection} // data={dummyData}
+              data={
+                Object.keys(this.state.openConnection.data)[0]
+                  ? this.state.openConnection.data
+                  : { "": {} }
+              } // pathName={Object.keys(dummyData)[0]}
+              pathName={Object.keys(this.state.openConnection.data)[0]}
+              toggleOpenConnection={this.toggleOpenConnection}
+              emitUpdateConnectionData={this.emitUpdateConnectionData}
+              canvasHeight={this.state.height}
+              canvasWidth={this.state.width}
+            />
+          ) : null}
+          {this.state.changingNodeType ? (
+            <div style={formContainer}>
+              <form
+                onSubmit={e => {
                   e.preventDefault();
                   this.prepNewNode(this.state.miscNodeName);
                   this.setState({
                     changingNodeType: false,
-                    miscNodeName: ''
+                    miscNodeName: ""
                   });
-                }}>
-                <input className="noStyle" type="text" placeholder="Enter type of node" value={this.state.miscNodeName} onChange={this.handleNodeNameChange} style={{ width: '60%' }} />
+                }}
+              >
+                <input
+                  className="noStyle"
+                  type="text"
+                  placeholder="Enter type of node"
+                  value={this.state.miscNodeName}
+                  onChange={this.handleNodeNameChange}
+                  style={{ width: "60%" }}
+                />
                 <button>submit</button>
               </form>
-            </div> : null}
+            </div>
+          ) : null}
         </div>
-      </div>;
+      </div>
+    );
   }
 }
 

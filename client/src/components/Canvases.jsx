@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import CanvasThumbnail from './CanvasThumbnail.jsx';
-import axios from 'axios';
+import React, { Component } from "react";
+import CanvasThumbnail from "./CanvasThumbnail.jsx";
+import axios from "axios";
 
 class Canvases extends Component {
   constructor(props) {
     super(props);
     this.state = {
       canvases: [],
-      text: '',
+      text: "",
       showForm: false
     };
 
@@ -22,33 +22,31 @@ class Canvases extends Component {
   }
 
   goToLanding() {
-    this.props.history.push('/');
+    this.props.history.push("/");
   }
 
   logout() {
-    localStorage.removeItem('userID');
-    this.props.history.push('/');
+    localStorage.removeItem("userID");
+    this.props.history.push("/");
   }
 
   async componentDidMount() {
     if (!localStorage.userID) {
       // tell user they must be logged in
-      this.props.history.push('/login');
+      this.props.history.push("/login");
     } else {
       const options = {
-        method: 'GET',
+        method: "GET",
         url: `/api/canvases/${localStorage.userID}`
       };
 
       try {
         const { data: canvases } = await axios(options);
-        console.log('canvases from axios', canvases);
+
         this.setState({
           canvases
         });
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     }
   }
 
@@ -58,7 +56,6 @@ class Canvases extends Component {
   }
 
   handleChange(e) {
-    console.log('set state in HandleChange');
     this.setState({
       text: e.target.value
     });
@@ -67,8 +64,8 @@ class Canvases extends Component {
   async createCanvas(e) {
     e.preventDefault();
     const options = {
-      method: 'POST',
-      url: '/api/canvas/add',
+      method: "POST",
+      url: "/api/canvas/add",
       data: {
         name: this.state.text,
         userID: localStorage.userID
@@ -79,12 +76,11 @@ class Canvases extends Component {
       const {
         data: { id, name }
       } = await axios(options);
-      console.log('id-->', id);
+
       this.toggleShowForm();
       this.props.history.push(`/canvas/${id}`);
     } catch (err) {
       // Actually let user know that something went wrong
-      console.log(err);
     }
   }
 
@@ -93,7 +89,6 @@ class Canvases extends Component {
   }
 
   toggleShowForm() {
-    console.log('set state in toggleShowForm');
     this.setState({ showForm: !this.state.showForm });
   }
 
@@ -103,21 +98,18 @@ class Canvases extends Component {
       .then(response => {
         const canvasesCopy = this.state.canvases.slice();
         const canvasesAfterDelete = canvasesCopy.filter(canvas => {
-          return this.get(canvas, 'id') !== id;
+          return this.get(canvas, "id") !== id;
         });
         this.setState({
           canvases: canvasesAfterDelete
         });
       })
-      .catch(err => {
-        console.log('unable to delete canvas ', err);
-      });
+      .catch(err => {});
   }
 
   render() {
     const showCreateNewCanvas = this.state.showForm ? (
       <div>
-       
         <form className="canvases-form">
           <input
             type="text"
@@ -151,19 +143,19 @@ class Canvases extends Component {
           {showCreateNewCanvas}
 
           {this.state.canvases.map(c => {
-            if (this.get(c, 'id')) {
+            if (this.get(c, "id")) {
               return (
                 <CanvasThumbnail
                   deleteCanvas={this.deleteCanvas}
                   get={this.get}
                   canvas={c}
                   goToCanvas={this.goToCanvas}
-                  key={this.get(c, 'id')}
+                  key={this.get(c, "id")}
                 />
               );
             }
           })}
-          </div>
+        </div>
       </div>
     );
   }

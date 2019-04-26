@@ -1,17 +1,13 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-
-
+import React, { Component } from "react";
+import axios from "axios";
 
 class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: ''
+      email: "",
+      password: ""
     };
-
-    console.log(this.props.history);
 
     this.handlePassword = this.handlePassword.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
@@ -33,25 +29,24 @@ class Signup extends Component {
   }
 
   async handleSignup(e) {
-    
     const isValid = document.getElementById("signup-form").checkValidity();
-    
+
     if (isValid) {
       e.preventDefault();
       const options = {
-        method: 'POST',
-        url: '/api/signup',
+        method: "POST",
+        url: "/api/signup",
         data: {
           email: this.state.email,
           password: this.state.password
         }
       };
-      
+
       try {
-        const {data} = await axios(options);
+        const { data } = await axios(options);
         localStorage.userID = data;
-        this.props.history.push('/canvases');
-      } catch(err) {
+        this.props.history.push("/canvases");
+      } catch (err) {
         console.log(err);
       }
     }
@@ -59,47 +54,44 @@ class Signup extends Component {
 
   render() {
     return (
-
-
-      <div className='form-page__wrapper'>
-        <div className='form-page__form-wrapper'>
-          <div className='form-page__form-header'>
-            <h2 className='form-page__form-heading'>Sign Up</h2>
+      <div className="form-page__wrapper">
+        <div className="form-page__form-wrapper">
+          <div className="form-page__form-header">
+            <h2 className="form-page__form-heading">Sign Up</h2>
           </div>
           <form id="signup-form">
             <input
               type="email"
-              placeholder='Email'
+              placeholder="Email"
               required
               title="Must be a valid email address"
               value={this.state.email}
               onChange={this.handleEmail}
-              className='signup-input'
+              className="signup-input"
             />
             <input
               type="password"
-              placeholder='Password'
+              placeholder="Password"
               required
               value={this.state.password}
               onChange={this.handlePassword}
-              className='signup-input'
+              className="signup-input"
             />
-            
           </form>
-          <div className='submit-form'>
-            <p onClick={this.props.toggleLogin} className='existing-user'>Already have an account?</p>
+          <div className="submit-form">
+            <p onClick={this.props.toggleLogin} className="existing-user">
+              Already have an account?
+            </p>
             <button
               type="submit"
               onClick={this.handleSignup}
-              className='signup-btn'>
+              className="signup-btn"
+            >
               Signup
-              </button>
+            </button>
           </div>
         </div>
-       
       </div>
-
-
     );
   }
 }
