@@ -20,13 +20,12 @@ router.post("/uploadScreenshot", async (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  req.body.id = uuidv4();
-
   try {
+    const email = req.body.email;
+    const id = uuidv4();
     const password = await bcrypt.hash(req.body.password, 10);
-    req.body.password = password;
-    const user = await db.addUser(req.body);
-    res.send(user.get("u.id"));
+    const user = await db.addUser({ email, id, password });
+    res.send(user.id);
   } catch (err) {
     console.log(err);
     res.statusMessage = "That email address is already in use";
@@ -37,28 +36,16 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await db.getUser(req.body);
-    if (!user.get("u.email")) {
-      throw {
-        message: "No user exists with this email",
-        code: 401
-      };
-    }
+    const valid = await bcrypt.compare(req.body.password, user.password);
 
-    const valid = await bcrypt.compare(
-      req.body.password,
-      user.get("u.password")
-    );
     if (!valid) {
-      throw {
-        message: "Incorrect password",
-        code: 401
-      };
+      return res.sendStatus(401);
     }
 
-    res.send(user.get("u.id"));
+    res.send(user.id);
   } catch (err) {
-    res.statusMessage = err.message;
-    res.sendStatus(err.code);
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 
@@ -77,10 +64,22 @@ router.post("/canvas/add", async (req, res) => {
       canvasID,
       canvasName: req.body.name
     });
-    res.send({ id: canvas.get("c.id"), name: canvas.get("c.name") });
+
+    res.send(canvas);
   } catch (err) {
     res.statusMessage = err.message;
-    res.sendStatus(err.code || 500);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/canvas/:id/nodes", async (req, res) => {
+  req.body.id = uuidv4();
+
+  try {
+    const node = await db.addNode(req.body);
+    res.json(node);
+  } catch (err) {
+    res.sendStatus(500);
   }
 });
 
@@ -94,10 +93,20 @@ router.get("/canvases/:userID", async (req, res) => {
     }
 
     const canvases = await db.getUserCanvases(req.params.userID);
+
     res.send(canvases);
   } catch (err) {
-    res.statusMessage = err.message;
-    res.sendStatus(err.code);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/canvas/:id/connections", async (req, res) => {
+  try {
+    req.body.id = uuidv4();
+    const connection = await db.addConnection(req.body);
+    res.json(connection);
+  } catch (err) {
+    res.sendStatus(500);
   }
 });
 
@@ -112,49 +121,8 @@ router.delete("/canvas/:id", async (req, res) => {
 
 router.get("/getRoomData/:id", async (req, res) => {
   try {
-    const records = await db.getCanvas(req.params.id);
-    const name = records[0].get("name");
-    const [nodes, connections] = records.reduce(
-      (output, r) => {
-        if (r.get("id") === null) return output;
-
-        output[0][r.get("id")] = {
-          id: r.get("id"),
-          type: r.get("type"),
-          x: r.get("x"),
-          y: r.get("y")
-        };
-
-        r.get("connections").forEach(c => {
-          const {
-            description,
-            handleY,
-            handleX,
-            connectee,
-            connector,
-            connecteeLocation,
-            connectorLocation,
-            id,
-            data
-          } = c.properties;
-          output[1][id] = {
-            description,
-            handleX,
-            handleY,
-            connectee,
-            connector,
-            connecteeLocation,
-            connectorLocation,
-            id,
-            data: JSON.parse(data)
-          };
-        });
-        return output;
-      },
-      [{}, {}]
-    );
-
-    res.send({ nodes, connections, name });
+    const data = await db.getCanvas(req.params.id);
+    res.send(data);
   } catch (err) {
     console.log(err);
   }

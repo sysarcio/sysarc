@@ -43,18 +43,10 @@ io.on("connection", socket => {
     socket.join(roomID);
   });
 
-  socket.on("add node", async data => {
-    data.id = uuidv4();
-
+  socket.on("add node", async ({ id, x, y, type, room }) => {
+    const node = { id, x, y, type };
     try {
-      await db.addNode(data);
-      const node = {
-        x: data.x,
-        y: data.y,
-        type: data.type,
-        id: data.id
-      };
-      io.to(data.room).emit("node added", node);
+      io.to(room).emit("node added", node);
       socket.emit("request screenshot");
     } catch (err) {
       console.log(err);
@@ -78,14 +70,8 @@ io.on("connection", socket => {
   });
 
   socket.on("make connection", async data => {
-    data.id = uuidv4();
-    try {
-      await db.addConnection(data);
-      io.to(data.room).emit("connection made", data);
-      socket.emit("request screenshot");
-    } catch (err) {
-      console.log(err);
-    }
+    io.to(data.room).emit("connection made", data.data);
+    socket.emit("request screenshot");
   });
 
   socket.on("drag connection", data => {

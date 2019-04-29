@@ -9,56 +9,40 @@ class Login extends Component {
       password: ""
     };
 
-    this.handlePassword = this.handlePassword.bind(this);
-    this.handleEmail = this.handleEmail.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
-    this.ghettoButton = this.ghettoButton.bind(this);
   }
 
-  handleEmail(e) {
-    e.preventDefault();
-    this.setState({
-      email: e.target.value
-    });
-  }
-
-  handlePassword(e) {
-    e.preventDefault();
-    this.setState({
-      password: e.target.value
-    });
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   async handleLogin(e) {
-    const isValid = document.getElementById("login-form").checkValidity();
+    e.preventDefault();
 
-    if (isValid) {
-      e.preventDefault();
-      const options = {
-        method: "POST",
-        url: "/api/login",
-        data: {
-          email: this.state.email,
-          password: this.state.password
-        }
-      };
+    if (!e.target.checkValidity()) {
+      return;
+    }
 
-      try {
-        const { data } = await axios(options);
-        localStorage.userID = data;
-        this.props.history.push("/canvases");
-      } catch (err) {
-        // Actually show user what went wrong
-      }
+    const options = {
+      method: "POST",
+      url: "/api/login",
+      data: this.state
+    };
+
+    try {
+      const { data } = await axios(options);
+      localStorage.userID = data;
+      this.props.history.push("/canvases");
+    } catch (err) {
+      // Actually show user what went wrong
+      console.log(err);
     }
   }
 
   logout() {
     localStorage.removeItem("userID");
     this.props.history.push("/");
-  }
-  ghettoButton() {
-    this.props.history.push(`/docs`);
   }
 
   render() {
@@ -68,37 +52,35 @@ class Login extends Component {
           <div className="form-page__form-header">
             <h2 className="form-page__form-heading">Login</h2>
           </div>
-          <form id="login-form">
+          <form onSubmit={this.handleLogin}>
             <input
               className="signup-input"
               type="email"
+              name="email"
               placeholder="Email"
               required
               title="Must be a valid email address"
               value={this.state.email}
-              onChange={this.handleEmail}
+              onChange={this.handleChange}
             />
             <input
               type="password"
+              name="password"
               placeholder="Password"
               required
               value={this.state.password}
-              onChange={this.handlePassword}
+              onChange={this.handleChange}
               className="signup-input"
             />
+            <div className="submit-form">
+              <p onClick={this.props.toggleSignup} className="existing-user">
+                Create new account?
+              </p>
+              <button type="submit" className="signup-btn">
+                Login
+              </button>
+            </div>
           </form>
-          <div className="submit-form">
-            <p onClick={this.props.toggleSignup} className="existing-user">
-              Create new account?
-            </p>
-            <button
-              type="submit"
-              onClick={this.handleLogin}
-              className="signup-btn"
-            >
-              Login
-            </button>
-          </div>
         </div>
       </div>
     );

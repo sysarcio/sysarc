@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Rect, Text, Group, Circle, Line } from 'react-konva';
-import Konva from 'konva';
+import React, { Component } from "react";
+import { Rect, Text, Group, Circle, Line } from "react-konva";
+import Konva from "konva";
 
-import NodeShape from './NodeShape.jsx';
-import NodeRouteTarget from './NodeRouteTarget.jsx';
-import NodeDeleteTarget from './NodeDeleteTarget.jsx';
-import NodeText from './NodeText.jsx';
+import NodeShape from "./NodeShape.jsx";
+import NodeRouteTarget from "./NodeRouteTarget.jsx";
+import NodeDeleteTarget from "./NodeDeleteTarget.jsx";
+import NodeText from "./NodeText.jsx";
 
 class Node extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class Node extends Component {
 
     this.state = {
       isHovered: false
-    }
+    };
 
     this.handleDragEnd = this.handleDragEnd.bind(this);
     this.handleCircleClick = this.handleCircleClick.bind(this);
@@ -24,7 +24,7 @@ class Node extends Component {
 
   handleDragState(e) {
     let { x, y } = e.target.attrs;
-    
+
     if (x < 0) {
       x = 0;
     } else if (x + this.props.scale > this.props.canvasWidth) {
@@ -47,7 +47,7 @@ class Node extends Component {
       room: this.props.room
     };
 
-    this.props.socket.emit('move node', data);
+    this.props.socket.emit("move node", data);
   }
 
   handleCircleClick(target) {
@@ -55,12 +55,12 @@ class Node extends Component {
   }
 
   handleMouseEnter(e) {
-    document.body.style.cursor = 'move';
+    document.body.style.cursor = "move";
     this.setState({ isHovered: true });
   }
 
   handleMouseLeave(e) {
-    document.body.style.cursor = 'default';
+    document.body.style.cursor = "default";
     this.setState({ isHovered: false });
   }
 
@@ -76,7 +76,7 @@ class Node extends Component {
       room: this.props.room
     };
 
-    this.props.socket.emit('place node', data);
+    this.props.socket.emit("place node", data);
   }
 
   render() {

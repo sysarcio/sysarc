@@ -9,73 +9,83 @@ const driver = neo4j.driver(
   { disableLosslessIntegers: true }
 );
 
+const User = require("./Models/User");
+const Canvas = require("./Models/Canvas");
+const Node = require("./Models/Node");
+const Connection = require("./Models/Connection");
+
 const session = driver.session();
 
 module.exports = {
   async addUser({ id, email, password }) {
     try {
-      const newUser = await session.run(
-        `
-        CREATE (u:USER {id: $id, email: $email, password: $password})
-        RETURN u.id`,
-        {
-          id: id,
-          email: email,
-          password: password
-        }
-      );
-      session.close();
-      return newUser.records[0];
+      const newUser = await session
+        .run(
+          `
+        CREATE (user:USER {id: $id, email: $email, password: $password})
+        RETURN user`,
+          { id, email, password }
+        )
+        .then(({ records: [user] }) => {
+          session.close();
+          return new User(user.get("user"));
+        });
+      return newUser;
     } catch (err) {
-      throw err;
+      session.close();
+      throw new Error(err);
     }
   },
 
   async getUser({ email }) {
     try {
-      const user = await session.run(
-        `
-        MATCH (u:USER {email: $email})
-        RETURN u.id, u.email, u.password`,
-        {
-          email: email
-        }
-      );
+      const user = await session
+        .run(
+          `
+        MATCH (user:USER {email: $email})
+        RETURN user`,
+          { email }
+        )
+        .then(({ records: [user] }) => {
+          session.close();
 
-      session.close();
-      if (!user.records.length) {
-        throw {
-          message: `User not found with email address '${email}'`,
-          code: 401
-        };
-      }
+          if (!user) {
+            throw new Error(`User not found with email address '${email}'`);
+          }
 
-      return user.records[0];
+          return new User(user.get("user"));
+        });
+
+      return user;
     } catch (err) {
-      throw err;
+      session.close();
+      throw new Error(err);
     }
   },
 
   async addCanvas({ userID, canvasID, canvasName }) {
     try {
-      let result = await session.run(
-        `
+      const canvas = await session
+        .run(
+          `
         MATCH (u:USER {id: $userID})
         CREATE (c:CANVAS {id: $canvasID, name: $canvasName})<-[:CAN_EDIT]-(u)
-        RETURN c.id, c.name`,
-        {
-          userID: userID,
-          canvasID: canvasID,
-          canvasName: canvasName
-        }
-      );
+        RETURN c AS canvas`,
+          {
+            userID,
+            canvasID,
+            canvasName
+          }
+        )
+        .then(({ records: [canvas] }) => {
+          session.close();
 
-      canvas = result.records[0];
-      session.close();
+          return new Canvas(canvas.get("canvas"));
+        });
 
       return canvas;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
@@ -94,73 +104,95 @@ module.exports = {
 
       return;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
   async getCanvas(canvasID) {
     try {
-      const result = await session.run(
-        `
+      const data = await session
+        .run(
+          `
         MATCH (n:CANVAS {id: $canvasID})
         WITH n
         OPTIONAL MATCH (n)-[:CONTAINS]->(m)
         WITH m, n
         OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
-        RETURN m.id AS id, m.x AS x, m.y AS y, m.type AS type, n.name AS name, m.created_at AS created_at, collect(p) AS connections;`,
-        {
-          canvasID: canvasID
-        }
-      );
+        RETURN n AS canvas, m AS nodes, collect(p) AS connections;`,
+          { canvasID }
+        )
+        .then(({ records }) => {
+          session.close();
+          const { name } = records[0].get("canvas").properties;
 
-      session.close();
+          const [nodes, connections] = records.reduce(
+            (output, record) => {
+              const node = new Node(record.get("nodes"));
+              output[0][node.id] = node;
 
-      return result.records;
+              const connections = record
+                .get("connections")
+                .forEach(({ properties: connection }) => {
+                  output[1][connection.id] = connection;
+                });
+
+              return output;
+            },
+            [{}, {}]
+          );
+
+          return { nodes, connections, name };
+        });
+
+      return data;
     } catch (err) {
-      throw err;
+      session.close();
+      throw new Error(err);
     }
   },
 
   async getUserCanvases(userID) {
     try {
-      const result = await session.run(
-        `
+      const canvases = await session
+        .run(
+          `
         MATCH (u:USER {id: $userID})
         WITH u
-        OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m)
-        RETURN m.id AS id, m.name AS name, m.image AS image`,
-        {
-          userID: userID
-        }
-      );
-      session.close();
+        OPTIONAL MATCH (u)-[r:CAN_EDIT]->(m:CANVAS)
+        RETURN m AS canvas`,
+          { userID }
+        )
+        .then(({ records }) => {
+          session.close();
 
-      return result.records;
+          const hasCanvas = records[0].get("canvas");
+          if (!hasCanvas) {
+            return [];
+          }
+
+          return records.map(record => new Canvas(record.get("canvas")));
+        });
+
+      return canvases;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
-  async addNode({ x, y, type, room, id }) {
+  async addNode(data) {
     try {
       const result = await session.run(
         `
         MATCH (c:CANVAS {id: $room})
         CREATE (c)-[:CONTAINS]->(n:NODE {id: $id, x: $x, y: $y, created_at: timestamp(), type: $type})
-        RETURN n.x AS x, n.y AS y, n.id AS id, n.type AS type`,
-        {
-          x,
-          y,
-          type,
-          room,
-          id
-        }
+        RETURN n AS node`,
+        data
       );
 
       session.close();
-      return result.records[0];
+      return new Node(result.records[0].get("node"));
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
@@ -182,11 +214,11 @@ module.exports = {
       session.close();
       return result.records;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
-  async deleteNode(id) {
+  async deleteNode(nodeID) {
     try {
       const result = await session.run(
         `
@@ -196,15 +228,13 @@ module.exports = {
         WITH c, r, collect(r.id) AS id
         DETACH DELETE c, r
         RETURN id`,
-        {
-          nodeID: id
-        }
+        { nodeID }
       );
 
       session.close();
       return result.records;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
@@ -215,30 +245,17 @@ module.exports = {
         MATCH (n)-[r:IS_CONNECTED{id: $id}]->(m)
         DETACH DELETE r
         `,
-        {
-          id: id
-        }
+        { id }
       );
 
       session.close();
       return;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
-  async addConnection({
-    connector,
-    connectee,
-    handleX,
-    connectorLocation,
-    connecteeLocation,
-    handleY,
-    room,
-    id,
-    data
-  }) {
-    data = JSON.stringify(data);
+  async addConnection(data) {
     try {
       const results = await session.run(
         `
@@ -256,27 +273,17 @@ module.exports = {
           connectorLocation: $connectorLocation,
           connecteeLocation: $connecteeLocation
         }]->(m)
-        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data, r.connectorLocation AS connectorLocation, r.connecteeLocation AS connecteeLocation;`,
-        {
-          connector,
-          connectee,
-          connectorLocation,
-          connecteeLocation,
-          handleX,
-          handleY,
-          room,
-          id,
-          data
-        }
+        RETURN r AS connection;`,
+        data
       );
 
-      return results.records[0];
+      return new Connection(results.records[0].get("connection"));
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
-  async updateConnection({ data, handleX, handleY, id }) {
+  async updateConnection(data) {
     data = JSON.stringify(data);
     try {
       const results = await session.run(
@@ -284,17 +291,12 @@ module.exports = {
         MATCH (a)-[r:IS_CONNECTED {id: $id}]->(b)
         WITH r
         SET r.handleX = $handleX, r.handleY = $handleY, r.data = $data
-        RETURN r.id AS id, r.handleX AS handleX, r.handleY AS handleY, r.connector AS connector, r.connectee AS connectee, r.data AS data;`,
-        {
-          handleX,
-          handleY,
-          id,
-          data
-        }
+        RETURN r AS connection;`,
+        { data }
       );
-      return results.records[0];
+      return new Connection(results.records[0].get("connection"));
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
@@ -313,7 +315,7 @@ module.exports = {
       session.close();
       return result;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   },
 
@@ -335,7 +337,7 @@ module.exports = {
 
       return result.records;
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   }
 };

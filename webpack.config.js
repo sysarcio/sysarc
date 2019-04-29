@@ -1,24 +1,32 @@
-var path = require('path');
-var SRC_DIR = path.join(__dirname, '/client/src');
-var DIST_DIR = path.join(__dirname, '/client/dist');
+var path = require("path");
+var SRC_DIR = path.join(__dirname, "/client/src");
+var DIST_DIR = path.join(__dirname, "/client/dist");
 
 module.exports = {
   entry: `${SRC_DIR}/index.jsx`,
   output: {
-    filename: 'bundle.js',
+    filename: "bundle.js",
     path: DIST_DIR
   },
-  module : {
-    
-    rules : [
+  module: {
+    rules: [
       {
-        test : /\.jsx?/,
-        include : SRC_DIR,
+        test: /\.jsx?/,
+        include: SRC_DIR,
         exclude: /node_modules/, // exclude any and all files in the node_modules folder
-        loader : 'babel-loader',
-        query: {
-          presets: ['react', 'es2015']
-       }
+        loader: "babel-loader",
+        options: {
+          presets: [
+            [
+              "@babel/preset-env",
+              {
+                targets: { node: 11 }
+              }
+            ],
+            "@babel/preset-react"
+          ],
+          plugins: ["@babel/plugin-proposal-object-rest-spread"]
+        }
       }
     ]
   }

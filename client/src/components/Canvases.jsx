@@ -92,19 +92,19 @@ class Canvases extends Component {
     this.setState({ showForm: !this.state.showForm });
   }
 
-  deleteCanvas(id) {
+  async deleteCanvas(id) {
     axios
       .delete(`/api/canvas/${id}`)
       .then(response => {
         const canvasesCopy = this.state.canvases.slice();
-        const canvasesAfterDelete = canvasesCopy.filter(canvas => {
-          return this.get(canvas, "id") !== id;
-        });
+        const canvasesAfterDelete = canvasesCopy.filter(
+          canvas => canvas.id !== id
+        );
         this.setState({
           canvases: canvasesAfterDelete
         });
       })
-      .catch(err => {});
+      .catch(console.log);
   }
 
   render() {
@@ -142,19 +142,14 @@ class Canvases extends Component {
         <div className="canvases ">
           {showCreateNewCanvas}
 
-          {this.state.canvases.map(c => {
-            if (this.get(c, "id")) {
-              return (
-                <CanvasThumbnail
-                  deleteCanvas={this.deleteCanvas}
-                  get={this.get}
-                  canvas={c}
-                  goToCanvas={this.goToCanvas}
-                  key={this.get(c, "id")}
-                />
-              );
-            }
-          })}
+          {this.state.canvases.map(canvas => (
+            <CanvasThumbnail
+              deleteCanvas={this.deleteCanvas}
+              canvas={canvas}
+              goToCanvas={this.goToCanvas}
+              key={canvas.id}
+            />
+          ))}
         </div>
       </div>
     );

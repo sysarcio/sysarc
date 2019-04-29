@@ -93,6 +93,8 @@ class Canvas extends Component {
     this.goToCanvases = this.goToCanvases.bind(this);
     this.takeMeToTheDocs = this.takeMeToTheDocs.bind(this);
     this.handleNodeNameChange = this.handleNodeNameChange.bind(this);
+    this.resizeListener = this.resizeListener.bind(this);
+    this.keyupListener = this.keyupListener.bind(this);
   }
 
   goToLanding() {
@@ -108,33 +110,31 @@ class Canvas extends Component {
     this.props.history.push("/");
   }
 
-  componentDidMount() {
-    window.addEventListener("resize", () => {
+  resizeListener() {
+    this.setState({
+      width: window.innerWidth * 0.95,
+      height: window.innerHeight * 0.77
+    });
+  }
+
+  keyupListener(e) {
+    if (e.keyCode === 27) {
       this.setState({
-        width: window.innerWidth * 0.95,
-        height: window.innerHeight * 0.77
+        openConnection: null,
+        nodeToAdd: null,
+        connector: null
       });
-    });
+    }
+  }
 
-    window.addEventListener("keyup", e => {
-      if (e.keyCode === 27) {
-        this.setState({
-          openConnection: null,
-          nodeToAdd: null,
-          connector: null
-        });
-      }
-    });
+  componentDidMount() {
+    window.addEventListener("resize", this.resizeListener);
+    window.addEventListener("keyup", this.keyupListener);
+  }
 
-    window.addEventListener("keyup", e => {
-      if (e.keyCode === 27) {
-        this.setState({
-          openConnection: null,
-          nodeToAdd: null,
-          connector: null
-        });
-      }
-    });
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.resizeListener);
+    window.removeEventListener("keyup", this.keyupListener);
   }
 
   async getRoomData() {
@@ -151,32 +151,42 @@ class Canvas extends Component {
         connections,
         name
       });
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  beginNewConnection(connectee, location) {
+  async beginNewConnection(connectee, location) {
     const { connector, nodes, connectorLocation } = this.state;
     if (connector !== connectee) {
       if (connector) {
-        const data = {
+        const body = {
           connector,
           connectee,
           connectorLocation,
           connecteeLocation: location,
           handleX: (nodes[connector].x + nodes[connectee].x) / 2,
           handleY: (nodes[connector].y + nodes[connectee].y) / 2,
-          data: {
+          data: JSON.stringify({
             "": {
               get: {},
               post: {},
               put: {},
               delete: {}
             }
-          }
+          })
         };
 
-        data.room = this.roomID;
-        this.socket.emit("make connection", data);
+        body.room = this.roomID;
+        try {
+          const data = await axios.post(
+            `/api/canvas/${this.roomID}/connections`,
+            body
+          );
+          this.socket.emit("make connection", { data, room: this.roomID });
+        } catch (err) {
+          console.log(err);
+        }
 
         this.setState({
           connector: null
@@ -190,16 +200,14 @@ class Canvas extends Component {
     }
   }
 
-  handleNewConnection(connection) {
-    const connections = JSON.parse(JSON.stringify(this.state.connections));
-    connections[connection.id] = connection;
+  handleNewConnection({ data }) {
     this.setState({
-      connections
+      connections: { ...this.state.connections, [data.id]: data }
     });
   }
 
   updateConnection({ id, handleX, handleY }) {
-    const connections = JSON.parse(JSON.stringify(this.state.connections));
+    const connections = { ...this.state.connections };
     connections[id].handleX = handleX;
     connections[id].handleY = handleY;
 
@@ -246,7 +254,7 @@ class Canvas extends Component {
     }
   }
 
-  emitNewNode(e) {
+  async emitNewNode(e) {
     if (this.state.nodeToAdd) {
       const x = e.evt.offsetX / this.state.width;
       const y = e.evt.offsetY / this.state.height;
@@ -256,19 +264,19 @@ class Canvas extends Component {
         type: this.state.nodeToAdd,
         room: this.roomID
       };
-      this.socket.emit("add node", data);
 
-      this.setState(
-        { nodeToAdd: null },
-        () => (document.body.style.cursor = "default")
-      );
+      try {
+        const node = await axios.post(`/api/canvas/${this.roomID}/nodes`, data);
+        this.socket.emit("add node", { ...node.data, room: this.roomID });
+        this.setState({ nodeToAdd: null });
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 
   handleNewNode(node) {
-    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
-    nodes[node.id] = node;
-
+    const nodes = { ...this.state.nodes, [node.id]: node };
     this.setState({ nodes });
   }
 
