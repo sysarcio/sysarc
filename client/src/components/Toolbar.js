@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Rect, Text, Group, Circle, Line } from 'react-konva';
-import Konva from 'konva';
-import dummyData from './dummyDataForReact.jsx'
+import React, { Component } from "react";
+import { Rect, Text, Group, Circle, Line } from "react-konva";
+import Konva from "konva";
+import dummyData from "./dummyDataForReact.js";
 
 const toolbarProperties = {
   width: 175,
@@ -14,12 +14,12 @@ const toolbarProperties = {
 const textProperties = {
   width: 150,
   height: 100,
-  fill: '#394256',
-  align: 'center',
+  fill: "#394256",
+  align: "center",
   y: 20
 };
 
-const nodeTypes = ['CLIENT', 'SERVER', 'DATABASE', 'SERVICES', 'MISC'];
+const nodeTypes = ["CLIENT", "SERVER", "DATABASE", "SERVICES", "MISC"];
 
 class Toolbar extends Component {
   constructor(props) {
@@ -32,38 +32,41 @@ class Toolbar extends Component {
   }
 
   handleMouseEnter(i) {
-    document.body.style.cursor = 'pointer';
+    document.body.style.cursor = "pointer";
 
-    let isHovered = this.state.isHovered
+    let isHovered = this.state.isHovered;
     isHovered[i] = true;
-      this.setState(
-        isHovered
-      );
-      
-    
+    this.setState(isHovered);
   }
 
   handleMouseLeave(i) {
-    document.body.style.cursor = 'default';
+    document.body.style.cursor = "default";
 
-    let isHovered = this.state.isHovered
+    let isHovered = this.state.isHovered;
     isHovered[i] = false;
-    this.setState(
-      isHovered
-    );
-
-    
+    this.setState(isHovered);
   }
 
   render() {
-    return <Group draggable={true} x={this.props.canvasWidth - toolbarProperties.width}>
-        <Rect cornerRadius={5} width={toolbarProperties.width} height={toolbarProperties.height} fill={toolbarProperties.fill} stroke={'#394256'} strokeWidth={1} />
+    return (
+      <Group
+        draggable={true}
+        x={this.props.canvasWidth - toolbarProperties.width}
+      >
+        <Rect
+          cornerRadius={5}
+          width={toolbarProperties.width}
+          height={toolbarProperties.height}
+          fill={toolbarProperties.fill}
+          stroke={"#394256"}
+          strokeWidth={1}
+        />
         {nodeTypes.map((type, i) => (
           <Text
             key={i}
             onClick={e => this.props.prepNewNode(type, e)}
             text={`${type} +`}
-            fill={this.state.isHovered[i] ?'#EED463' : textProperties.fill}
+            fill={this.state.isHovered[i] ? "#EED463" : textProperties.fill}
             width={textProperties.width}
             align={textProperties.left}
             fontSize={16}
@@ -73,7 +76,8 @@ class Toolbar extends Component {
             onMouseLeave={() => this.handleMouseLeave(i)}
           />
         ))}
-      </Group>;
+      </Group>
+    );
   }
 }
 

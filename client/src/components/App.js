@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, withRouter } from "react-router-dom";
-import Canvas from "./Canvas.jsx";
-import Login from "./Login.jsx";
-import Signup from "./Signup.jsx";
-import Canvases from "./Canvases.jsx";
-import Landing from "./Landing.jsx";
-import Docs from "./Docs.jsx";
+import Canvas from "./Canvas";
+import Login from "./Login";
+import Signup from "./Signup";
+import Canvases from "./Canvases";
+import Landing from "./Landing";
+import Docs from "./Docs";
 
 const App = () => (
   <div>

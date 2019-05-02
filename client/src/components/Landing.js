@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
-import Signup from "./Signup.jsx";
-import Login from "./Login.jsx";
-import LandingInfo from "./LandingInfo.jsx";
-import Logo from "./Logo.jsx";
-import SignUp from "./Signup.jsx";
+import Signup from "./Signup";
+import Login from "./Login";
+import LandingInfo from "./LandingInfo.js";
+import Logo from "./Logo";
+import SignUp from "./Signup";
 import { Route, withRouter } from "react-router-dom";
 
 class Landing extends Component {

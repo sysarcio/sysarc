@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import Endpoint from "./DocsEndpoint.jsx";
+import Endpoint from "./DocsEndpoint";
 
 class Docs extends React.Component {
   constructor(props) {

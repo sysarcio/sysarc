@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DeletePop from "./DeletePop.jsx";
+import DeletePop from "./DeletePop";
 
 // const CanvasThumbnail = ({ canvas, get, goToCanvas, deleteCanvas}) => {
 

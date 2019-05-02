@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Group, Circle, Line } from "react-konva";
+import { Group, Line } from "react-konva";
 import Konva from "konva";
+import axios from "axios";
 
 class RouteLine extends Component {
   constructor(props) {
@@ -11,39 +12,26 @@ class RouteLine extends Component {
 
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
-    this.handleLineDrag = this.handleLineDrag.bind(this);
-    this.handleLineDrop = this.handleLineDrop.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
 
-  handleDelete() {
+  async handleDelete() {
     const data = {
       room: this.props.room,
       id: this.props.id
     };
-    this.props.socket.emit("delete connection", data);
-  }
 
-  handleLineDrag(e) {
-    const { offsetX, offsetY } = e.evt;
-    let x = offsetX / this.props.canvasWidth;
-    let y = offsetY / this.props.canvasHeight;
-
-    const data = {
-      id: this.props.id,
-      handleX: x,
-      handleY: y,
-      room: this.props.room
-    };
-
-    this.props.socket.emit("drag connection", data);
+    try {
+      await axios.delete(`/api/canvas/${data.room}/connections/${data.id}`);
+      this.props.socket.emit("delete connection", data);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   handleMouseEnter() {
     document.body.style.cursor = "pointer";
-    this.setState({
-      isHovered: true
-    });
+    this.setState({ isHovered: true });
   }
 
   handleMouseLeave() {
@@ -52,22 +40,6 @@ class RouteLine extends Component {
       isHovered: false,
       formIsOpen: false
     });
-  }
-
-  handleLineDrop(e) {
-    const { offsetX, offsetY } = e.evt;
-    let x = offsetX / this.props.canvasWidth;
-    let y = offsetY / this.props.canvasHeight;
-
-    const data = {
-      id: this.props.id,
-      handleX: x,
-      handleY: y,
-      data: this.props.connection.data,
-      room: this.props.room
-    };
-
-    this.props.socket.emit("place connection", data);
   }
 
   render() {

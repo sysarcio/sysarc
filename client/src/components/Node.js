@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Rect, Text, Group, Circle, Line } from "react-konva";
+import { Group } from "react-konva";
 import Konva from "konva";
+import axios from "axios";
 
-import NodeShape from "./NodeShape.jsx";
-import NodeRouteTarget from "./NodeRouteTarget.jsx";
-import NodeDeleteTarget from "./NodeDeleteTarget.jsx";
-import NodeText from "./NodeText.jsx";
+import NodeShape from "./NodeShape";
+import NodeRouteTarget from "./NodeRouteTarget";
+import NodeDeleteTarget from "./NodeDeleteTarget";
+import NodeText from "./NodeText";
 
 class Node extends Component {
   constructor(props) {
@@ -64,7 +65,7 @@ class Node extends Component {
     this.setState({ isHovered: false });
   }
 
-  handleDragEnd(e) {
+  async handleDragEnd(e) {
     let { x, y } = e.target.attrs;
     x = x / this.props.canvasWidth;
     y = y / this.props.canvasHeight;
@@ -76,7 +77,11 @@ class Node extends Component {
       room: this.props.room
     };
 
-    this.props.socket.emit("place node", data);
+    try {
+      await axios.put(`/api/canvas/${data.room}/nodes/${data.id}`, data);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render() {

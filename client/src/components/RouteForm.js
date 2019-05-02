@@ -1,25 +1,21 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 class RouteForm extends Component {
   constructor(props) {
     super(props);
+
+    const { data, pathName } = this.props;
+
     this.state = {
-      pathName: this.props.pathName,
+      pathName: pathName,
       previousPathName: "",
       selectedMethod: "",
       methods: ["get", "post", "put", "delete"],
-      get: this.props.data[this.props.pathName]["get"]
-        ? this.props.data[this.props.pathName]["get"]
-        : {},
-      post: this.props.data[this.props.pathName]["post"]
-        ? this.props.data[this.props.pathName]["post"]
-        : {},
-      put: this.props.data[this.props.pathName]["put"]
-        ? this.props.data[this.props.pathName]["put"]
-        : {},
-      delete: this.props.data[this.props.pathName]["delete"]
-        ? this.props.data[this.props.pathName]["delete"]
-        : {}
+      get: data[pathName]["get"] ? data[pathName]["get"] : {},
+      post: data[pathName]["post"] ? data[pathName]["post"] : {},
+      put: data[pathName]["put"] ? data[pathName]["put"] : {},
+      delete: data[pathName]["delete"] ? data[pathName]["delete"] : {}
     };
 
     this.handleSave = this.handleSave.bind(this);
@@ -34,7 +30,7 @@ class RouteForm extends Component {
     this.handleAddResponse = this.handleAddResponse.bind(this);
   }
 
-  handleSave(e) {
+  async handleSave(e) {
     const connection = this.props.connection;
 
     connection.data = {
@@ -46,8 +42,16 @@ class RouteForm extends Component {
       }
     };
 
-    this.props.emitUpdateConnectionData(connection);
-    this.props.toggleOpenConnection();
+    try {
+      await axios.put(
+        `/api/canvas/${this.props.room}/connections/${connection.id}`,
+        connection
+      );
+      this.props.emitUpdateConnectionData(connection);
+      this.props.toggleOpenConnection();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   handlePathChange(e) {

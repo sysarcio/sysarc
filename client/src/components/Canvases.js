@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CanvasThumbnail from "./CanvasThumbnail.jsx";
+import CanvasThumbnail from "./CanvasThumbnail";
 import axios from "axios";
 
 class Canvases extends Component {

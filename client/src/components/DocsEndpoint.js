@@ -1,5 +1,5 @@
 import React from "react";
-import Operation from "./DocsOperation.jsx";
+import Operation from "./DocsOperation";
 
 class DocsEndpoint extends React.Component {
   constructor(props) {

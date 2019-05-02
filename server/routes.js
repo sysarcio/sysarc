@@ -72,12 +72,30 @@ router.post("/canvas/add", async (req, res) => {
   }
 });
 
-router.post("/canvas/:id/nodes", async (req, res) => {
+router.post("/canvas/:canvasID/nodes", async (req, res) => {
   req.body.id = uuidv4();
 
   try {
     const node = await db.addNode(req.body);
     res.json(node);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+router.put("/canvas/:canvasID/nodes/:id", async (req, res) => {
+  try {
+    const node = await db.moveNode(req.body);
+    res.json(node);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+router.delete("/canvas/:canvasID/nodes/:id", async (req, res) => {
+  try {
+    const connections = await db.deleteNode(req.params.id);
+    res.json(connections);
   } catch (err) {
     res.sendStatus(500);
   }
@@ -100,7 +118,7 @@ router.get("/canvases/:userID", async (req, res) => {
   }
 });
 
-router.post("/canvas/:id/connections", async (req, res) => {
+router.post("/canvas/:canvasID/connections", async (req, res) => {
   try {
     req.body.id = uuidv4();
     const connection = await db.addConnection(req.body);
@@ -110,9 +128,27 @@ router.post("/canvas/:id/connections", async (req, res) => {
   }
 });
 
-router.delete("/canvas/:id", async (req, res) => {
+router.delete("/canvas/:canvasID/connections/:id", async (req, res) => {
   try {
-    db.deleteCanvas(req.params.id);
+    await db.deleteConnection(req.params.id);
+    res.end();
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+router.put("/canvas/:canvasID/connections/:id", async (req, res) => {
+  try {
+    const connection = await db.updateConnection(req.body);
+    res.json(connection);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+router.delete("/canvas/:canvasID", async (req, res) => {
+  try {
+    db.deleteCanvas(req.params.canvasID);
     res.end();
   } catch (err) {
     res.sendStatus(500);

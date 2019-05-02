@@ -1,6 +1,6 @@
 import React from "react";
-import Response from "./DocsResponse.jsx";
-import Parameter from "./DocsParameter.jsx";
+import Response from "./DocsResponse";
+import Parameter from "./DocsParameter";
 class DocsOperation extends React.Component {
   constructor(props) {
     super(props);

@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import io from "socket.io-client";
-import { Stage, Layer, Rect, Group } from "react-konva";
+import { Stage, Layer, Rect } from "react-konva";
 import Konva from "konva";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 
-import Toolbar from "./Toolbar.jsx";
-import Node from "./Node.jsx";
-import RouteLine from "./RouteLine.jsx";
-import RouteForm from "./RouteForm.jsx";
-import DownloadButton from "./DownloadButton.jsx";
+import Toolbar from "./Toolbar";
+import Node from "./Node";
+import RouteLine from "./RouteLine.js";
+import RouteForm from "./RouteForm";
+import DownloadButton from "./DownloadButton";
 
-import dummyData from "./dummyDataForReact.jsx";
+import dummyData from "./dummyDataForReact";
 
 class Canvas extends Component {
   constructor(props) {
@@ -58,10 +58,6 @@ class Canvas extends Component {
 
     this.socket.on("connection made", data => {
       this.handleNewConnection(data);
-    });
-
-    this.socket.on("connection dragged", data => {
-      this.updateConnection(data);
     });
 
     this.socket.on("connection deleted", id => {
@@ -211,18 +207,16 @@ class Canvas extends Component {
     connections[id].handleX = handleX;
     connections[id].handleY = handleY;
 
-    this.setState({
-      connections
-    });
+    this.setState({ connections });
   }
 
   handleConnectionUpdated(connection) {
-    const connections = JSON.parse(JSON.stringify(this.state.connections));
-    connections[connection.id] = connection;
+    const connections = {
+      ...this.state.connections,
+      [connection.id]: connection
+    };
 
-    this.setState({
-      connections
-    });
+    this.setState({ connections });
   }
 
   handleDeleteConnection(id) {
@@ -266,8 +260,11 @@ class Canvas extends Component {
       };
 
       try {
-        const node = await axios.post(`/api/canvas/${this.roomID}/nodes`, data);
-        this.socket.emit("add node", { ...node.data, room: this.roomID });
+        const { data: node } = await axios.post(
+          `/api/canvas/${this.roomID}/nodes`,
+          data
+        );
+        this.socket.emit("add node", { ...node, room: this.roomID });
         this.setState({ nodeToAdd: null });
       } catch (err) {
         console.log(err);
@@ -287,12 +284,16 @@ class Canvas extends Component {
     this.setState({ nodes: newNodes });
   }
 
-  emitDeleteNode(id) {
-    const data = {
-      id,
-      room: this.roomID
-    };
-    this.socket.emit("delete node", data);
+  async emitDeleteNode(id) {
+    const room = this.roomID;
+    try {
+      const { data: connections } = await axios.delete(
+        `/api/canvas/${room}/nodes/${id}`
+      );
+      this.socket.emit("delete node", { room, id, connections });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   handleDeleteNode(data) {
@@ -365,12 +366,8 @@ class Canvas extends Component {
     this.setState({ toDocs: true });
   }
 
-  toggleOpenConnection(connection = null) {
-    this.setState({ openConnection: null });
-
-    if (connection) {
-      this.setState({ openConnection: connection });
-    }
+  toggleOpenConnection(connection) {
+    this.setState({ openConnection: connection || null });
   }
 
   handleNodeNameChange(e) {
@@ -462,31 +459,6 @@ class Canvas extends Component {
                   fill={"rgb(232, 232, 232)"}
                   onMouseDown={this.emitNewNode}
                 />
-                {Object.values(this.state.nodes).map(node => {
-                  let colors = {
-                    SERVER: "#ab987a",
-                    DATABASE: "#394256",
-                    CLIENT: "#ff533d",
-                    SERVICES: "#f4b042"
-                  };
-                  return (
-                    <Node
-                      key={node.id}
-                      node={node}
-                      room={this.roomID}
-                      socket={this.socket}
-                      color={colors[node.type] || "#717f93"}
-                      canvasWidth={this.state.width}
-                      canvasHeight={this.state.height}
-                      scale={Math.min(
-                        this.state.height * 0.2,
-                        this.state.width * 0.2
-                      )}
-                      beginNewConnection={this.beginNewConnection}
-                      emitDeleteNode={this.emitDeleteNode}
-                    />
-                  );
-                })}
                 {Object.keys(this.state.connections).map(id => {
                   let conPair = [
                     this.state.connections[id].connector,
@@ -513,6 +485,31 @@ class Canvas extends Component {
                       )}
                       canvasHeight={this.state.height}
                       canvasWidth={this.state.width}
+                    />
+                  );
+                })}
+                {Object.values(this.state.nodes).map(node => {
+                  let colors = {
+                    SERVER: "#ab987a",
+                    DATABASE: "#394256",
+                    CLIENT: "#ff533d",
+                    SERVICES: "#f4b042"
+                  };
+                  return (
+                    <Node
+                      key={node.id}
+                      node={node}
+                      room={this.roomID}
+                      socket={this.socket}
+                      color={colors[node.type] || "#717f93"}
+                      canvasWidth={this.state.width}
+                      canvasHeight={this.state.height}
+                      scale={Math.min(
+                        this.state.height * 0.2,
+                        this.state.width * 0.2
+                      )}
+                      beginNewConnection={this.beginNewConnection}
+                      emitDeleteNode={this.emitDeleteNode}
                     />
                   );
                 })}
