@@ -41,7 +41,6 @@ class Canvas extends Component {
     this.socket = io.connect();
     this.socket.on("connect", () => {
       this.socket.emit("join room", this.roomID);
-      this.getRoomData();
     });
 
     this.socket.on("node added", node => {
@@ -124,6 +123,7 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
+    this.getRoomData();
     window.addEventListener("resize", this.resizeListener);
     window.addEventListener("keyup", this.keyupListener);
   }
@@ -220,7 +220,7 @@ class Canvas extends Component {
   }
 
   handleDeleteConnection(id) {
-    const connections = JSON.parse(JSON.stringify(this.state.connections));
+    const connections = { ...this.state.connections };
     delete connections[id];
     this.setState({ connections });
   }
@@ -278,7 +278,7 @@ class Canvas extends Component {
   }
 
   updateNode(data) {
-    const newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+    const newNodes = { ...this.state.nodes };
     newNodes[data.id].x = data.x;
     newNodes[data.id].y = data.y;
     this.setState({ nodes: newNodes });
@@ -297,8 +297,8 @@ class Canvas extends Component {
   }
 
   handleDeleteNode(data) {
-    const nodes = JSON.parse(JSON.stringify(this.state.nodes));
-    const connections = JSON.parse(JSON.stringify(this.state.connections));
+    const nodes = { ...this.state.nodes };
+    const connections = { ...this.state.connections };
 
     delete nodes[data.id];
 

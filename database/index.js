@@ -20,8 +20,7 @@ module.exports = {
         )
         .then(({ records: [user] }) => {
           session.close();
-          const { properties } = user.get("user");
-          return properties;
+          return user.get("user").properties;
         });
       return newUser;
     } catch (err) {
@@ -46,8 +45,7 @@ module.exports = {
             throw new Error(`User not found with email address '${email}'`);
           }
 
-          const { properties } = user.get("user");
-          return properties;
+          return user.get("user").properties;
         });
 
       return user;
@@ -74,8 +72,7 @@ module.exports = {
         .then(({ records: [canvas] }) => {
           session.close();
 
-          const { properties } = canvas.get("canvas");
-          return properties;
+          return canvas.get("canvas").properties;
         });
 
       return canvas;
@@ -121,6 +118,8 @@ module.exports = {
 
           const [nodes, connections] = records.reduce(
             (output, record) => {
+              if (!record.get("nodes")) return output;
+
               const { properties: node } = record.get("nodes");
               output[0][node.id] = node;
 
@@ -157,12 +156,8 @@ module.exports = {
           { userID }
         )
         .then(({ records }) => {
-          session.close();
-
           const hasCanvas = records[0].get("canvas");
-          if (!hasCanvas) {
-            return [];
-          }
+          if (!hasCanvas) return [];
 
           return records.map(record => record.get("canvas").properties);
         });
@@ -177,18 +172,18 @@ module.exports = {
 
   async addNode(data) {
     try {
-      const {
-        records: [node]
-      } = await session.run(
-        `
+      const node = await session
+        .run(
+          `
         MATCH (c:CANVAS {id: $room})
         CREATE (c)-[:CONTAINS]->(n:NODE {id: $id, x: $x, y: $y, created_at: timestamp(), type: $type})
         RETURN n AS node`,
-        data
-      );
+          data
+        )
+        .then(({ records: [node] }) => node.get("node").properties);
 
       session.close();
-      return node.get("node").properties;
+      return node;
     } catch (err) {
       session.close();
       throw new Error(err);
@@ -197,18 +192,18 @@ module.exports = {
 
   async moveNode({ x, y, id }) {
     try {
-      const {
-        records: [node]
-      } = await session.run(
-        `
+      const node = await session
+        .run(
+          `
         MATCH (n:NODE {id: $id})
         SET n.x = $x, n.y = $y
         RETURN n AS node`,
-        { id, x, y }
-      );
+          { id, x, y }
+        )
+        .then(({ records: [node] }) => node.get("node").properties);
 
       session.close();
-      return node.get("node").properties;
+      return node;
     } catch (err) {
       session.close();
       throw new Error(err);
@@ -217,26 +212,22 @@ module.exports = {
 
   async deleteNode(nodeID) {
     try {
-      const {
-        records: [results]
-      } = await session.run(
-        `
+      const results = await session
+        .run(
+          `
         MATCH (c:NODE {id: $nodeID})
         WITH c
         OPTIONAL MATCH (c)-[r:IS_CONNECTED]-(q)
         WITH c, r, collect(r.id) AS connections
         DETACH DELETE c, r
         RETURN connections`,
-        { nodeID }
-      );
-
+          { nodeID }
+        )
+        .then(({ records }) =>
+          records.map(record => record.get("connections"))
+        );
       session.close();
-
-      const connections = results.get("connections").reduce((conns, curr) => {
-        conns.push(curr);
-        return conns;
-      }, []);
-      return connections;
+      return results;
     } catch (err) {
       session.close();
       throw new Error(err);
@@ -263,10 +254,9 @@ module.exports = {
 
   async addConnection(data) {
     try {
-      const {
-        records: [connection]
-      } = await session.run(
-        `
+      const connection = await session
+        .run(
+          `
         MATCH (c:CANVAS {id: $room})-[:CONTAINS]->(n:NODE {id: $connector})
         WITH n, c
         MATCH (c)-[:CONTAINS]->(m:NODE {id: $connectee})
@@ -282,8 +272,9 @@ module.exports = {
           connecteeLocation: $connecteeLocation
         }]->(m)
         RETURN r AS connection;`,
-        data
-      );
+          data
+        )
+        .then(({ records: [connection] }) => connection);
 
       session.close();
       const { properties } = connection.get("connection");
@@ -299,36 +290,33 @@ module.exports = {
     connection.data = JSON.stringify(connection.data);
     const { handleX, handleY, data, id } = connection;
     try {
-      const {
-        records: [connection]
-      } = await session.run(
-        `
+      const connection = await session
+        .run(
+          `
         MATCH (a)-[r:IS_CONNECTED {id: $id}]->(b)
         WITH r
         SET r.handleX = $handleX, r.handleY = $handleY, r.data = $data
         RETURN r AS connection;`,
-        { id, handleX, handleY, data }
-      );
+          { id, handleX, handleY, data }
+        )
+        .then(({ records: [conn] }) => conn.get("connection").properties);
 
       session.close();
-      return connection.get("connection").properties;
+      return connection;
     } catch (err) {
       session.close();
       throw new Error(err);
     }
   },
 
-  async addImage(data) {
+  async addImage({ canvasID, image }) {
     try {
       const result = await session.run(
         `
         MATCH (n:CANVAS {id: $canvasID})
         SET n.image = $image
         return n;`,
-        {
-          canvasID: data.canvasID,
-          image: data.image
-        }
+        { canvasID, image }
       );
       session.close();
       return result;
@@ -340,7 +328,7 @@ module.exports = {
 
   async getDocs(canvasID) {
     try {
-      const result = await session.run(
+      const { records } = await session.run(
         `
         MATCH (n:CANVAS {id: $canvasID})
         WITH n
@@ -348,13 +336,11 @@ module.exports = {
         WITH m
         OPTIONAL MATCH (m)-[p:IS_CONNECTED]->(q)
         RETURN collect(p) AS connections`,
-        {
-          canvasID: canvasID
-        }
+        { canvasID }
       );
       session.close();
 
-      return result.records;
+      return records;
     } catch (err) {
       session.close();
       throw new Error(err);

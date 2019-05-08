@@ -68,6 +68,7 @@ class RouteLine extends Component {
       handleX,
       handleY
     } = this.props.connection;
+
     handleX = handleX * canvasWidth;
     handleY = handleY * canvasHeight;
     const positions = {

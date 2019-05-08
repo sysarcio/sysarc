@@ -54,10 +54,7 @@ router.post("/canvas/add", async (req, res) => {
 
   try {
     if (!req.body.userID) {
-      throw {
-        message: "User not logged in",
-        code: 401
-      };
+      throw new Error("User not logged in");
     }
     const canvas = await db.addCanvas({
       userID: req.body.userID,
@@ -67,7 +64,6 @@ router.post("/canvas/add", async (req, res) => {
 
     res.send(canvas);
   } catch (err) {
-    res.statusMessage = err.message;
     res.sendStatus(500);
   }
 });
