@@ -37,7 +37,10 @@ class Canvases extends Component {
     } else {
       const options = {
         method: "GET",
-        url: `/api/canvases/${localStorage.userID}`
+        url: `/api/canvases`,
+        params: {
+          userID: localStorage.userID
+        }
       };
 
       try {
@@ -65,7 +68,7 @@ class Canvases extends Component {
     e.preventDefault();
     const options = {
       method: "POST",
-      url: "/api/canvas/add",
+      url: "/api/canvas",
       data: {
         name: this.state.text,
         userID: localStorage.userID

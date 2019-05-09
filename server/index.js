@@ -29,6 +29,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/../client/dist"));
 app.use("/api", routes);
 
+app.get("/*", (_, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+
 server.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
@@ -40,14 +44,10 @@ io.on("connection", socket => {
     socket.join(roomID);
   });
 
-  socket.on("add node", async ({ id, x, y, type, room }) => {
+  socket.on("add node", ({ id, x, y, type, room }) => {
     const node = { id, x, y, type };
-    try {
-      io.to(room).emit("node added", node);
-      socket.emit("request screenshot");
-    } catch (err) {
-      console.log(err);
-    }
+    io.to(room).emit("node added", node);
+    socket.emit("request screenshot");
   });
 
   socket.on("move node", ({ id, x, y, room }) => {
@@ -55,40 +55,24 @@ io.on("connection", socket => {
     // socket.emit('request screenshot');
   });
 
-  socket.on("make connection", async data => {
+  socket.on("make connection", data => {
     io.to(data.room).emit("connection made", data.data);
     socket.emit("request screenshot");
   });
 
-  socket.on("delete connection", async ({ room, id }) => {
-    try {
-      io.to(room).emit("connection deleted", id);
-      socket.emit("request screenshot");
-    } catch (err) {
-      console.log(err);
-    }
+  socket.on("delete connection", ({ room, id }) => {
+    io.to(room).emit("connection deleted", id);
+    socket.emit("request screenshot");
   });
 
-  socket.on("delete node", async ({ room, id, connections }) => {
-    try {
-      io.to(room).emit("node deleted", { id, connections });
-      socket.emit("request screenshot");
-    } catch (err) {
-      console.log(err);
-    }
+  socket.on("delete node", ({ room, id, connections }) => {
+    io.to(room).emit("node deleted", { id, connections });
+    socket.emit("request screenshot");
   });
 
-  socket.on("update connection data", async connection => {
+  socket.on("update connection data", connection => {
     const { room } = connection;
-    try {
-      io.to(room).emit("connection updated", connection);
-      socket.emit("request screenshot");
-    } catch (err) {
-      console.log(err);
-    }
+    io.to(room).emit("connection updated", connection);
+    socket.emit("request screenshot");
   });
-});
-
-app.get("/*", (_, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });

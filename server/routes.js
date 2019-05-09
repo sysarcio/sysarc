@@ -25,11 +25,10 @@ router.post("/signup", async (req, res) => {
     const id = uuidv4();
     const password = await bcrypt.hash(req.body.password, 10);
     const user = await db.addUser({ email, id, password });
-    res.send(user.id);
+    res.json(user.id);
   } catch (err) {
     console.log(err);
-    res.statusMessage = "That email address is already in use";
-    res.sendStatus(403);
+    res.sendStatus(500);
   }
 });
 
@@ -42,14 +41,14 @@ router.post("/login", async (req, res) => {
       return res.sendStatus(401);
     }
 
-    res.send(user.id);
+    res.json(user.id);
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
   }
 });
 
-router.post("/canvas/add", async (req, res) => {
+router.post("/canvas", async (req, res) => {
   const canvasID = uuidv4();
 
   try {
@@ -62,7 +61,16 @@ router.post("/canvas/add", async (req, res) => {
       canvasName: req.body.name
     });
 
-    res.send(canvas);
+    res.json(canvas);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+router.delete("/canvas/:canvasID", async (req, res) => {
+  try {
+    db.deleteCanvas(req.params.canvasID);
+    res.end();
   } catch (err) {
     res.sendStatus(500);
   }
@@ -97,18 +105,16 @@ router.delete("/canvas/:canvasID/nodes/:id", async (req, res) => {
   }
 });
 
-router.get("/canvases/:userID", async (req, res) => {
+router.get("/canvases", async (req, res) => {
   try {
-    if (!req.params.userID) {
-      throw {
-        message: "User not logged in",
-        code: 401
-      };
+    const userID = req.query.userID;
+    if (!userID) {
+      throw new Error("User not logged in");
     }
 
-    const canvases = await db.getUserCanvases(req.params.userID);
+    const canvases = await db.getUserCanvases(userID);
 
-    res.send(canvases);
+    res.json(canvases);
   } catch (err) {
     res.sendStatus(500);
   }
@@ -142,19 +148,10 @@ router.put("/canvas/:canvasID/connections/:id", async (req, res) => {
   }
 });
 
-router.delete("/canvas/:canvasID", async (req, res) => {
-  try {
-    db.deleteCanvas(req.params.canvasID);
-    res.end();
-  } catch (err) {
-    res.sendStatus(500);
-  }
-});
-
 router.get("/getRoomData/:id", async (req, res) => {
   try {
     const data = await db.getCanvas(req.params.id);
-    res.send(data);
+    res.json(data);
   } catch (err) {
     console.log(err);
   }
@@ -177,7 +174,7 @@ router.get("/Docs/:id", async (req, res) => {
       [{}, {}]
     );
 
-    res.send({ connections });
+    res.json({ connections });
   } catch (err) {
     console.log(err);
   }
